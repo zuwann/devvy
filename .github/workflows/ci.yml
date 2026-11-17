@@ -13,3 +13,51 @@ jobs:
           node-version: 20
       - name: Repository checks
         run: python3 tools/check.py
+
+  windows:
+    # The same scripts on a real Windows runner with Windows PowerShell 5.1 (the version users have)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Parse every script with Windows PowerShell 5.1
+        shell: powershell
+        run: |
+          $bad = 0
+          Get-ChildItem scripts -Recurse -Filter *.ps1 | ForEach-Object {
+            $tokens = $null; $errs = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile($_.FullName, [ref]$tokens, [ref]$errs)
+            foreach ($e in $errs) { Write-Host ("{0}:{1} {2}" -f $_.Name, $e.Extent.StartLineNumber, $e.Message); $bad++ }
+          }
+          Write-Host "Syntax errors: $bad"
+          if ($bad -gt 0) { exit 1 }
+      - name: Language files load in PowerShell 5.1 (it rejects keys that differ only by case)
+        shell: powershell
+        run: |
+          $bad = 0
+          Get-ChildItem scripts/locales -Filter *.json | ForEach-Object {
+            try { $null = Get-Content -Raw -Encoding UTF8 $_.FullName | ConvertFrom-Json } catch { Write-Host ("{0}: {1}" -f $_.Name, $_.Exception.Message); $bad++ }
+          }
+          if ($bad -gt 0) { exit 1 }
+      - name: PSScriptAnalyzer (errors only, informational)
+        shell: powershell
+        continue-on-error: true
+        run: |
+          Install-Module PSScriptAnalyzer -Force -Scope CurrentUser
+          $r = Invoke-ScriptAnalyzer -Path scripts -Recurse -Severity Error
+          $r | Format-Table RuleName, ScriptName, Line, Message -AutoSize | Out-String -Width 250
+          if ($r) { exit 1 }
+      - name: Command line help
+        shell: cmd
+        run: devvy.bat /cli
+      - name: Audit on the runner (read only, informational)
+        shell: cmd
+        continue-on-error: true
+        timeout-minutes: 20
+        run: devvy.bat /cli Audit -Output json
+      - name: Keep the logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: devvy-windows-logs
+          path: data/logs
+          if-no-files-found: ignore

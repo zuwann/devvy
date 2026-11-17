@@ -114,15 +114,15 @@ $rows = foreach ($p in $pkgs) {
     }
 
     if ($isOem -and -not $excluded -and -not $adv) { $advText = Get-ClassAdvice "$($p.ClassName)" $nP $nG }
-    if (-not $isOem) { $action = 'KEEP'; $why = T 'Driver included with Windows' }
-    elseif ($excluded) { $action = 'KEEP'; $why = T 'Excluded by you in the settings (pattern: {0})' (Get-ExclusionMatch ('{0} {1}' -f $p.ProviderName, $leaf)) }
-    elseif ($nP -gt 0) { $action = 'KEEP'; $why = T 'In use by {0} connected device(s)' $nP }
-    elseif ($adv -and $adv.Auto -eq 'ORPHAN' -and $adv.IsOrphan) { $action = 'REMOVE+UNINSTALL'; $why = T 'Orphaned component: {0} (app not installed)' $adv.Name }
-    elseif ($adv -and $adv.Auto -eq 'UNUSED') { $action = 'REMOVE+UNINSTALL'; $why = T 'Not in use: {0}' $adv.Name }
-    elseif ($tag -eq 'OldVersion') { $action = 'REMOVE'; $why = T 'Older version of the same package' }
-    elseif ($nG -gt 0) { $action = 'REMOVE'; $why = T 'Used only by devices that are not connected' }
-    elseif ($p.ClassName -eq 'Extension') { $action = 'KEEP'; $why = T 'Extension driver: it extends another driver (0 users is normal)' }
-    else { $action = 'KEEP'; $why = T 'Third-party driver not in use: to be evaluated' }
+    if (-not $isOem) { $action = 'KEEP'; $why = TE 'Driver included with Windows' }
+    elseif ($excluded) { $action = 'KEEP'; $why = TE 'Excluded by you in the settings (pattern: {0})' (Get-ExclusionMatch ('{0} {1}' -f $p.ProviderName, $leaf)) }
+    elseif ($nP -gt 0) { $action = 'KEEP'; $why = TE 'In use by {0} connected device(s)' $nP }
+    elseif ($adv -and $adv.Auto -eq 'ORPHAN' -and $adv.IsOrphan) { $action = 'REMOVE+UNINSTALL'; $why = TE 'Orphaned component: {0} (app not installed)' $adv.Name }
+    elseif ($adv -and $adv.Auto -eq 'UNUSED') { $action = 'REMOVE+UNINSTALL'; $why = TE 'Not in use: {0}' $adv.Name }
+    elseif ($tag -eq 'OldVersion') { $action = 'REMOVE'; $why = TE 'Older version of the same package' }
+    elseif ($nG -gt 0) { $action = 'REMOVE'; $why = TE 'Used only by devices that are not connected' }
+    elseif ($p.ClassName -eq 'Extension') { $action = 'KEEP'; $why = TE 'Extension driver: it extends another driver (0 users is normal)' }
+    else { $action = 'KEEP'; $why = TE 'Third-party driver not in use: to be evaluated' }
 
     if ($excluded) { $cat = T 'Excluded by you' }
     elseif ($adv) { $cat = $adv.Name }

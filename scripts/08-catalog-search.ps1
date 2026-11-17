@@ -106,6 +106,8 @@ function Read-CatalogResults([string]$Html) {
         }
         $ver = ''
         if ($cells.Count -ge 5) { $ver = $cells[4] }
+        # driver rows show "n/a" in the Version column: the version is the last number group of the title ("Maker - Class - 1.2.3.4")
+        if ($ver -notmatch '^\d+(\.\d+)+$' -and $cells[0] -match '(\d+(\.\d+){2,3})\s*$') { $ver = $Matches[1] }
         $dateText = ''
         if ($dateOk) { $dateText = $d.ToString('yyyy-MM-dd') }
         $out.Add([pscustomobject]@{

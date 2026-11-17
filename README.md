@@ -10,7 +10,7 @@
 
 Devvy is a light and transparent tool to maintain, update and clean up drivers and devices on Windows. Unlike commercial "driver booster" tools it installs no service, bundles nothing and never forces updates you do not need. It starts a small local web server (only `127.0.0.1`) and runs plain PowerShell scripts (`.ps1`) that you can read, with a web page as the interface. When you close it, nothing stays running.
 
-> **Status: experimental beta (0.10.77).** Written and tested mostly on Linux with simulated Windows functions, then used on real PCs by the author. Use it at your own risk and read the [DISCLAIMER](DISCLAIMER.txt) and the Safety section.
+> **Status: experimental beta (0.10.78).** Written and tested mostly on Linux with simulated Windows functions, then used on real PCs by the author. Use it at your own risk and read the [DISCLAIMER](DISCLAIMER.txt) and the Safety section.
 
 ### Why it is different
 
@@ -73,7 +73,7 @@ License: MIT. Author: zuwann.
 
 Devvy è uno strumento leggero e trasparente per la manutenzione, l'aggiornamento e la pulizia di driver e dispositivi su Windows. A differenza dei software commerciali tipo "driver booster" non installa servizi, non contiene software aggiuntivo e non forza aggiornamenti inutili. Avvia un piccolo server web locale (solo `127.0.0.1`) ed esegue semplici script PowerShell (`.ps1`) che puoi leggere, con una pagina web come interfaccia. Quando lo chiudi, non resta in esecuzione nulla.
 
-> **Stato: beta sperimentale (0.10.77).** Scritto e provato soprattutto su Linux con funzioni Windows simulate, poi usato su PC reali dall'autore. Usalo a tuo rischio e leggi il [DISCLAIMER](DISCLAIMER.txt) e la sezione Sicurezza.
+> **Stato: beta sperimentale (0.10.78).** Scritto e provato soprattutto su Linux con funzioni Windows simulate, poi usato su PC reali dall'autore. Usalo a tuo rischio e leggi il [DISCLAIMER](DISCLAIMER.txt) e la sezione Sicurezza.
 
 ### Perché è diverso
 

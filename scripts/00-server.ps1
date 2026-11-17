@@ -610,7 +610,7 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         foreach ($r in $rows) {
             $o = [ordered]@{}
             foreach ($c in $dataSets[$n].Cols) { $o[$c] = "$($r.$c)" }
-            if ($n -eq 'check' -and $o.Contains('Reason')) { $o['Reason'] = Convert-ReasonText $o['Reason'] }
+            if (@('check', 'devices', 'drivers', 'bluetooth') -contains $n -and $o.Contains('Reason')) { $o['Reason'] = Convert-ReasonText $o['Reason'] }
             if ($keyOf.ContainsKey($n)) { $o['Protected'] = (Test-RowProtected $n $r) }
             $out += [pscustomobject]$o
         }

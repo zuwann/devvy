@@ -49,13 +49,13 @@ $rows = foreach ($d in $devices) {
     $kbId = ''; $what = ''; $risk = ''; $advText = ''
     if ($adv) { $kbId = $adv.Id; $what = $adv.Name; $risk = $adv.Risk; $advText = Get-AdviceText $adv }
 
-    if ($excluded) { $action = 'KEEP'; $why = T 'Excluded by you in the settings (pattern: {0})' (Get-ExclusionMatch $text) }
+    if ($excluded) { $action = 'KEEP'; $why = TE 'Excluded by you in the settings (pattern: {0})' (Get-ExclusionMatch $text) }
     elseif (-not $d.Present) {
         $action = 'REMOVE'
-        if ((Get-GhostKind $id "$($d.Class)" "$($d.FriendlyName)") -eq 'SAFE') { $why = T 'Ghost: virtual or system component, safe to remove' } else { $why = T 'Ghost: physical hardware not connected (remove it only if you no longer use it)' }
+        if ((Get-GhostKind $id "$($d.Class)" "$($d.FriendlyName)") -eq 'SAFE') { $why = TE 'Ghost: virtual or system component, safe to remove' } else { $why = TE 'Ghost: physical hardware not connected (remove it only if you no longer use it)' }
     }
-    elseif ($adv -and $adv.Auto -eq 'ORPHAN' -and $adv.IsOrphan) { $action = 'KEEP'; $why = T 'Orphaned component: remove it from the drivers list (see drivers.csv)' }
-    else { $action = 'KEEP'; $why = T 'Present' }
+    elseif ($adv -and $adv.Auto -eq 'ORPHAN' -and $adv.IsOrphan) { $action = 'KEEP'; $why = TE 'Orphaned component: remove it from the drivers list (see drivers.csv)' }
+    else { $action = 'KEEP'; $why = TE 'Present' }
 
     [pscustomobject][ordered]@{
         Action             = $action

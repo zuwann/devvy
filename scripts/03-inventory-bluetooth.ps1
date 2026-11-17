@@ -48,7 +48,7 @@ $rows = foreach ($mac in ($macs.Keys | Sort-Object)) {
         InRegistry    = $inReg
         ServiceNodes  = $nSvc
         InstanceId    = $iid
-        Reason        = (T 'Bluetooth pairing')
+        Reason        = (TE 'Bluetooth pairing')
     }
 }
 

@@ -145,7 +145,11 @@ function TE {
 $script:ReasonTemplates = @(
     'Problem: {0}', 'No driver installed', 'Generic Microsoft driver: the manufacturer probably provides a specific one', 'Generic driver (informational)',
     'Old driver: {0} years (it is the PC manufacturer driver: if you have no problems leave it; to update it use the manufacturer site or support app)',
-    'Old driver: {0} years', 'Update available on Windows Update', 'Windows Update offers a driver (current date unknown)')
+    'Old driver: {0} years', 'Update available on Windows Update', 'Windows Update offers a driver (current date unknown)',
+    'Excluded by you in the settings (pattern: {0})', 'Ghost: virtual or system component, safe to remove', 'Ghost: physical hardware not connected (remove it only if you no longer use it)',
+    'Orphaned component: remove it from the drivers list (see drivers.csv)', 'Present', 'Driver included with Windows', 'In use by {0} connected device(s)',
+    'Orphaned component: {0} (app not installed)', 'Not in use: {0}', 'Older version of the same package', 'Used only by devices that are not connected',
+    'Extension driver: it extends another driver (0 users is normal)', 'Third-party driver not in use: to be evaluated', 'Bluetooth pairing')
 function Convert-ReasonText {
     param([string]$Text)
     if (-not $Text) { return $Text }
