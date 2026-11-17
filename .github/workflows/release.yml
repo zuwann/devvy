@@ -1,0 +1,36 @@
+name: release
+run-name: Release ${{ github.ref_name }}
+# Push a tag such as v0.10.72 (no suffix: every 0.x version is a beta by definition): the checks run, the package is built and published as a GitHub release
+# together with its SHA-256 file (get.ps1 downloads both and verifies the hash before running anything).
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Repository checks
+        run: python3 tools/check.py
+      - name: Tag matches the version in the program
+        run: |
+          v=$(grep -o 'Devvy <small class="mut">[^<]*' scripts/web/app.html | sed 's/.*>//; s/ .*//')
+          test "v$v" = "${GITHUB_REF_NAME}" || { echo "Tag ${GITHUB_REF_NAME} differs from the program version v$v"; exit 1; }
+      - name: Build the package
+        run: |
+          name="devvy-${GITHUB_REF_NAME}"
+          mkdir -p "dist/devvy"
+          cp -r devvy.bat scripts files.json README.md LICENSE DISCLAIMER.txt dist/devvy/
+          (cd dist && zip -qr "$name.zip" devvy)
+          (cd dist && sha256sum "$name.zip" > "$name.zip.sha256")
+          ls -l dist
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/*.zip dist/*.zip.sha256 --title "Devvy ${GITHUB_REF_NAME#v}" --generate-notes --latest

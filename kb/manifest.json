@@ -1,0 +1,34 @@
+{
+ "version": 2026111701,
+ "date": "2026-11-17",
+ "files": [
+  {
+   "name": "knowledge.csv",
+   "sha256": "97499a07750ddc4d47b58cbb7be34f4ff10844f91ae295211ff81e2ae9748a22"
+  },
+  {
+   "name": "knowledge.it.csv",
+   "sha256": "16668a81985b828ca40558f5353caa2e36004d29c67facaf39945bcc73bcf79c"
+  },
+  {
+   "name": "knowledge.es.csv",
+   "sha256": "7b085e861d621606944dff5ac8fb8414912a837c12936dc8e055a331727c773a"
+  },
+  {
+   "name": "knowledge.de.csv",
+   "sha256": "5b01a4fb9343fa93cf3a358c7511af4a69bfc453331ebf879772b04f6fec240a"
+  },
+  {
+   "name": "knowledge.fr.csv",
+   "sha256": "1d7efdd51010bd3e932d858177be12310f97edfd59a57978d978bf744e27f2f7"
+  },
+  {
+   "name": "support-links.csv",
+   "sha256": "316fdadabcb6e33a45478d6aacd88a34c7216a1f0ce3d64ecca0d77998bf206b"
+  },
+  {
+   "name": "support-models.csv",
+   "sha256": "eff175f6fd6ec256292fca3d2c309d20266546c562db12ef49429515bb3da2f3"
+  }
+ ]
+}

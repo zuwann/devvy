@@ -1,0 +1,38 @@
+DISCLAIMER
+==========
+
+ENGLISH
+
+This tool removes devices, Bluetooth pairings and drivers from your system and can install updates.
+It is experimental and provided "AS IS", without warranty of any kind. You use it entirely at your own
+risk. The authors are not liable for data loss, malfunction, blue screens, devices that stop working
+or any other damage, direct or indirect.
+
+Before using it:
+- always run the PREVIEW and read the reports before applying;
+- keep a backup of your data; the tool can create a restore point and a driver export, but this does
+  not guarantee that a restore will succeed;
+- if the PC belongs to a company, a client or someone else, ask first;
+- do not use the tool if you do not understand what it is going to remove.
+
+Privacy: the program sends no data to anyone. Reports, logs and backups stay in its folder and may
+contain device names, Bluetooth addresses, and the computer and user names. Before sharing a report use
+the "shareable copies" option, and still check the result.
+
+ITALIANO
+
+Questo strumento rimuove dispositivi, abbinamenti Bluetooth e driver dal tuo sistema e può installare
+aggiornamenti. È sperimentale e viene fornito "COSÌ COM'È", senza alcuna garanzia, e lo usi interamente a
+tuo rischio e pericolo. Gli autori non rispondono di perdite di dati, malfunzionamenti, schermate blu,
+dispositivi che smettono di funzionare o qualsiasi altro danno, diretto o indiretto.
+
+Prima di usarlo:
+- lancia sempre l'ANTEPRIMA e leggi i report prima di applicare;
+- tieni un backup dei tuoi dati; lo strumento può creare un punto di ripristino e un'esportazione dei
+  driver, ma questo non garantisce che il ripristino riesca;
+- se il PC è aziendale, di un cliente o di altri, chiedi prima;
+- non usare lo strumento se non capisci cosa sta per rimuovere.
+
+Privacy: il programma non invia nessun dato a nessuno. Report, log e backup restano nella sua cartella e
+possono contenere nomi di dispositivi, indirizzi Bluetooth, nome del PC e dell'utente. Prima di condividere
+un report usa l'opzione "copie condivisibili" e controlla comunque il risultato.

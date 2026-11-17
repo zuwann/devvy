@@ -1,0 +1,2 @@
+# Keep the bytes exactly as they are: the update checks every file with SHA-256
+* -text

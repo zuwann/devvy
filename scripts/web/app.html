@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en" translate="no" class="notranslate">
+<head>
+<meta charset="utf-8">
+<meta name="google" content="notranslate">
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Devvy</title>
+<style>
+:root{--bg:#fff;--fg:#1d2733;--mut:#5b6877;--line:#d9dee5;--card:#f5f7fa;--ok:#1b7f3b;--warn:#9a6700;--err:#b42318;--acc:#0b63c5;--accfg:#fff;--term:#0f1419;--termfg:#d6e2ee}
+@media (prefers-color-scheme:dark){:root{--bg:#14181d;--fg:#e6ebf1;--mut:#9aa7b5;--line:#2b333c;--card:#1c2229;--ok:#4cc77a;--warn:#e3b341;--err:#ff7b72;--acc:#4c9aff;--accfg:#0b1620;--term:#0b0f13;--termfg:#cfdbe8}}
+a{color:var(--acc);text-decoration:underline;text-underline-offset:2px}a:visited{color:var(--acc)}a:hover{filter:brightness(1.2)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+header{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+header h1{font-size:1.15rem;margin:0;flex:1}
+nav{display:flex;gap:4px;padding:8px 16px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{background:none;border:0;border-bottom:3px solid transparent;color:var(--mut);padding:8px 12px;cursor:pointer;font:inherit;white-space:nowrap}
+nav button svg.ti{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-3px;margin-right:7px}
+nav button.on{color:var(--fg);border-bottom-color:var(--acc);font-weight:600}
+main{max-width:1150px;margin:0 auto;padding:16px}
+h2{font-size:1.2rem;margin:.2em 0 .4em}
+p{margin:.4em 0}
+.mut{color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:10px 0}
+.card h3{margin:.1em 0 .3em;font-size:1rem}
+.card.warn,.card.err,.card.okc{--cc:var(--warn);border-color:color-mix(in srgb,var(--cc) 55%,var(--line));background:color-mix(in srgb,var(--cc) 9%,var(--card))}
+.card.err{--cc:var(--err)}
+.card.okc{--cc:var(--ok)}
+#popbody .card.warn,#popbody .card.err,#popbody .card.okc{background:color-mix(in srgb,var(--cc) 9%,var(--bg))}
+.card.warn>b:first-child,.card.err>b:first-child,.card.okc>b:first-child,.card.warn>h3:first-child,.card.err>h3:first-child,.card.okc>h3:first-child{display:inline-block;color:var(--cc);margin-bottom:.15em}
+button.b,.b{background:var(--acc);color:var(--accfg);border:0;border-radius:7px;padding:8px 14px;font:inherit;cursor:pointer;font-weight:600}
+.b.sec,.b.ok,.b.wb{background:var(--warn);color:#1a1300;border:0}
+.b.red{background:var(--err);color:#fff}
+a.b,a.b:visited{color:var(--accfg);text-decoration:none;display:inline-block}a.b.sec,a.b.sec:visited,a.b.ok,a.b.ok:visited,a.b.wb,a.b.wb:visited{color:#1a1300}a.b.red,a.b.red:visited{color:#fff}
+button.b.neu{background:transparent;color:var(--fg);border:1px solid var(--line)}
+button:disabled,button.b:disabled{opacity:.4;cursor:not-allowed;filter:grayscale(.4)}
+button.b.small{padding:4px 10px;font-size:.85rem}
+td button.b,button.b.small{white-space:nowrap}
+td:has(>button.b.small:only-child),td:has(>.rowbtns){text-align:right;white-space:nowrap;width:1%;padding-right:0}
+button.b.small{min-height:32px}
+.addrow{display:flex;gap:8px;margin-top:10px}.addrow input{flex:1}
+button.b:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0}
+input[type=text],select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:5px 8px}
+textarea{width:100%;min-height:90px;font-family:ui-monospace,Consolas,monospace;font-size:.85rem}
+.wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;margin:6px 0}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--mut);font-size:.82rem;font-weight:600;position:sticky;top:0;background:var(--bg)}
+tr.del td{background:rgba(180,35,24,.08)}
+code{font-family:ui-monospace,Consolas,monospace;font-size:.82rem;word-break:break-all}
+.tag{display:inline-block;padding:0 7px;border-radius:9px;font-size:.78rem;border:1px solid var(--line);color:var(--mut);margin-left:4px}
+.tag.r{color:var(--err);border-color:var(--err)}.tag.g{color:var(--ok);border-color:var(--ok)}.tag.y{color:var(--warn);border-color:var(--warn)}
+.st.INFO{color:var(--mut)}
+.gear{display:inline-flex;align-items:center;justify-content:center;padding:7px 9px!important}
+.gear svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.belln{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:var(--err);color:#fff;font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}
+#bell{position:relative}
+#bell.y .belln{background:var(--warn);color:#1a1300}
+.gear{position:relative}
+#updbadge{background:var(--warn);color:#1a1300;top:-7px;right:-7px}
+.gear.on{outline:3px solid var(--fg);outline-offset:1px}
+.specs{display:flex;flex-wrap:wrap;gap:4px 18px;margin:4px 0 8px;font-size:.9rem;color:var(--mut)}
+.specs b{color:var(--fg);font-weight:600}
+.st{font-weight:700;white-space:nowrap}.st.OK{color:var(--ok)}.st.WARN{color:var(--warn)}.st.ERROR{color:var(--err)}
+details{margin:4px 0}summary{cursor:pointer;color:var(--acc);font-size:.85rem}
+.prog{display:flex;gap:10px;align-items:center;padding:12px 18px}
+.pbar{flex:1;height:14px;background:var(--line);border-radius:7px;overflow:hidden}
+.pfill{height:100%;width:0;background:var(--acc);transition:width .4s}
+#pop,#modal,#cf{position:fixed;inset:0;background:rgba(0,0,0,.6);-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);align-items:center;justify-content:center;padding:16px}
+#pop{z-index:90;display:flex}
+.pdlg,.dlg{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:12px;width:min(900px,100%);max-height:90vh;display:flex;flex-direction:column;box-shadow:0 14px 48px rgba(0,0,0,.5);overflow:hidden;animation:dlgin .18s ease-out}
+@keyframes dlgin{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:none}}
+#popbody .card{background:var(--bg)}
+#popbody{padding:14px 18px;overflow:auto;flex:1}
+#modal{z-index:100;display:flex}
+.dhead{display:flex;gap:10px;align-items:center;padding:14px 18px;min-height:56px;box-sizing:border-box;border-bottom:1px solid var(--line)}
+.dhead b{flex:1;font-size:1.05rem}
+.ask{margin:0 18px 12px;padding:12px 14px;border:2px solid var(--warn);border-radius:8px;background:var(--card)}
+.askb{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+#out{margin:0 18px 12px;padding:10px;background:var(--term);color:var(--termfg);overflow:auto;flex:1;min-height:200px;max-height:55vh;font:12px/1.4 Consolas,monospace;white-space:pre-wrap;border-radius:6px}
+.dfoot,.cfoot{border-top:1px solid var(--line)}
+.dfoot{display:flex;gap:10px;align-items:center;padding:12px 18px}
+.dfoot .mut{flex:1}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--mut);display:inline-block}
+.dot.run{background:var(--warn)}.dot.ok{background:var(--ok)}.dot.bad{background:var(--err)}
+label.chk{display:flex;gap:8px;align-items:flex-start;margin:4px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+nav button.off{opacity:.45}
+nav button.lock{opacity:.45}
+#top{position:fixed;right:20px;bottom:20px;z-index:50;width:46px;height:46px;border-radius:50%;border:0;padding:0;display:flex;align-items:center;justify-content:center;background:var(--acc);color:var(--accfg);cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.35);opacity:0;visibility:hidden;transform:translateY(14px) scale(.85);transition:opacity .25s,transform .25s,visibility .25s,box-shadow .2s}
+#top.show{opacity:1;visibility:visible;transform:none}
+#top:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(0,0,0,.4)}
+#top:focus-visible{outline:3px solid var(--fg);outline-offset:2px}
+#top svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.closing{max-width:480px;margin:12vh auto;text-align:center}
+.cbar{height:8px;border-radius:6px;background:var(--line);overflow:hidden;margin:16px 0 8px}
+.cfill{height:100%;width:100%;background:var(--acc);border-radius:6px;animation:cshrink 3s linear forwards}
+@keyframes cshrink{from{width:100%}to{width:0}}
+#cf{z-index:300}
+.cfd{width:min(520px,100%)}
+.cbody{padding:16px 18px;line-height:1.5}
+.cfoot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding:12px 18px}
+#cfopts{flex-direction:column;flex-wrap:nowrap!important;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+#cfopts .b{width:100%;white-space:normal;text-align:left;line-height:1.35;min-height:40px}
+.thb{background:none;border:0;padding:0;margin:0;font:inherit;font-weight:700;color:var(--acc);cursor:pointer;text-align:left;white-space:nowrap}
+.thb:hover{text-decoration:underline;text-underline-offset:3px}
+th:has(>.thb),table.sortable th[data-ns]{background:color-mix(in srgb,var(--acc) 12%,var(--bg))}
+.thb:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.xbtn{width:34px;height:34px;border-radius:50%;border:0;padding:0;background:transparent;color:var(--fg);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s}
+.xbtn:hover{background:var(--line);transform:rotate(90deg)}
+.xbtn:focus-visible{outline:3px solid var(--acc);outline-offset:1px}
+.xbtn svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.spin{width:34px;height:34px;border:4px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:sp .8s linear infinite;margin:70px auto}
+@keyframes sp{to{transform:rotate(360deg)}}
+ul.lnk{margin:6px 0 0;padding-left:20px}ul.lnk li{margin:4px 0}
+svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .s1{fill:var(--warn);stroke:var(--warn);stroke-width:1.4;stroke-linejoin:round}
+.stars{display:inline-flex;gap:2px;vertical-align:middle}.hlh{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.hls{font-size:1.4rem;font-weight:700}.hls.OK{color:var(--ok)}.hls.WARN{color:var(--warn)}.hls.ERROR{color:var(--err)}
+.flows{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:12px}
+.flow{margin:0;display:flex;flex-direction:column}
+.flow .row{margin-top:auto;padding-top:10px}
+.flow h3{margin-top:0}
+</style>
+</head>
+<body>
+<header>
+  <h1>Devvy <small class="mut">0.10.77</small></h1>
+  <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
+  <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
+  <button class="b gear" id="upd" data-pop="update" type="button" title="Updates"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M19 2v4h-4"/><path d="M5 22v-4h4"/></svg><span id="updbadge" class="belln" style="display:none"></span></button>
+  <button class="b gear" id="gear" data-pop="settings" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+  <button class="b gear" id="bug" data-pop="problem" type="button" title="Report a problem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7V6a3 3 0 0 1 6 0v1"/><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v5M3 12h4M17 12h4M4 6l3 2M20 6l-3 2M4 19l3-2M20 19l-3-2"/></svg></button>
+  <button class="b gear" id="help" data-pop="help" type="button" title="Help"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8M12 17h.01"/></svg></button>
+  <button class="b red" id="exit"></button>
+</header>
+<nav id="tabs"></nav>
+<main id="main"><div class="spin" role="status"></div></main>
+<button id="top" type="button" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 15l7-7 7 7"/></svg></button>
+<div id="pop" style="display:none"><div class="pdlg"><div class="dhead"><b id="poptitle"></b><button class="xbtn" id="popclose" type="button" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div id="popbody"></div></div></div>
+<div id="cf" style="display:none"><div class="pdlg cfd" role="dialog" aria-modal="true"><div class="dhead"><b id="cftitle"></b></div><div class="cbody" id="cfbody"></div><div class="cfoot"><button class="b wb" id="cfno" type="button"></button><button class="b" id="cfok" type="button"></button></div><div class="cfoot" id="cfopts" style="display:none;flex-wrap:wrap"></div></div></div>
+<div id="modal" style="display:none"><div class="dlg">
+  <div class="dhead"><span class="dot" id="dot"></span><b id="jtitle"></b><span class="mut" id="jstate"></span></div>
+  <div class="prog"><div class="pbar"><div class="pfill" id="pfill"></div></div><span id="ppct">0%</span><span class="mut" id="pstep"></span></div>
+  <div class="ask" id="ask" style="display:none"><div id="asktxt"></div><div class="askb" id="askb"></div></div>
+  <pre id="out"></pre>
+  <div class="dfoot"><span class="mut" id="jnote"></span><button class="b red" id="cancel"></button><button class="b" id="close" disabled></button></div>
+</div></div>
+
+<script>
+'use strict';
+var DICT = {};
+function t(s){ var r = (DICT[s] !== undefined) ? DICT[s] : s; for (var i = 1; i < arguments.length; i++) r = r.split('{' + (i - 1) + '}').join(String(arguments[i])); return r; }
+
+var TABS = [['start','Start'],['devices','Devices'],['drivers','Drivers'],['bluetooth','Bluetooth'],['updates','Updates'],['manage','Device management'],['run','Run'],['support','Maker support'],['report','Report']];
+var TICON = { start:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/>', devices:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/>', drivers:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>', bluetooth:'<path d="M7 7l10 10-5 4V3l5 4L7 17"/>', updates:'<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8"/><path d="M21 3v5h-5M3 21v-5h5"/>', manage:'<path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12M20 18h0"/><circle cx="16" cy="6" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="18" cy="18" r="2"/>', run:'<path d="M7 4l13 8-13 8z"/>', support:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3.5"/><path d="M5.6 5.6l3.9 3.9M14.5 14.5l3.9 3.9M18.4 5.6l-3.9 3.9M9.5 14.5l-3.9 3.9"/>', report:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/>' };
+var NEXT = { devices:'drivers', drivers:'bluetooth', bluetooth:'updates' };
+var FLOWS = { clean:{ devices:'drivers', drivers:'bluetooth', bluetooth:'run' }, update:{ updates:'run' } };
+function nextOf(tab){ return (S.flow&&FLOWS[S.flow]&&FLOWS[S.flow][tab])||NEXT[tab]; }
+var HIGH = ['Display','System','Firmware','SCSIAdapter','HDC','Processor','USB','Net'];
+var KINDS = { selfupdate:'Updating Devvy', postcheck:'Check after the restart', selftest:'System check', inventory:'PC inventory', search:'Searching for updates', report:'Creating the report', anonymize:'Anonymous copies of the reports', defender:'Defender exceptions', fix:'Fixing a problem', problem:'Preparing the problem report', kbupdate:'Knowledge base update', rollback:'Going back to the previous driver', preview:'Preview', apply:'Changing the PC' };
+var S = { tab:'start', state:null, data:{}, mod:{devices:{},drivers:{},bluetooth:{}}, touched:{devices:{},drivers:{},bluetooth:{}}, casc:0, lastApply:null, prevRemove:{}, filter:{devices:{q:'',only:true},drivers:{q:'',only:true,inuse:false},bluetooth:{q:'',only:false}},
+          cat:{}, job:null, polling:null, open:false, rebNo:false, last:null, prop:null, autoDone:false, run:{parts:{},apply:false,backup:'',confirm:false} };
+
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function $(s){ return document.querySelector(s); }
+function api(path, body){
+  var o = { headers:{'X-Devvy':'1','Content-Type':'application/json'}, credentials:'same-origin' };
+  if (body !== undefined){ o.method='POST'; o.body=JSON.stringify(body); }
+  return fetch(path,o).then(function(r){ return r.json().then(function(j){ if(!r.ok){ throw new Error(j.error||('Error '+r.status)); } return j; }); });
+}
+// messages are popups like all the others (queued: one at a time)
+// true while Devvy is working or about to work: no guidance popup (next step, done, ...) may appear then
+function busy(){ return !!(S.launching||(S.job&&S.job.status==='running')||(S.queue&&S.queue.length)); }
+function notice(msg, bad){ S.nq=S.nq||[]; S.nq.push({m:msg,b:bad}); drainNotices(); }
+function drainNotices(){ if(S.nqBusy) return; var n=(S.nq||[]).shift(); if(!n) return; if(S.cf||(!n.b&&busy())||(n.a&&S.job&&S.job.status==='running')){ S.nq.unshift(n); setTimeout(drainNotices,1500); return; }
+  S.nqBusy=true; ask(n.a||{title:n.b?t('Attention'):t('Done.'),text:n.m,ok:t('OK'),single:true}).then(function(v){ S.nqBusy=false; if(n.cb) n.cb(v); drainNotices(); }); }
+function loadState(){ return api('/api/state').then(function(s){ S.state=s; $('#pcinfo').textContent=''; var bd=$('#defbadge'); bd.textContent=t('Defender exceptions active'); bd.style.display='none'; }); }
+function ask(o){ return new Promise(function(res){
+  if(S.cf){ S.cf(false); }
+  if(!(S.job&&S.job.status==='running')){ S.open=false; var mo=$('#modal'); if(mo) mo.style.display='none'; }
+  $('#cftitle').textContent=o.title; $('#cfbody').textContent=o.text; var ok=$('#cfok'), no=$('#cfno');
+  ok.textContent=o.ok||t('OK'); ok.className='b '+(o.cls||''); no.textContent=o.cancel||t('Cancel'); no.style.display=o.single?'none':'';
+  var c=$('#cf'), ft=document.querySelector('#cf .cfoot'), op=$('#cfopts'); c.style.display='flex';
+  if(o.opts){ S.cfOpts=true; ft.style.display='none'; op.style.display='flex'; op.innerHTML=o.opts.map(function(x){ return '<button class="b '+(x.cls||'')+'" type="button" data-cfk="'+esc(x.k)+'">'+esc(x.label)+'</button>'; }).join(''); var fb=op.querySelector('button'); if(fb) fb.focus(); }
+  else { S.cfOpts=false; ft.style.display=''; op.style.display='none'; ok.focus(); }
+  S.cf=function(v){ c.style.display='none'; S.cf=null; if(S.cfOpts){ S.cfOpts=false; ft.style.display=''; op.style.display='none'; } res(v); };
+}); }
+function showRebooting(){
+  $('#cftitle').textContent=t('Restarting'); $('#cfbody').textContent=t('Windows is restarting.')+' '+t('You can close this window.');
+  var ft=document.querySelector('#cf .cfoot'); if(ft) ft.style.display='none'; $('#cf').style.display='flex';
+}
+function hideRebooting(){ var ft=document.querySelector('#cf .cfoot'); if(ft) ft.style.display=''; $('#cf').style.display='none'; }
+function askReboot(){
+  ask({title:t('Windows needs to restart'),text:t('Windows needs to restart to finish the changes.')+' '+t('Save your work and close all programs before continuing: the restart is immediate.')+(S.state.settings.postRebootCheck?' '+t('Devvy will start again by itself when you sign in, to check that everything works (you can turn this off in Settings).'):''),ok:t('Restart Windows now'),cls:'red',cancel:t('Later')}).then(function(y){
+    if(!y){ S.rebNo=true; return; }
+    showRebooting(); api('/api/reboot',{cont:(S.lastApply&&S.lastApply.parts&&S.lastApply.parts.length)?{parts:S.lastApply.parts,blockReinstall:!!S.lastApply.blockReinstall,touched:S.touched}:null}).catch(function(x){ hideRebooting(); notice(x.message,true); });
+  });
+}
+function showClosing(){
+  closePop(); S.open=false; if(S.polling){ clearInterval(S.polling); S.polling=null; }
+  $('#dot').className='dot run'; $('#jtitle').textContent=t('Closing Devvy'); $('#jstate').textContent='';
+  $('#ask').style.display='none'; $('#out').textContent='';
+  $('#cancel').disabled=true; $('#close').disabled=true; $('#jnote').textContent=t('You cannot use the page while the job is running.');
+  $('#pfill').style.width='0%'; $('#ppct').textContent='0%'; $('#pstep').textContent='';
+  $('#modal').style.display='flex'; S.clDone=false; S.clt=setInterval(pollClosing,400); pollClosing();
+}
+function pollClosing(){
+  api('/api/closing').then(function(r){ drawClosing(r); if(r.done) finishClosing(); }).catch(function(){ finishClosing(); });
+}
+function drawClosing(r){
+  if(S.clDone) return; var txt=String(r.text||'').replace(/\x1b\[[0-9;]*[A-Za-z]/g,'').replace(/##(PROG \d+\/\d+|REBOOT|UPDATED|DEFENDER[^#]*)##\r?\n?/g,''), o=$('#out');
+  if(o.textContent!==txt){ o.textContent=txt; o.scrollTop=o.scrollHeight; }
+  var pc=Math.max(0,Math.min(100,r.pct||0)); $('#pfill').style.width=pc+'%'; $('#ppct').textContent=pc+'%';
+  $('#jstate').textContent=t('running, step {0} of {1}',r.step||1,5); $('#pstep').textContent=t('step {0} of {1}',r.step||1,5);
+}
+function finishClosing(){
+  if(S.clDone) return; S.clDone=true; clearInterval(S.clt);
+  var o=$('#out'); if(!o.textContent) o.textContent=t('Done.');
+  $('#pfill').style.width='100%'; $('#ppct').textContent='100%'; $('#dot').className='dot ok'; $('#jstate').textContent=t('finished'); $('#pstep').textContent='';
+  $('#jnote').textContent=t('You can close this tab and the PowerShell window.');
+  setTimeout(function(){ try{ window.open('','_self'); window.close(); }catch(x){} },1500);
+}
+function load(type){ return api('/api/data/'+type).then(function(d){ S.data[type]=d.rows; return d.rows; }); }
+function loadI18n(){ return api('/api/i18n').then(function(d){ DICT=d.strings||{}; document.documentElement.lang=d.lang; $('#exit').textContent=t('Exit'); $('#popclose').title=t('Close'); if($('#bug')) $('#bug').title=t('Report a problem'); if($('#help')) $('#help').title=t('Help'); $('#popclose').setAttribute('aria-label',t('Close')); $('#top').title=t('Back to top'); $('#top').setAttribute('aria-label',t('Back to top')); $('#cancel').textContent=t('Cancel'); $('#close').textContent=t('Close'); }); }
+function tabName(k){ var n=''; TABS.forEach(function(x){ if(x[0]===k) n=x[1]; }); return t(n); }
+var LOCKED=['devices','drivers','bluetooth','updates','run'];
+function hasInv(){ var r=S.state&&S.state.report; return !!(r&&r.devices&&r.drivers&&r.bluetooth); }
+function isLocked(k){ return LOCKED.indexOf(k)>=0 && !hasInv(); }
+function drawTabs(){ var h=''; TABS.forEach(function(x,i){ var num=(x[0]==='report'||x[0]==='support'||x[0]==='start'); h+='<button data-tab="'+x[0]+'" class="'+(S.tab===x[0]?'on':'')+(isLocked(x[0])?' lock':'')+'"><svg class="ti" viewBox="0 0 24 24" aria-hidden="true">'+(TICON[x[0]]||'')+'</svg>'+esc(num?t(x[1]):(i+'. '+t(x[1])))+'</button>'; }); $('#tabs').innerHTML=h; }
+// Devvy goes by steps: when a step has nothing to review, a popup offers the next one (once for the same result)
+function autoAdvance(tab){
+  if(S.cf||S.pop||!S.state||busy()) return;
+  var nx=nextOf(tab)||(tab==='updates'?'run':null); if(!nx) return;
+  var empty=false, sig='';
+  if(tab==='devices'||tab==='drivers'||tab==='bluetooth'){
+    var T=TAB[tab], rows=S.data[tab]; if(!rows||!S.state.report||!S.state.report[tab]) return;
+    var fl=rows.filter(function(r){ if(tab==='drivers'&&inUse(r)) return false; return isDel(S.mod[tab][r[T.key]]||r.Action); });
+    empty=(fl.length===0); sig=tab+':'+rows.length+':'+(S.state.times&&S.state.times[tab]||'');
+  } else if(tab==='updates'){
+    if(!(S.state.report&&S.state.report.catalog)) return;
+    var cand=(S.data.catalog||[]).filter(function(c){ return c.UpdateId&&c.NewerThanCurrent!=='NO'&&!isExcl(c.Device); });
+    empty=(cand.length===0); sig='updates:'+(S.data.catalog||[]).length+':'+JSON.stringify(S.cat||{}).length;
+  } else return;
+  if(!empty) return;
+  S.advShown=S.advShown||{}; if(S.advShown[sig]) return; S.advShown[sig]=1;
+  var msg=(tab==='updates')?t('The Microsoft catalog has nothing newer for your drivers: there is nothing to choose here.'):t('The check found nothing to review in this step.');
+  ask({title:t('Nothing to do here'),text:msg,ok:t('Next step: {0}', tabName(nx)),cancel:t('Stay here')}).then(function(y){ if(y) go(nx); });
+}
+// after the zip is ready: offer to send it (opens the GitHub issue page and shows the zip in its folder; the person attaches it)
+function L(en,it){ return (document.documentElement.lang==='it')?it:en; }
+function issueBody(zip,kind){ var pc=S.pc||{}, ver=(document.querySelector('h1 small')||{}).textContent||'';
+  var head='**Devvy**: '+ver+'\n**Windows**: '+(pc.os||'')+'\n**'+L('Manufacturer','Produttore')+'**: '+(pc.maker||'')+'\n**'+L('Model','Modello')+'**: '+(pc.model||'')+'\n\n';
+  if(kind==='kb') return head+L('**Contribution to the knowledge base**\n\nThe attached zip has the lists of devices and drivers of my PC (MAC addresses, USB serial numbers, PC name and user name hidden). It can help Devvy recognize more components and find more drivers.\n\n**Anything to add? (optional)**\n\n\n_Attach the zip: ','**Contributo alla base di conoscenza**\n\nLo zip allegato contiene gli elenchi di dispositivi e driver del mio PC (indirizzi MAC, numeri di serie USB, nome del PC e dell\'utente nascosti). Può aiutare Devvy a riconoscere più componenti e a trovare più driver.\n\n**Vuoi aggiungere qualcosa? (facoltativo)**\n\n\n_Allega lo zip: ')+(zip||'')+'_';
+  return head+L('**What happened?**\n\n\n**What did you expect?**\n\n\n_Attach the zip: ','**Cosa è successo?**\n\n\n**Cosa ti aspettavi?**\n\n\n_Allega lo zip: ')+(zip||'')+'_'; }
+function openIssue(zip,kind){ var P=S.prob||{}, body=issueBody(zip,kind), ttl=(kind==='kb')?L('Knowledge base: ','Base di conoscenza: '):L('Problem: ','Problema: ');
+  if(P.ready){ window.open(P.issuesUrl+'?title='+encodeURIComponent(ttl)+'&body='+encodeURIComponent(body),'_blank','noopener'); return true; }
+  try{ navigator.clipboard.writeText(body).catch(function(){}); }catch(e){} return false; }
+function kbBack(){ var f=S.kbFrom||'report'; if(f==='problem') openPop('problem'); else if(f==='update') openPop('update'); else go('report'); }
+function sendOffer(kind){
+  S.open=false; $('#modal').style.display='none';
+  api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){}).then(function(){
+    var P=S.prob||{}, zip=(kind==='problem')?P.zip:P.szip; if(!zip) return;
+    var kb=(kind!=='problem');
+    ask({title:t(kb?'Send to the knowledge base?':'Send the problem report?'),text:t(kb?'The zip is ready: {0}. It can help Devvy recognize more components and find more drivers. Do you want to contribute it now? Devvy opens the GitHub page of the project and shows the zip in its folder: attach it to the new message. Nothing is sent without you.':'The zip is ready: {0}. Do you want to send it now? Devvy opens the GitHub issue page of the project and shows the zip in its folder: attach it to the issue. Nothing is sent without you.',zip),ok:t('Send'),cancel:t('Not now')}).then(function(y){
+      if(!y){ if(kind==='problem') openPop('problem'); else kbBack(); return; }
+      doSend(kind,zip);
+    });
+  });
+}
+function doSend(kind,zip){
+  var done=false, msg='', kb=(kind!=='problem');
+  api('/api/openfolder',{file:zip}).then(function(){ if(!openIssue(zip,kb?'kb':'bug')) throw new Error(t('The GitHub page of the project is not set yet: the issue text was copied, paste it in a new issue.')); done=true; }).catch(function(x){ msg=x.message||String(x); }).then(function(){
+    if(done){ ask({title:t('Thank you!'),text:t(kb?'Thanks for contributing to the knowledge base of Devvy. The GitHub page is open and the zip is shown in its folder: attach the zip to the message and send it.':'Thanks for helping to improve Devvy. The issue page is open and the zip is shown in its folder: attach the zip to the issue and send it.'),ok:t('OK'),single:true}); }
+    else { ask({title:t('Sending failed'),text:msg,ok:t('Try again'),cancel:t('Close')}).then(function(y){ if(y) doSend(kind,zip); }); }
+  });
+}
+function kbShareInner(from){
+  return '<p class="mut">'+esc(t('Help Devvy recognize more components and find more drivers. Devvy prepares copies of the reports (devices and drivers) without MAC addresses, USB serial numbers, PC name and user name; you check them and decide whether to send them. Check them by hand anyway before sharing.'))+'</p><div class="row"><button class="b sec" data-kbsend="'+from+'">'+esc(t('Send to the knowledge base'))+'</button></div>';
+}
+function kbShareCard(from){ return '<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3>'+kbShareInner(from)+'</div>'; }
+function go(tab){
+  if(tab==='settings'){ openPop('settings'); return; }
+  S.tab=tab; drawTabs(); if(tab!=='start') refreshBell(); var gr=$('#gear'); if(gr) gr.classList.toggle('on',tab==='settings'); if($('#exit')) $('#gear').title=t('Settings');
+  if(isLocked(tab)){ loadState().then(function(){ drawTabs(); if(!isLocked(tab)){ go(tab); return; } $('#main').innerHTML='<h2>'+esc(tabName(tab))+'</h2><div class="card warn"><h3>'+esc(t('Create the PC inventory first'))+'</h3><p>'+esc(t('This page needs the inventory of devices, drivers and Bluetooth. Create it from the Start tab (it changes nothing and takes about a minute).'))+'</p><div class="row"><button class="b" data-run="inventory">'+esc(t('Create the full inventory'))+'</button></div></div>'; }); return; }
+  var f = { start:vStart, devices:function(){return vTable('devices');}, drivers:function(){return vTable('drivers');}, bluetooth:function(){return vTable('bluetooth');}, updates:vUpdates, run:vRun, report:vReport, support:vSupport, manage:vManage, settings:vSettings }[tab];
+  $('#main').innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>';
+  Promise.resolve().then(function(){ return f(); }).then(function(){ var P=S.prop; S.prop=null; if(P&&P.search){ var cd=(S.data.catalog||[]).filter(function(c){ return c.UpdateId&&c.NewerThanCurrent!=='NO'&&!isExcl(c.Device); }); if(!cd.length){ P.text=t('Search finished: the Microsoft catalog has nothing to install.'); P.next='run'; } } if(!(P&&P.from===tab)) autoAdvance(tab); if(P&&P.from===tab&&!S.cf&&!busy()){ ask({title:t('Done.'),text:P.text,ok:P.next?t('Next step: {0}', tabName(P.next)):t('OK'),cancel:t('Not now'),single:!P.next}).then(function(y){ if(y&&P.next) go(P.next); }); } }).catch(function(e){ $('#main').innerHTML='<div class="card err">'+esc(e.message)+'</div>'; });
+}
+
+/* ---------- start: first run, self-check list ---------- */
+function settingsForm(first){
+  var st=S.state.settings, h='';
+  h+='<div class="card"><h3>'+esc(t('Language'))+'</h3><div class="row"><select id="s_lang">';
+  st.languages.forEach(function(l){ h+='<option value="'+esc(l.code)+'"'+(l.code===st.language?' selected':'')+'>'+esc(l.name)+'</option>'; });
+  h+='</select>'+(first?'<span class="mut">'+esc(t('Detected from Windows: {0}. Change it if you prefer another one.', st.detected))+'</span>':'')+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Windows Defender exceptions'))+'</h3><p class="mut">'+esc(t('If Defender blocks the tool, temporary exceptions (program folder, cmd, powershell, pnputil) fix it. They are removed when you exit.'))+'</p>';
+  [['ask','Ask me when needed'],['always','Always add them at start (saved, applied every time)'],['never','Never add them']].forEach(function(o){ h+='<label class="chk"><input type="radio" name="s_def" value="'+o[0]+'"'+(st.defender===o[0]?' checked':'')+'><span>'+esc(t(o[1]))+'</span></label>'; });
+  h+=warnLine('',t('if you do not add the exceptions, Defender may block the program and it may not work correctly.'),' id="defwarn" style="margin:8px 0 0;'+(st.defender==='never'?'':'display:none')+'"');
+  h+='</div><div class="card"><h3>'+esc(t('Removed drivers'))+'</h3><label class="chk"><input type="checkbox" id="s_block"'+(st.blockReinstall?' checked':'')+'><span><b>'+esc(t('Stop Windows from installing again the removed drivers'))+'</b><br><span class="mut">'+esc(t('Use it for drivers that come back after a restart (for example from a phone or printer you no longer use). The device with that hardware ID will not be installed again, by any driver, until you unblock it in Settings. It is not applied to screen, network, disk, USB, Bluetooth or system drivers.'))+'</span></span></label></div>';
+  h+='<div class="card"><h3>'+esc(t('Default backup before changes'))+'</h3>';
+  [['ask','Ask me every time'],['full','Full: restore point + driver copy'],['drivers','Drivers only (fast)'],['none','No backup (at my own risk)']].forEach(function(o){ h+='<label class="chk"><input type="radio" name="s_bk" value="'+o[0]+'"'+(st.backup===o[0]?' checked':'')+'><span>'+esc(t(o[1]))+'</span></label>'; });
+  h+='</div>';
+  h+='<div class="card"><h3>'+esc(t('Data folder'))+'</h3><p class="mut">'+esc(t('Where reports, logs and backups are saved. Leave empty to use the data folder next to the program. Now: {0}', st.dataDirNow))+'</p><input type="text" id="s_dir" style="width:100%" value="'+esc(st.dataDir)+'"></div>';
+  h+='<div class="card"><h3>'+esc(t('Other'))+'</h3>'+
+     '<label class="chk"><input type="checkbox" id="s_upd"'+(st.updateCheck!==false?' checked':'')+'><span>'+esc(t('Check at start if a new version of Devvy is available (it contacts GitHub: nothing about your PC is sent)'))+'</span></label>'+
+     '<label class="chk"><input type="checkbox" id="s_post"'+(st.postRebootCheck?' checked':'')+'><span>'+esc(t('After a restart started from Devvy, start it again by itself at sign-in to check that everything works (network, screen, devices)'))+'</span></label>'+
+     '<label class="chk"><input type="checkbox" id="s_inv"'+(st.inventoryAtStart?' checked':'')+'><span>'+esc(t('Create the PC inventory automatically at every start (the start is slower, but devices, drivers and Bluetooth are always up to date)'))+'</span></label>'+
+     '<label class="chk"><input type="checkbox" id="s_cons"'+(st.catalogConsent?' checked':'')+'><span>'+esc(t('I agree: the Microsoft catalog (catalog.update.microsoft.com) receives ONLY the VEN_xxxx&DEV_xxxx[&SUBSYS_xxxxxxxx] or VID_xxxx&PID_xxxx code of the devices, never names, serial numbers or PC data.'))+'</span></label></div>';
+  return h;
+}
+function readSettingsForm(){
+  var v=function(n){ var e=document.querySelector('input[name="'+n+'"]:checked'); return e?e.value:undefined; };
+  return { language:$('#s_lang').value, defender:v('s_def'), backup:v('s_bk'), dataDir:$('#s_dir').value, blockReinstall:$('#s_block').checked, inventoryAtStart:$('#s_inv').checked, postRebootCheck:$('#s_post').checked, updateCheck:$('#s_upd').checked, catalogConsent:$('#s_cons').checked };
+}
+function saveSettings(first){
+  var b=readSettingsForm(); if(first) b.firstRunDone=true;
+  var oldLang=S.state.settings.language;
+  return api('/api/settings',b).then(function(r){
+    var p=(b.language!==oldLang)?loadI18n():Promise.resolve();
+    return p.then(function(){ return loadState(); }).then(function(){ return r; });
+  });
+}
+function startFlow(f,dest){
+  S.flow=f;
+  function run(){
+    if(dest==='run-search'){
+      var go2=function(){ S.afterSearch=true; launch({action:'search'}); };
+      if(S.state.settings.catalogConsent){ go2(); return; }
+      ask({title:t('Microsoft catalog search'),text:t('To search for drivers the Microsoft catalog (catalog.update.microsoft.com) receives ONLY the hardware code (VEN_xxxx&DEV_xxxx[&SUBSYS_xxxxxxxx] or VID_xxxx&PID_xxxx) of the devices, never names, serial numbers or PC data. Do you agree?'),ok:t('I agree')}).then(function(y){
+        if(y){ api('/api/settings',{catalogConsent:true}).then(function(){ return loadState(); }).then(go2).catch(function(x){ notice(x.message,true); }); } else { S.flow=null; }
+      });
+      return;
+    }
+    if(dest==='report-only'){ launch({action:'report'}); return; }
+    go(dest);
+  }
+  if(hasInv()){ run(); return; }
+  S.afterInv=run; launch({action:'inventory'});
+}
+function flowCards(){
+  var inv=hasInv();
+  function card(f,title,text,go){ return '<div class="card flow"><h3>'+esc(t(title))+'</h3><p class="mut">'+esc(t(text))+'</p><div class="row"><button class="b" data-flow="'+f+'" data-go="'+go+'">'+esc(t('Begin'))+'</button></div></div>'; }
+  var h='<div class="flows">';
+  h+='<div class="card flow"><h3>'+esc(t('Check the system'))+'</h3><p class="mut">'+esc(t('Checks that the PC has everything the program needs. It changes nothing.'))+'</p><div class="row"><button class="b" data-run="selftest">'+esc(t('Begin'))+'</button></div></div>';
+  h+=card('check','Create inventory and report','Creates the inventory of devices, drivers and Bluetooth, and the report. It changes nothing.','report-only');
+  h+=card('update','Update drivers','Finds newer drivers on the Microsoft catalog for what is generic, old or missing, and installs the ones you choose.','run-search');
+  h+=card('clean','Clean up the PC','Removes devices that are not connected, old Bluetooth pairings and driver versions nobody uses.','devices');
+  return h+'</div>';
+}
+var HEALTH={ problems:['Devices with a problem','Windows reports an error on these devices: see what it means and what to do in the Devices page.','See','Open the Devices page: each device has a plain explanation.'],  ghosts:['Devices not connected','They are ghosts of hardware you once used: they can be removed.','Review','Review the list and remove the ones you do not need.'], btpairs:['Old Bluetooth pairings','Pairings with devices that are no longer around.','Review','Review the list and remove the old pairings.'], olddrivers:['Drivers you can remove','Older versions or drivers no connected device uses.','Review','Review the list and remove what you do not need.'], unknown:['Drivers without advice','Not in the knowledge base: use Identify in the Drivers page.','Identify','Use Identify in the Drivers page to find out what they are.'], tocheck:['Devices with a generic, old or missing driver','The Microsoft catalog may have a better one.','Search','Search the Microsoft catalog for a better driver.'], updates:['Newer drivers found','Found on the Microsoft catalog: choose which to install.','Choose','Choose which to install.'] };
+function invStale(){ var s=S.state; try{ return !!(s.boot&&s.times&&s.times.devices&&new Date(s.times.devices)<new Date(s.boot)); }catch(x){ return false; } }
+function fmtTime(iso){ try{ var d=new Date(iso); if(isNaN(d)) return ''; return d.toLocaleString(document.documentElement.lang||undefined,{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(x){ return ''; } }
+var PNUM={NOT_CONFIGURED:1,DEVLOADER_FAILED:2,OUT_OF_MEMORY:3,ENTRY_IS_WRONG_TYPE:4,LACKED_ARBITRATOR:5,BOOT_CONFIG_CONFLICT:6,FAILED_FILTER:7,DEVLOADER_NOT_FOUND:8,INVALID_DATA:9,FAILED_START:10,LIAR:11,NORMAL_CONFLICT:12,NOT_VERIFIED:13,NEED_RESTART:14,REENUMERATION:15,PARTIAL_LOG_CONF:16,UNKNOWN_RESOURCE:17,REINSTALL:18,REGISTRY:19,VXDLDR:20,WILL_BE_REMOVED:21,DISABLED:22,DEVLOADER_NOT_READY:23,DEVICE_NOT_THERE:24,MOVED:25,TOO_EARLY:26,NO_VALID_LOG_CONF:27,FAILED_INSTALL:28,HARDWARE_DISABLED:29,CANT_SHARE_IRQ:30,FAILED_ADD:31,DISABLED_SERVICE:32,TRANSLATION_FAILED:33,NO_SOFTCONFIG:34,BIOS_TABLE:35,IRQ_TRANSLATION_FAILED:36,FAILED_DRIVER_ENTRY:37,DRIVER_FAILED_PRIOR_UNLOAD:38,DRIVER_FAILED_LOAD:39,DRIVER_SERVICE_KEY_INVALID:40,LEGACY_SERVICE_NO_DEVICES:41,DUPLICATE_DEVICE:42,FAILED_POST_START:43,HALTED:44,PHANTOM:45,SYSTEM_SHUTDOWN:46,HELD_FOR_EJECT:47,DRIVER_BLOCKED:48,REGISTRY_TOO_LARGE:49,SETPROPERTIES_FAILED:50,WAITING_ON_DEPENDENCY:51,UNSIGNED_DRIVER:52,USED_BY_DEBUGGER:53,DEVICE_RESET:54,CONSOLE_LOCKED:55,NEED_CLASS_CONFIG:56,GUEST_ASSIGNMENT_FAILED:57};
+var PGROUP={driver:[1,2,7,8,9,10,18,19,28,31,32,37,38,39,40,41,43,48,52],restart:[13,14,15,21,46,47],off:[22,29]};
+function probNum(c){ c=String(c||'').trim(); if(!c||c==='0'||c==='CM_PROB_NONE') return 0; var m=c.replace(/^CM_PROB_/,''); if(/^\d+$/.test(m)) return parseInt(m,10); return PNUM[m]||-1; }
+function probInfo(c){
+  var n=probNum(c); if(!n) return null; var g='res';
+  Object.keys(PGROUP).forEach(function(k){ if(PGROUP[k].indexOf(n)>=0) g=k; });
+  var I={driver:['The driver is missing or does not work.','Search for a driver in the Microsoft catalog (Update drivers).'],restart:['Windows needs a restart to finish setting it up.','Restart Windows and check again.'],off:['The device is turned off.','Turn it on: in Device Manager, right-click the device and choose Enable device.'],res:['Windows cannot give the device what it needs to work.','Restart Windows. If it stays, unplug and reconnect the device, or update Windows and the BIOS.']};
+  return {n:n,g:g,what:t(I[g][0]),todo:t(I[g][1])};
+}
+function problemsCard(rows){
+  var L=rows.filter(function(r){ return r.Present==='YES' && probInfo(r.Problem); });
+  if(!L.length) return '';
+  var h='<div class="card warn"><h3>'+esc(t('Devices with a problem'))+' ('+L.length+')</h3><p class="mut">'+esc(t('Windows reports an error on these devices. Here is what it means and what to do. Nothing is changed from here.'))+'</p><div class="wrap"><table><tr><th>'+esc(t('Device'))+'</th><th>'+esc(t('What it means'))+'</th><th>'+esc(t('What to do'))+'</th></tr>';
+  var needSearch=false;
+  L.forEach(function(r){ var i=probInfo(r.Problem); if(i.g==='driver') needSearch=true; h+='<tr><td><b>'+esc(r.FriendlyName||r.InstanceId)+'</b><br><span class="mut">'+esc(r.Class||'')+' - '+esc(t('error code {0}',i.n))+'</span></td><td>'+esc(i.what)+'</td><td>'+esc(i.todo)+'</td></tr>'; });
+  h+='</table></div>'+(needSearch?'<div class="row">'+btn('Search for drivers','data-flow="update" data-go="run-search"')+'</div>':'')+'</div>';
+  return h;
+}
+// PC health score: 100 minus capped penalties, shown as 0-5 stars (half steps). Every penalty is listed so the score is never a black box.
+function healthScore(rows,by,searched){
+  var P=[]; function pen(label,n,each,cap,tab){ if(n>0){ var v=Math.min(cap,Math.ceil(n*each)); if(v>0) P.push({label:label,n:n,pen:v,tab:tab}); } }
+  var bad=rows.filter(function(x){return x.Status==='ERROR';}).length, warn=rows.filter(function(x){return x.Status==='WARN'&&x.Check!==t('Tamper protection');}).length;
+  pen(t('System check: errors'),bad,15,30,'start'); pen(t('System check: warnings'),warn,3,9,'start');
+  function c(id){ return by[id]?by[id].count:0; }
+  pen(t(HEALTH.problems[0]),c('problems'),8,24,'devices'); pen(t(HEALTH.ghosts[0]),c('ghosts'),0.2,10,'devices'); pen(t(HEALTH.btpairs[0]),c('btpairs'),0.2,5,'bluetooth');
+  pen(t(HEALTH.olddrivers[0]),c('olddrivers'),1/3,10,'drivers');
+  if(!(searched&&!(by.updates&&by.updates.count>0))) pen(t(HEALTH.tocheck[0]),c('tocheck'),2,8,'updates');
+  pen(t('Newer drivers found'),c('updates'),3,15,'updates');
+  var total=P.reduce(function(a,x){return a+x.pen;},0), score=Math.max(0,100-total), stars=Math.round(score/10)/2;
+  var label=score>=90?t('Excellent'):score>=75?t('Good'):score>=55?t('Fair'):t('Needs attention');
+  P.sort(function(a,b){return b.pen-a.pen;});
+  return {score:score,stars:stars,label:label,parts:P,searched:searched};
+}
+var STAR='M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z';
+function starsSvg(v){
+  var s='<span class="stars" role="img" aria-label="'+esc(t('{0} out of 5 stars',String(v)))+'">';
+  for(var i=0;i<5;i++){ var f=Math.max(0,Math.min(1,v-i)), id='sg'+i;
+    s+='<svg viewBox="0 0 24 24" width="26" height="26"><defs><clipPath id="'+id+'"><rect x="0" y="0" width="'+(24*f)+'" height="24"/></clipPath></defs><path d="'+STAR+'" class="s0"/><path d="'+STAR+'" class="s1" clip-path="url(#'+id+')"/></svg>'; }
+  return s+'</span>';
+}
+function healthCard(hl){
+  var cls=hl.score>=75?'OK':hl.score>=55?'WARN':'ERROR';
+  var h='<div class="card hl"><h3>'+esc(t('PC health'))+'</h3><div class="hlh">'+starsSvg(hl.stars)+'<span class="hls '+cls+'">'+hl.score+'/100</span><b>'+esc(hl.label)+'</b></div>';
+  if(hl.parts.length){ h+='<p class="mut">'+esc(t('What lowers the score, from the most important:'))+'</p><table>'; hl.parts.forEach(function(x){ h+='<tr><td><b>-'+x.pen+'</b></td><td>'+esc(x.label)+(x.n>1?' ('+x.n+')':'')+'</td><td><button class="b small sec" data-go="'+esc(x.tab)+'">'+esc(t('See'))+'</button></td></tr>'; }); h+='</table>'; }
+  else h+='<p class="mut">'+esc(t('Nothing lowers the score: no problems found.'))+'</p>';
+  if(!hl.searched) h+='<p class="mut">'+esc(t('Driver updates were not searched yet: the score does not include them.'))+'</p>';
+  return h+'<p class="mut">'+esc(t('The score is only a guide: it counts what Devvy found (errors, devices not connected, old drivers, newer drivers). A PC with a lower score can work perfectly.'))+'</p></div>';
+}
+function glanceData(){
+  return Promise.all([load('selftest'), hasInv()?api('/api/health'):Promise.resolve({items:[]}), api('/api/defender').catch(function(){return null;}), api('/api/pins').catch(function(){return {list:[]};})]).then(function(res){
+      var rows=res[0], by={}; (res[1].items||[]).forEach(function(x){ by[x.id]=x; });
+      var R=S.state.report, G=[], searched=!!by.updates;
+      var SEC=1; function add(st,name,detail,todo,btns,extra){ G.push({st:st,name:name,detail:detail||'',todo:todo||'',btns:btns||'',extra:extra||'',sec:SEC}); }
+      function btn(label,attrs,cls){ return '<button class="b small '+(cls||'')+'" '+attrs+'>'+esc(t(label))+'</button>'; }
+      SEC=1; // 1. system check
+      if(S.upd&&S.upd.needed){ add('WARN',t('Devvy update available'),t('Installed version:')+' '+S.upd.current+' \u2192 '+t('Available:')+' '+S.upd.latest,t('Open the Updates window to install it.'),btn('Open updates','data-pop="update"')); }
+      var okRows=rows.filter(function(x){return x.Status==='OK';});
+      if(!rows.length){ add('INFO',t('System check'),t('Not run yet.'),t('Run the check to see if the PC meets the requirements.'),btn('Check again','data-run="selftest"')); }
+      rows.filter(function(x){return x.Status!=='OK'&&x.Check!==t('Tamper protection');}).forEach(function(x){ add(x.Status,x.Check,x.Detail,x.WhatToDo,x.FixId?btn('Fix it for me','data-fix="'+esc(x.FixId)+'"'):''); });
+      SEC=3; // 2. inventory
+      var invs=[['devices','Devices inventory'],['drivers','Drivers inventory'],['bluetooth','Bluetooth inventory']], miss=invs.filter(function(o){ return !R[o[0]]; });
+      if(miss.length===invs.length){ add('WARN',t('PC inventory'),t('Not done yet.'),t('Create the inventory to see what can be cleaned or updated.'),btn('Create the full inventory','data-run="inventory"')); }
+      else { var first=true; invs.forEach(function(o){ if(R[o[0]]) add('OK',t(o[1]),t('Done.')+(S.state.times&&S.state.times[o[0]]?' '+fmtTime(S.state.times[o[0]]):'')); else { add('WARN',t(o[1]),t('Not done yet.'),t('Create the inventory to see what can be cleaned or updated.'),first?btn('Create the full inventory','data-run="inventory"'):''); first=false; } }); }
+      SEC=2; // 3. Defender
+      (function(){
+        var dl=res[2], dbt=btn('Status and diagnosis','data-run="def-status"');
+        if(!dl||!dl.available){ add('INFO','Microsoft Defender',t('Defender status not available.'),'',dbt); return; }
+        var allok=dl.items.every(function(x){return x.ok;}), ex='<details><summary>'+esc(t('Show exceptions'))+'</summary><table>', LB=labels();
+        dl.items.forEach(function(x){ ex+='<tr><td><span class="st '+(x.ok?'OK':'WARN')+'">'+esc(x.ok?LB.OK:LB.WARN)+'</span></td><td>'+esc(t(x.kind==='folder'?'folder':'process'))+'</td><td><code>'+esc(x.value)+'</code></td></tr>'; });
+        var tp=!!dl.tamper; if(dl.tamper!==null&&dl.tamper!==undefined){ ex+='<tr><td><span class="st '+(tp?'WARN':'OK')+'">'+esc(tp?LB.WARN:LB.OK)+'</span></td><td colspan="2">'+esc(t('Tamper protection'))+': '+esc(tp?t('on'):t('off'))+(tp?' - '+esc(t('Windows may refuse the temporary exceptions: if something is blocked, run the Defender diagnosis.')):'')+'</td></tr>'; }
+        ex+='</table></details>';
+        if(allok){ add(tp?'WARN':'OK','Microsoft Defender',t('Defender exceptions active'),tp?t('Tamper protection is on: Windows may refuse to change the exceptions. I try anyway and tell you how it went.'):t('They are removed when you exit.'),btn('Remove exceptions','data-run="def-restore"','wb')+' '+dbt,ex); }
+        else { add('WARN','Microsoft Defender',t('Defender exceptions are not active.'),t('Without them Defender may block or slow down the program, and some operations may fail or work only in part. They are temporary and are removed when you exit.'),btn('Add exceptions','data-run="def-prepare"')+' '+dbt,ex); }
+        G[G.length-1].wide=true;
+      })();
+      SEC=4; // 4. findings
+      (res[3].list||[]).forEach(function(m){ add('WARN',t('Driver went back'),t('{0}: Devvy installed {1} but Windows now uses {2}.',m.Device,m.Expected,m.Current),t('Windows Update or the maker app probably put the other driver back. Install it again from Updates; if it happens again, run the check after a restart: it writes who changed it in the log.'),btn('Update drivers','data-go="updates"')+btn('Forget','data-pinforget="'+esc(m.InstanceId)+'"','wb')); });
+      if(hasInv()){
+        ['problems','ghosts','btpairs','olddrivers','unknown','tocheck'].forEach(function(id){
+          var x=by[id]; if(!x) return; var m=HEALTH[id];
+          if(x.count>0){
+            var sub=t(m[1]), b=t(m[2]);
+            if(id==='tocheck' && searched && !(by.updates.count>0)){ add('INFO',t(m[0])+' ('+x.count+')',t('The Microsoft catalog has nothing newer for it: there is nothing to install.'),'',btn('See','data-go="'+esc(x.tab)+'"')); return; }
+            add(id==='unknown'||id==='tocheck'?'INFO':'WARN',t(m[0])+' ('+x.count+')',sub,t(m[3]),btn(m[2],'data-go="'+esc(x.tab)+'"'));
+          } else add('OK',t(m[0]),t('Nothing found.'));
+        });
+        if(searched){
+          if(by.updates.count>0) add('WARN',t('Newer drivers found')+' ('+by.updates.count+')',t('Found on the Microsoft catalog: choose which to install.'),t('Choose the packages and install them from the Run page.'),btn('Choose','data-go="updates"'));
+          else add('OK',t('Driver search'),t('Done: no newer driver found on the Microsoft catalog.'));
+        } else add('INFO',t('Driver updates not checked yet'),t('The inventory does not search the Microsoft catalog: press Update drivers to look for newer drivers.'),t('Search for newer drivers.'),btn('Search','data-flow="update" data-go="run-search"'));
+      }
+      var ord={ERROR:0,WARN:1,INFO:2,OK:3}; G.sort(function(a,b){ return (a.sec-b.sec)||(ord[a.st]-ord[b.st]); });
+      return {G:G, okRows:okRows, health:healthScore(rows,by,searched)};
+  });
+}
+function btn(label,attrs,cls){ return '<button class="b small '+(cls||'')+'" '+attrs+'>'+esc(t(label))+'</button>'; }
+function loadHw(){
+  var p=S.pc?Promise.resolve(S.pc):api('/api/pc').then(function(x){ S.pc=x; return x; });
+  p.then(function(pc){
+    var s=S.state, parts=[[t('Manufacturer'),pc.maker||''],[t('Model'),(pc.model||'')+(pc.laptop&&pc.model?' ('+t('laptop')+')':'')],[t('Windows'),(pc.os||'Windows')+' (build '+s.build+(s.arch?', '+s.arch:'')+')'],['CPU',pc.cpu],['RAM',pc.ram],[t('Disk'),pc.disk],['GPU',pc.gpu]], l='', sum=[];
+    parts.forEach(function(x){ if(x[1]){ l+='<tr><td><b>'+esc(x[0])+'</b></td><td>'+esc(x[1])+'</td></tr>'; } });
+    ['CPU','RAM','GPU'].forEach(function(k){ parts.forEach(function(x){ if(x[0]===k&&x[1]) sum.push(x[1]); }); });
+    var a=$('#hwsum'), b=$('#hwlist'); if(a) a.textContent=sum.join(' | '); if(b) b.innerHTML='<table>'+l+'</table>';
+  }).catch(function(){ var a=$('#hwsum'); if(a) a.textContent=''; });
+}
+function openPop(kind){
+  S.pop=kind; var pop=$('#pop'), body=$('#popbody');
+  var g=$('#gear'); if(g) g.classList.toggle('on',kind==='settings');
+  ['bug','help','upd'].forEach(function(id){ var e=$('#'+id); if(e) e.classList.toggle('on',(id==='bug'&&kind==='problem')||(id==='help'&&kind==='help')||(id==='upd'&&kind==='update')); });
+  if(kind==='help'){ $('#poptitle').textContent=t('What this program does'); body.innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>'; vAbout(body); }
+  else if(kind==='problem'){ $('#poptitle').textContent=t('Report a problem'); body.innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>'; api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){ S.prob=null; }).then(function(){ body.innerHTML=problemCard(); }); }
+  else if(kind==='update'){ $('#poptitle').textContent=t('Updates'); body.innerHTML='<div id="updbox"></div><div id="kbbox"></div>'; loadUpdate(); loadKb(); }
+  else if(kind==='settings'){
+    $('#poptitle').textContent=t('Settings');
+    loadState().then(function(){ body.innerHTML=settingsForm(false)+profRow(); });
+  } else {
+    $('#poptitle').textContent=t('Notifications'); body.innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>';
+    glanceData().then(function(gd){ S.glance=gd; setBell(gd); body.innerHTML=notifHtml(gd); });
+  }
+  pop.style.display='flex';
+}
+function closePop(){ S.pop=null; $('#pop').style.display='none'; ['gear','bug','help','upd'].forEach(function(id){ var g=$('#'+id); if(g) g.classList.remove('on'); }); }
+function notifItems(gd){
+  var L=labels(), a=gd.G.filter(function(x){ return x.st==='ERROR'||x.st==='WARN'; });
+  return a;
+}
+function notifHtml(gd){
+  var L=labels(), a=notifItems(gd), h='';
+  if(!a.length) return h+'<p><span class="st OK">'+esc(t('No notifications: everything is fine.'))+'</span></p>';
+  h+='<div class="wrap"><table>';
+  a.forEach(function(g){ h+='<tr><td><span class="st '+g.st+'">'+esc(L[g.st])+'</span></td><td><b>'+esc(g.name)+'</b>'+(g.detail?'<br><span class="mut">'+esc(g.detail)+'</span>':'')+(g.todo?'<br>'+esc(g.todo):'')+(g.btns?'<div class="row">'+g.btns+'</div>':'')+'</td></tr>'; });
+  return h+'</table></div>';
+}
+function setBell(gd){
+  var a=notifItems(gd), n=a.length, b=$('#belln'), bell=$('#bell'); if(!b) return;
+  b.style.display=n?'flex':'none'; b.textContent=n; bell.classList.toggle('y',!a.some(function(x){return x.st==='ERROR';}));
+  bell.title=n?t('{0} notifications', n):t('No notifications: everything is fine.');
+  var bd=$('#defbadge'); bd.style.display='none';
+}
+function refreshBell(){ return glanceData().then(function(gd){ S.glance=gd; setBell(gd); if(S.pop==='bell'){ $('#popbody').innerHTML=notifHtml(gd); } }).catch(function(){}); }
+function warnLine(title,text,extra){ return '<p'+(extra||'')+'><span class="st WARN">'+esc(labels().WARN)+'</span> '+(title?'<b>'+esc(title)+'</b> ':'')+esc(text)+'</p>'; }
+function labels(){ return {OK:t('OK'),WARN:t('WARNING'),ERROR:t('ERROR'),INFO:t('Info')}; }
+function vStart(){
+  S.flow=null;
+  return loadState().then(function(){
+    if(!S.state.settings.firstRunDone){
+      $('#main').innerHTML='<h2>'+esc(t('Welcome to Devvy'))+'</h2><p class="mut">'+esc(t('Driver helper for Windows 10/11. Before you start, confirm these settings. You can change them later in Settings.'))+'</p>'+settingsForm(true)+
+        warnLine(t('Experimental tool, use at your own risk.'),t('You can remove any device that is not connected: check your choices carefully. Before every change you choose which backup to make.'))+'<button class="b ok" id="firstsave">'+esc(t('Save and check my PC'))+'</button>';
+      return;
+    }
+    return glanceData().then(function(gd){
+      var G=gd.G, okRows=gd.okRows, LAB=labels();
+      var h='<h2>'+esc(t('What do you want to do?'))+'</h2>'+flowCards();
+      if(hasInv()&&gd.health) h+=healthCard(gd.health);
+      h+='<div class="card"><h3>'+esc(t('Your PC at a glance'))+'</h3><p class="mut">'+esc(t('Always start with the preview, which changes nothing. No data leaves the PC, except the driver search on the Microsoft catalog, which only starts when you ask.'))+'</p><div class="wrap"><table><tr><th>'+esc(t('Status'))+'</th><th>'+esc(t('Check'))+'</th></tr>';
+      h+='<tr><td><span class="st OK">'+esc(t('OK'))+'</span></td><td><b>'+esc(t('Hardware'))+'</b>: <span id="hwsum" class="mut">'+esc(t('Loading...'))+'</span><details><summary>'+esc(t('Show hardware'))+'</summary><div id="hwlist"></div></details></td></tr>';
+      var okDone=false; function okRow(){ okDone=true; if(okRows.length){ h+='<tr><td><span class="st OK">'+esc(t('OK'))+'</span></td><td><b>'+esc(t('System check'))+'</b>: '+esc(t('{0} checks passed', okRows.length))+'<details><summary>'+esc(t('Show the checks'))+'</summary><table>'; okRows.forEach(function(x){ h+='<tr><td><span class="st OK">'+esc(t('OK'))+'</span></td><td>'+esc(x.Check)+'</td><td class="mut">'+esc(x.Detail)+'</td></tr>'; }); h+='</table></details></td></tr>'; } }
+      G.forEach(function(g){ if(!okDone&&g.sec>=2) okRow();
+        h+='<tr><td><span class="st '+g.st+'">'+esc(LAB[g.st])+'</span></td><td><b>'+esc(g.name)+'</b>'+(g.detail?': '+esc(g.detail):'')+(g.todo?'<br><span class="mut">'+esc(g.todo)+'</span>':'')+g.extra+(g.btns?'<div class="row">'+g.btns+'</div>':'')+'</td></tr>'; });
+      if(!okDone) okRow();
+      h+='</table></div></div>';
+      $('#main').innerHTML=h; setBell(gd); S.glance=gd; loadHw();
+    });
+  });
+}
+
+/* ---------- tables ---------- */
+function ident(r){
+  var parts='';
+  if(r.InfDescription) parts+='<div>'+esc(r.InfDescription)+'</div>';
+  if(r.InfPath) parts+='<div class="mut">'+esc(t('File:'))+' <code>'+esc(r.InfPath)+'</code></div>';
+  if(r.HardwareIds) parts+='<div class="mut">'+esc(t('Hardware ID:'))+' <code>'+esc(r.HardwareIds.split(' | ').slice(0,3).join(' | '))+'</code></div>';
+  var q=((r.Provider||'')+' '+(r.InfDescription||r.FriendlyName||r.InfName||'')+' '+(r.HardwareIds?r.HardwareIds.split(' | ')[0]:'')).trim();
+  if(q) parts+='<div style="margin-top:6px"><a href="https://www.bing.com/search?q='+encodeURIComponent(q+' driver')+'" target="_blank" rel="noopener noreferrer">'+esc(t('Search the web for this component'))+'</a> <span class="mut">'+esc(t('(opens your browser: the text above is sent to the search engine only if you click)'))+'</span></div>';
+  return parts?('<details><summary>'+esc(t('Identify'))+'</summary>'+parts+'</details>'):'';
+}
+var TAB = {
+  devices:{ title:'Devices', key:'InstanceId', values:['KEEP','REMOVE'], onlyLabel:'Show only ghosts (not connected)', onlyFn:function(r){return r.Present==='NO';},
+    note:'A ghost device is the leftover entry of a device that is no longer connected. Removing it is safe: if you plug it in again Windows installs it again.',
+    cols:[['Device',function(r){return esc(r.FriendlyName||r.Class)+(r.Present==='NO'?(r.GhostKind==='SAFE'?'<span class="tag g">'+esc(t('ghost: safe to remove'))+'</span>':'<span class="tag y">'+esc(t('ghost: physical hardware'))+'</span>'):'')+'<br><code>'+esc(r.InstanceId)+'</code>';}],['Category',function(r){return esc(r.Category);}],['Why',function(r){return esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+ident(r);}]] },
+  drivers:{ title:'Drivers in the driver store', key:'Driver', values:['KEEP','REMOVE','REMOVE+UNINSTALL'], onlyLabel:'Show only third-party drivers', onlyFn:function(r){return r.Origin==='Third-party';},
+    note:'REMOVE takes the package out of the driver store (Windows refuses if it is in use). REMOVE+UNINSTALL also takes it off the devices that use it: use it only for components you do not need (for example uninstalled programs).',
+    cols:[['Driver',function(r){return '<code>'+esc(r.Driver)+'</code><br>'+esc(r.InfName);}],['Manufacturer / class',function(r){return esc(r.Provider)+'<br><span class="mut">'+esc(r.Class)+'</span>';}],['Version',function(r){return esc(r.Version)+'<br><span class="mut">'+esc(r.Date)+'</span>'+(r.Versions==='OldVersion'?'<span class="tag y">'+esc(t('old'))+'</span>':'');}],['Used by',function(r){return esc(t('{0} devices', r.UsedByPresent));}],['What it is / why',function(r){return ((r.What||r.KbId)?'<b>'+esc(r.What||r.Category)+'</b> ':'<span class="tag y">'+esc(t('unknown'))+'</span> ')+(r.Risk?'<span class="tag '+(r.Risk==='High'?'r':'')+'">'+esc(t('risk {0}', t(r.Risk)))+'</span>':'')+'<br>'+esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+((!(r.What||r.KbId))?'<details open><summary>'+esc(t('Identify'))+'</summary>'+ident(r).replace(/^<details><summary>[^<]*<\/summary>/,'').replace(/<\/details>$/,'')+'</details>':ident(r));}]] },
+  bluetooth:{ title:'Bluetooth pairings', key:'MAC', values:['KEEP','REMOVE'], onlyLabel:'', onlyFn:function(){return true;},
+    note:'REMOVE deletes the pairing: you will have to pair the device again. Pairings left only in the registry are deleted too.',
+    cols:[['Device',function(r){return esc(r.Name||t('(no name)'))+'<br><code>'+esc(r.MAC)+'</code>';}],['State',function(r){return (r.Present==='YES'?esc(t('connected')):esc(t('not connected')))+(r.InRegistry==='YES'?' - '+esc(t('in the registry')):'');}],['Why',function(r){return esc(r.Reason);}]] }
+};
+function initSortables(){
+  document.querySelectorAll('table.sortable:not([data-init])').forEach(function(tb){
+    tb.dataset.init='1'; var id=tb.dataset.tid; S.tsort=S.tsort||{}; if(!S.tsort[id]) S.tsort[id]={i:0,d:(tb.dataset.desc?-1:1)};
+    var ths=tb.rows[0].cells;
+    for(var i=0;i<ths.length;i++){ var th=ths[i]; if(th.hasAttribute('data-ns')||!th.textContent.trim()) continue; var lab=th.textContent; th.innerHTML='<button type="button" class="thb" data-ts="'+id+'" data-col="'+i+'" title="'+esc(t('Sort by this column'))+'">'+esc(lab)+'<span class="ar"></span></button>'; }
+    applySort(tb);
+  });
+}
+function applySort(tb){
+  var st=S.tsort[tb.dataset.tid], rows=[].slice.call(tb.rows,1), par=tb.rows[0].parentNode;
+  var kv=function(r){ var c=r.cells[st.i]; return c?c.textContent.replace(/\s+/g,' ').trim():''; };
+  rows.sort(function(a,b){ return st.d*kv(a).localeCompare(kv(b),undefined,{numeric:true,sensitivity:'base'}); });
+  rows.forEach(function(r){ par.appendChild(r); });
+  for(var i=0;i<tb.rows[0].cells.length;i++){ var th=tb.rows[0].cells[i], b=th.querySelector('.thb'); if(!b) continue; var on=(i===st.i); b.classList.toggle('on',on); b.querySelector('.ar').textContent=on?(st.d>0?' \u25B2':' \u25BC'):''; th.setAttribute('aria-sort',on?(st.d>0?'ascending':'descending'):'none'); }
+}
+new MutationObserver(function(){ initSortables(); }).observe(document.documentElement,{childList:true,subtree:true});
+function isDel(a){ return /^REMOVE/.test(a); }
+function inUse(r){ return Number(r.UsedByPresent)>0; }
+function vTable(type){
+  return load(type).then(function(rows){
+    var T=TAB[type], F=S.filter[type]; if(!F.sort||F.sort.i===null) F.sort={i:0,d:1};
+    if(!rows.length){ var done=!!(S.state&&S.state.report&&S.state.report[type]); $('#main').innerHTML='<h2>'+esc(t(T.title))+'</h2>'+'<p class="mut">'+esc(done?t('The inventory is done and found no items in this list.'):t('There is no inventory yet. Go to Start and press Create the full inventory.'))+'</p>'; return; }
+    var vis=rows.filter(function(r){ if(F.only && T.onlyLabel && !T.onlyFn(r)) return false; if(type==='drivers' && !F.inuse && inUse(r)) return false; if(F.q){ if(JSON.stringify(r).toLowerCase().indexOf(F.q.toLowerCase())<0) return false; } return true; });
+    if(F.sort.i!==null){
+      var si=F.sort.i, sd=F.sort.d, memo=new Map();
+      var kv=function(r){ if(memo.has(r)) return memo.get(r); var v=(si<0)?String(S.mod[type][r[T.key]]||r.Action||''):String(T.cols[si][1](r)).replace(/<[^>]*>/g,' ').replace(/&[a-z#0-9]+;/g,' ').replace(/\s+/g,' ').trim(); memo.set(r,v); return v; };
+      vis=vis.slice().sort(function(a,b){ return sd*kv(a).localeCompare(kv(b),undefined,{numeric:true,sensitivity:'base'}); });
+    }
+    var nDel=0; rows.forEach(function(r){ if(!(type==='drivers'&&inUse(r)) && isDel(S.mod[type][r[T.key]]||r.Action)) nDel++; });
+    var h='<h2>'+esc(t(T.title))+'</h2>'+(type==='devices'?problemsCard(rows):'')+'<p class="mut">'+esc(t(T.note))+'</p><div class="row"><input type="text" id="q" placeholder="'+esc(t('Search...'))+'" value="'+esc(F.q)+'">'+
+      (T.onlyLabel?'<label class="chk"><input type="checkbox" id="only" '+(F.only?'checked':'')+'> '+esc(t(T.onlyLabel))+'</label>':'')+
+      (type==='drivers'?'<label class="chk"><input type="checkbox" id="inuse" '+(F.inuse?'checked':'')+'> '+esc(t('Also show drivers in use (they cannot be removed here)'))+'</label>':'')+'<span class="tag">'+esc(t('{0} shown of {1}', vis.length, rows.length))+'</span><span class="tag '+(nDel?'r':'')+'">'+esc(t('{0} to remove', nDel))+'</span><button class="b ok" data-save="'+type+'">'+esc(t('Save choices'))+'</button></div><div class="wrap"><table><tr>';
+    function th(i,label){ var on=(F.sort.i===i), ar=on?(F.sort.d>0?' \u25B2':' \u25BC'):''; return '<th aria-sort="'+(on?(F.sort.d>0?'ascending':'descending'):'none')+'"><button type="button" class="thb'+(on?' on':'')+'" data-sort="'+i+'" data-st="'+type+'" title="'+esc(t('Sort by this column'))+'">'+esc(label)+ar+'</button></th>'; }
+    h+=th(-1,t('Action')); T.cols.forEach(function(c,i){ h+=th(i,t(c[0])); }); h+='</tr>';
+    vis.slice(0,600).forEach(function(r){
+      var k=r[T.key], a=S.mod[type][k]||r.Action, prot=r.Protected, busy=(type==='drivers'&&inUse(r)); if(busy) a='KEEP';
+      var sel='<select data-type="'+type+'" data-k="'+esc(k)+'"'+((prot||busy)?' disabled':'')+'>';
+      T.values.forEach(function(v){ sel+='<option value="'+v+'"'+(v===a?' selected':'')+'>'+esc(t(v))+'</option>'; });
+      sel+='</select>'+(prot?'<br><span class="tag g">'+esc(t('excluded'))+'</span>':(busy?'<br><span class="tag g">'+esc(t('in use'))+'</span>':''));
+      h+='<tr class="'+(isDel(a)?'del':'')+'"><td>'+sel+'</td>'; T.cols.forEach(function(c){ h+='<td>'+c[1](r)+'</td>'; }); h+='</tr>';
+    });
+    h+='</table></div>'+(vis.length>600?'<p class="mut">'+esc(t('Showing the first 600: use the search to narrow down.'))+'</p>':'');
+    $('#main').innerHTML=h;
+  });
+}
+function save(type){ var m=S.mod[type], ch=[]; Object.keys(m).forEach(function(k){ ch.push({k:k,a:m[k]}); }); if(!ch.length) return Promise.resolve({changed:0}); return api('/api/save',{type:type,choices:ch}).then(function(r){ S.mod[type]={}; return r; }); }
+function saveAll(){ return Promise.all(['devices','drivers','bluetooth'].map(save)); }
+
+/* ---------- updates (Microsoft catalog) ---------- */
+function reEsc(s){ return String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+function isExcl(dev){ var p=reEsc(dev); return (S.state.settings.exclusions||[]).indexOf(p)>=0; }
+function oemNote(f,g){
+  var pc=S.pc; if(!pc||!pc.oem) return '';
+  var txt=f.Device+' '+(f.CurrentDriver||'')+' '+g.map(function(c){return c.Title||'';}).join(' ');
+  var sens=/^net$/i.test(f.Class)||(/^media$/i.test(f.Class)&&/realtek|conexant|waves|nahimic|dolby/i.test(txt));
+  return sens?t('This component may need custom drivers from the PC maker. Installing a generic version from the Microsoft catalog could remove its dedicated control panels. If everything works, we suggest excluding it.'):'';
+}
+function parseCur(x){ var m=/(\d+(?:\.\d+)+)\s+(\d{4}-\d{2}-\d{2})/.exec(x||''); return m?{ver:m[1],date:m[2]}:{ver:'',date:''}; }
+function monthsBetween(a,b){ var d1=new Date(a), d2=new Date(b); if(isNaN(d1)||isNaN(d2)) return null; return Math.round((d2-d1)/2629800000); }
+function cmpBlock(f,c,chkRow){
+  var cur=parseCur(f.CurrentDriver), rows=[], why=[];
+  var mo=monthsBetween(cur.date,c.Date);
+  rows.push('<tr><th></th><th>'+esc(t('Version'))+'</th><th>'+esc(t('Date'))+'</th></tr>');
+  rows.push('<tr><td>'+esc(t('Installed now'))+'</td><td>'+esc(cur.ver||'?')+'</td><td>'+esc(cur.date||'?')+'</td></tr>');
+  rows.push('<tr><td>'+esc(t('Chosen package'))+'</td><td>'+esc(c.Version)+'</td><td>'+esc(c.Date)+'</td></tr>');
+  if(mo!==null){ if(mo>0) why.push(t('The package is {0} month(s) newer than the installed driver.', mo)); else if(mo<0) why.push(t('The package is OLDER than the installed driver.')); }
+  var a=parseInt((cur.ver||'').split('.')[0],10), b=parseInt((c.Version||'').split('.')[0],10);
+  if(a&&b&&a!==b) why.push(t('The first number of the version changes ({0} to {1}): it is a different driver generation, not a small fix.', a, b));
+  var prov=chkRow&&chkRow.DriverProvider?chkRow.DriverProvider:'';
+  if(S.pc&&S.pc.maker&&prov&&prov.toLowerCase().indexOf(String(S.pc.maker).toLowerCase().split(' ')[0])>=0) why.push(t('The installed driver comes from the PC maker: Windows may keep preferring it even after this package is installed.'));
+  else if(S.pc&&S.pc.oem) why.push(t('On a branded PC the maker driver can outrank this package: after installing, the tool checks and asks whether to replace the old one.'));
+  why.push(t('The package is signed by Microsoft and is checked (SHA-256, signature) before it is installed.'));
+  return '<div class="wrap"><table>'+rows.join('')+'</table></div><ul class="mut">'+why.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join('')+'</ul>';
+}
+function bestFor(g){ var l=g.filter(function(c){ return c.UpdateId&&c.NewerThanCurrent==='YES'&&(c.Note||'').indexOf('Different architecture')!==0; }); l.sort(function(x,y){ return String(y.Date).localeCompare(String(x.Date)); }); return l[0]||null; }
+function vUpdates(){
+  return Promise.all([load('check'),load('catalog'),loadState(),(S.pc?Promise.resolve(S.pc):api('/api/pc').then(function(x){ S.pc=x; }).catch(function(){}))]).then(function(){
+    var chk=S.data.check||[], cat=S.data.catalog||[], consent=S.state.settings.catalogConsent; cat=cat.filter(function(c){ return !isExcl(c.Device); });
+    var h='<h2>'+esc(t('Updates from the Microsoft catalog'))+'</h2><p class="mut">'+esc(t('One step: the tool finds which drivers are generic, old or missing and looks in the Microsoft catalog (it includes the Windows Update drivers) for packages that fit your PC. Then you choose what to install.'))+'</p>'+
+      (Object.keys(S.cat||{}).filter(function(k){return S.cat[k].updateId;}).length===0?'<div class="wrap"><table><tr><td><span class="st WARN">'+esc(labels().WARN)+'</span></td><td><b>'+esc(t('No catalog driver chosen'))+'</b><br><span class="mut">'+esc(t('To install a driver from the catalog: search for updates below, choose the package and press "Save the catalog choice".'))+'</span></td></tr></table></div>':'')+
+      '<div class="card"><h3>'+esc(t('1. Search for updates'))+'</h3><label class="chk"><input type="checkbox" id="consent" '+(consent?'checked':'')+'><span>'+esc(t('I agree: the Microsoft catalog (catalog.update.microsoft.com) receives ONLY the VEN_xxxx&DEV_xxxx[&SUBSYS_xxxxxxxx] or VID_xxxx&PID_xxxx code of the devices, never names, serial numbers or PC data.'))+'</span></label><button class="b" data-run="search" id="bsearch" '+(consent?'':'disabled')+'>'+esc(t('Search for updates'))+'</button></div>';
+    chk=chk.filter(function(v){ return !isExcl(v.Device); });
+    if(chk.length){ h+='<div class="card"><h3>'+esc(t('Drivers to check'))+'</h3><p class="mut">'+esc(t('Devices whose driver is generic (the one included with Windows), missing or very old. It is only a hint, not an error: if the device works well you can leave it as it is.'))+'</p><div class="wrap"><table class="sortable" data-tid="chk"><tr><th>'+esc(t('Device'))+'</th><th>'+esc(t('Manufacturer / class'))+'</th><th>'+esc(t('Version'))+'</th><th>'+esc(t('Why'))+'</th><th data-ns>'+esc(t('Actions'))+'</th></tr>';
+      chk.forEach(function(v){ var ot=oemNote({Device:v.Device,Class:v.Class,CurrentDriver:v.DriverProvider},[]); var ex=isExcl(v.Device);
+        h+='<tr><td>'+esc(v.Device)+'</td><td>'+esc(v.DriverProvider)+'<br><span class="mut">'+esc(v.Class)+'</span></td><td>'+esc(v.DriverVersion)+'<br><span class="mut">'+esc(v.DriverDate)+'</span></td><td>'+esc(v.Reason)+(ot?'<div class="mut"><b>'+esc(t('OEM device'))+'</b>: '+esc(ot)+'</div>':'')+'</td><td>'+btn('Exclude this device','data-exclname="'+esc(v.Device)+'"','wb')+'</td></tr>'; });
+      h+='</table></div></div>'; }
+    h+='<div class="card"><h3>'+esc(t('2. Choose the packages'))+'</h3>';
+    if(!cat.length){ h+='<p class="mut">'+esc((S.state.report&&S.state.report.catalog)?t('The search is done: the Microsoft catalog has nothing newer to install.'):t('No result yet: press Search for updates.'))+'</p>'; }
+    else {
+      var hid={}, nHid=0; cat.forEach(function(c){ if(c.UpdateId && c.NewerThanCurrent==='NO'){ hid[c.ShortId+'|'+c.Device]=1; } });
+      cat=cat.filter(function(c){ return !(c.UpdateId && c.NewerThanCurrent==='NO'); });
+      var shown={}; cat.forEach(function(c){ if(c.UpdateId) shown[c.ShortId+'|'+c.Device]=1; });
+      Object.keys(hid).forEach(function(k){ if(!shown[k]) nHid++; });
+      if(nHid){ h+='<p class="mut">'+esc(t('Nothing newer than the installed driver was found for {0} device(s): they are not listed.', nHid))+'</p>'; }
+      var gr={}, ord=[]; cat.forEach(function(c){ var k=c.ShortId+'|'+c.Device; if(!gr[k]){ gr[k]=[]; ord.push(k);} gr[k].push(c); });
+      h+='<p class="mut">'+esc(t('A "newer" package is NOT automatically better: on a branded PC Windows prefers the maker driver (the ID of your model) and may ignore the generic one. After the installation the tool checks whether the device really moved to the new driver, and if not it asks whether to replace the old one completely.'))+'</p>';
+      ord.forEach(function(k){
+        var g=gr[k], f=g[0], high=HIGH.indexOf(f.Class)>=0, cur=S.cat[k]||{updateId:'',risk:false};
+        h+='<div class="card"><b>'+esc(f.Device)+'</b> <span class="tag">'+esc(f.Class)+'</span> <code>'+esc(f.ShortId)+'</code>'+(high?' <span class="tag r">'+esc(t('risky class'))+'</span>':'')+'<br><span class="mut">'+esc(t('Current driver: {0}', f.CurrentDriver))+'</span>';
+        var oemTxt=oemNote(f,g); if(oemTxt){ var exc=isExcl(f.Device); h+='<div class="card warn"><b>'+esc(t('OEM device'))+'</b>: '+esc(oemTxt)+(exc?' <span class="tag g">'+esc(t('excluded'))+'</span>':'<div class="row">'+btn('Exclude this device','data-excl="'+esc(k)+'"','wb')+'</div>')+'</div>'; }
+        var seen={}, list=g.filter(function(c){ if(!c.UpdateId) return false; var u=c.Title+'|'+c.Version+'|'+c.Date+'|'+c.Architecture; if(seen[u]) return false; seen[u]=1; return true; });
+        h+='<label class="chk"><input type="radio" name="r_'+esc(k)+'" data-cat="'+esc(k)+'" value="" '+(cur.updateId===''?'checked':'')+'> '+esc(t('No update'))+'</label>';
+        list.forEach(function(c){
+          var arch=c.Architecture||t('architecture not read'), mism=(c.Note||'').indexOf('Different architecture')===0;
+          h+='<label class="chk"><input type="radio" name="r_'+esc(k)+'" data-cat="'+esc(k)+'" value="'+esc(c.UpdateId)+'" '+(cur.updateId===c.UpdateId?'checked':'')+(mism?' disabled':'')+'><span>'+esc(c.Title)+' <span class="mut">v'+esc(c.Version)+' - '+esc(c.Date)+' - '+esc(arch)+'</span> '+(bestFor(g)&&bestFor(g).UpdateId===c.UpdateId?'<span class="tag g">'+esc(t('newest'))+'</span> ':'')+(c.NewerThanCurrent==='YES'?'<span class="tag g">'+esc(t('newer'))+'</span>':'<span class="tag">'+esc(t('not newer'))+'</span>')+(mism?'<span class="tag r">'+esc(t('does not fit'))+'</span>':'')+'</span></label>';
+        });
+        var selC=list.filter(function(c){ return c.UpdateId===cur.updateId; })[0];
+        if(selC){ var chkRow=chk.filter(function(v){ return v.Device===f.Device; })[0]; h+='<div class="card"><b>'+esc(t('What changes if you install it'))+'</b>'+cmpBlock(f,selC,chkRow)+'</div>'; }
+        if(high && cur.updateId){ h+='<label class="chk"><input type="checkbox" data-risk="'+esc(k)+'" '+(cur.risk?'checked':'')+'><span><b>'+esc(t('I understand the risk'))+'</b> '+esc(t('of changing a driver of this class (screen, network, system): if something goes wrong I use the backup and the restore point.'))+'</span></label>'; }
+        h+='<a href="'+esc(f.SearchLink)+'" target="_blank" rel="noopener">'+esc(t('Catalog list, to download by hand'))+'</a></div>';
+      });
+      if(ord.length) h+='<div class="row">'+btn('Select the newest for each device (not risky)','data-newest="1"','wb')+btn('Clear all choices','data-clearcat="1"','wb')+'</div><button class="b ok" id="savecat">'+esc(t('Save the catalog choice'))+'</button>';
+    }
+    h+='</div>';
+    $('#main').innerHTML=h;
+  });
+}
+function saveCat(){ var ch=[]; Object.keys(S.cat).forEach(function(k){ var c=S.cat[k]; if(c.updateId) ch.push({updateId:c.updateId, riskAccepted:!!c.risk}); }); return api('/api/catalog/select',{choices:ch}); }
+
+/* ---------- run ---------- */
+function count(type){ var T=TAB[type], n=0; (S.data[type]||[]).forEach(function(r){ if(isDel(S.mod[type][r[T.key]]||r.Action)) n++; }); return n; }
+function updateGo(){
+  var b=$('#go'); if(!b) return; var E=S.run, why='';
+  var any=Object.keys(E.parts).some(function(k){ return E.parts[k]; });
+  if(!any) why=t('Nothing is chosen to run: tick an operation above, or choose items in the other tabs.');
+  else if(E.apply && !E.backup) why=t('Choose which backup to make (or "no backup").');
+  b.disabled=!!why; var g=$('#gohint'); if(g) g.textContent=why;
+}
+function vRun(){
+  return Promise.all([load('devices'),load('drivers'),load('bluetooth'),loadState()]).then(function(){
+    var E=S.run, nCat=Object.keys(S.cat).filter(function(k){return S.cat[k].updateId;}).length;
+    if(!E.bkTouched){ E.backup=(S.state.settings.backup!=='ask')?S.state.settings.backup:''; }
+    var parts=[['catalog-install','Install the drivers chosen from the catalog',nCat],['bluetooth','Remove the chosen Bluetooth pairings',count('bluetooth')],['devices','Remove the chosen devices that are no longer connected',count('devices')],['drivers','Remove the chosen drivers',count('drivers')],['versions','Remove old driver versions (keeps the newest)',-1]];
+    parts.forEach(function(p){ if(E.parts[p[0]]===undefined) E.parts[p[0]]=(p[2]>0); });
+    var h='';
+    if(S.last && (S.last.kind==='preview'||S.last.kind==='apply')){ var U=S.last, prev=(U.kind==='preview'); h+='<div class="card '+(U.status==='done'?'':'err')+'"><h3>'+esc(t('Last job: {0}', t(KINDS[U.kind]||U.kind)))+' - '+(U.status==='done'?esc(t('completed')):esc(t('stopped (code {0})', U.exit)))+'</h3><p>'+esc(prev?t('It was a preview: nothing was changed and no driver was downloaded. To go ahead choose "Change the PC", tick "I confirm" and press "Apply the changes".'):t('Changes made. Create the report in the Report tab.'))+'</p></div>'; }
+    h+='<h2>'+esc(t('Run'))+'</h2><p class="mut">'+esc(t('The choices made in the other tabs are saved automatically when you press Run. The operations run in order and stop at the first error.'))+'</p><div class="card"><h3>'+esc(t('What to do'))+'</h3>';
+    parts.forEach(function(p){ if(p[2]===0) E.parts[p[0]]=false; h+='<label class="chk"><input type="checkbox" data-part="'+p[0]+'" '+(E.parts[p[0]]?'checked':'')+(p[2]===0?' disabled':'')+'><span>'+esc(t(p[1]))+(p[2]>0?' <span class="tag r">'+esc(t('{0} chosen', p[2]))+'</span>':(p[2]===0?' <span class="tag">'+esc(t('nothing chosen'))+'</span>':''))+'</span></label>'; });
+    h+='</div><div class="card"><h3>'+esc(t('How'))+'</h3>'+
+      '<label class="chk"><input type="radio" name="mode" value="prev" '+(!E.apply?'checked':'')+'><span><b>'+esc(t('Preview'))+'</b>: '+esc(t('shows what would be done, without changing anything (recommended the first time)'))+'</span></label>'+
+      '<label class="chk"><input type="radio" name="mode" value="app" '+(E.apply?'checked':'')+'><span><b>'+esc(t('Change the PC'))+'</b>: '+esc(t('performs the chosen operations'))+'</span></label></div>';
+    if(E.apply){
+      h+='<div class="card warn"><h3>'+esc(t('Backup before the change'))+'</h3>';
+      [['full','Full: restore point + copy of the drivers (safer, slower)'],['drivers','Drivers only: copy of the third-party drivers (fast, no restore point)'],['done','I just made a backup'],['none','No backup: you will not be able to go back from here (at your own risk)']].forEach(function(o){ h+='<label class="chk"><input type="radio" name="bk" value="'+o[0]+'" '+(E.backup===o[0]?'checked':'')+'><span>'+esc(t(o[1]))+'</span></label>'; });
+      h+='</div>';
+    }
+    h+='<button class="b '+(E.apply?'red':'')+'" id="go">'+esc(E.apply?t('Apply the changes'):t('Run the preview'))+'</button> <span class="mut" id="gohint"></span>';
+    $('#main').innerHTML=h; updateGo();
+  });
+}
+function vSupport(){
+  return api('/api/support').then(function(x){
+    var l=x.list||[], dp=x.deep||[], h='<h2>'+esc(t('Maker support'))+'</h2><p class="mut">'+esc(t('Besides the Microsoft catalog, the maker of your PC or of its components often has its own tool or page with the drivers of your model. Devvy only opens the page in your browser: nothing is downloaded or sent, you choose what to install.'))+'</p>';
+    var cp=function(v){ return v?'<button class="b sec small wb" data-copy="'+esc(v)+'">'+esc(t('Copy'))+'</button>':''; };
+    var rows=[[t('Manufacturer'),esc(x.maker||t('Not detected'))],[t('Model'),esc(x.model||t('Not detected'))]];
+    if(x.sku) rows.push([t('Product number (SKU)'),'<code>'+esc(x.sku)+'</code>',cp(x.sku)]);
+    if(x.serial) rows.push([t('Serial number'),'<code>'+esc(x.serial)+'</code>',cp(x.serial)]);
+    h+='<div class="card"><h3>'+esc(t('Your PC'))+'</h3><table>'; rows.forEach(function(r){ h+='<tr><td><b>'+esc(r[0])+'</b></td>'+(r[2]!==undefined?'<td>'+r[1]+'</td><td style="text-align:right;white-space:nowrap;width:1%">'+r[2]+'</td>':'<td colspan="2">'+r[1]+'</td>')+'</tr>'; }); h+='</table>';
+    if(x.sku||x.serial) h+='<p class="mut">'+esc(t('Many makers find the exact product page from this number: paste it in the search box of their support site.'))+(x.serial?' '+esc(t('The serial number is personal: it is shown only here, do not publish screenshots with it.')):'')+'</p>';
+    if((x.finder||[]).length) h+='<p>'+esc(t('To find the exact page of your product, paste the SKU or the serial number here:'))+' '+x.finder.map(function(y){ return '<a href="'+esc(y.url)+'" target="_blank" rel="noopener noreferrer">'+esc(y.name)+'</a>'; }).join(' · ')+'</p>';
+    h+='</div>';
+    h+='<div class="card"><h3>'+esc(t('Official support software and pages'))+'</h3>';
+    if(l.length){ h+='<ul class="lnk">'; l.forEach(function(y){ h+='<li><a href="'+esc(y.url)+'" target="_blank" rel="noopener noreferrer">'+esc(y.name)+'</a></li>'; }); h+='</ul>'; }
+    else { h+='<p class="mut">'+esc(t('No official page is listed for this PC. You can add rows to support-links.csv.'))+'</p>'; }
+    h+='</div>'; $('#main').innerHTML=h; });
+}
+function problemCard(){
+  return '<div class="card"><h3>'+esc(t('Report a problem'))+'</h3><p class="mut">'+esc(t('Something went wrong? Devvy prepares a zip with versions, logs and results, with MAC addresses, USB serial numbers, PC name and user name hidden. Nothing is sent: you check the zip and attach it yourself to a GitHub issue.'))+'</p><div class="row"><button class="b" data-run="problem">'+esc(t('Prepare the problem report'))+'</button>'+(S.prob&&S.prob.zip?'<button class="b sec" data-pzip="'+esc(S.prob.zip)+'">'+esc(t('Show the zip in the folder'))+'</button><button class="b sec" data-pissue="1">'+esc(t('Open a GitHub issue'))+'</button>':'')+'</div>'+(S.prob&&S.prob.zip?'<p class="mut">'+esc(t('Last zip: {0}',S.prob.zip))+'</p>':'')+'</div>'+kbShareCard('problem');
+}
+function vReport(){
+  return Promise.all([loadState(),load('rollback').catch(function(){ S.data.rollback=[]; }),api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){ S.prob=null; })]).then(function(){
+    var rb=S.data.rollback||[], rbh='<div class="card"><h3>'+esc(t('Replaced drivers'))+'</h3>';
+    if(!rb.length){ rbh+='<p class="mut">'+esc(t('When you replace a driver and choose a backup, the previous driver of that device is saved here so you can go back to it, one device at a time.'))+'</p>'; }
+    else { rbh+='<p class="mut">'+esc(t('Drivers replaced with a backup. Going back reinstalls the previous driver of that device only; restart the PC afterwards.'))+'</p><div class="wrap"><table><tr><th>'+esc(t('Device'))+'</th><th>'+esc(t('Previous driver'))+'</th><th>'+esc(t('Replaced with'))+'</th><th>'+esc(t('Date'))+'</th><th>'+esc(t('Actions'))+'</th></tr>';
+      rb.slice().reverse().forEach(function(r){ rbh+='<tr><td>'+esc(r.Device)+'<br><span class="mut">'+esc(r.Class)+'</span></td><td>'+esc(r.Provider)+' '+esc(r.OldVersion)+'<br><span class="mut">'+esc(r.OldDate)+'</span></td><td>'+esc(r.NewVersion)+'</td><td>'+esc(r.Date)+'</td><td>'+(r.State==='restored'?'<span class="tag g">'+esc(t('restored'))+'</span>':btn('Go back to the previous driver','data-rb="'+esc(r.Key)+'" data-rbname="'+esc(r.Device)+'"','wb'))+'</td></tr>'; });
+      rbh+='</table></div>'; }
+    rbh+='</div>';
+    $('#main').innerHTML='<h2>'+esc(t('Report'))+'</h2><div class="card"><h3>'+esc(t('Final HTML report'))+'</h3><p class="mut">'+esc(t('System check, before/after, what was done, drivers to check and catalog packages. It contains device names: do not share it as it is.'))+'</p><div class="row"><button class="b" data-run="report">'+esc(t('Create the report'))+'</button>'+(S.state.report['html-report']?'<a class="b sec" style="text-decoration:none" href="/report" target="_blank" rel="noopener">'+esc(t('Open the report'))+'</a>':'')+'</div></div>'+
+     kbShareCard('report')+rbh;
+  });
+}
+function vAbout(target){
+  return Promise.all([loadState(),api('/api/about')]).then(function(r){
+    var A=r[1], st=S.state, h='<h2>'+esc(t('What this program does'))+'</h2>';
+    function card(title,items){ var c='<div class="card"><h3>'+esc(t(title))+'</h3><ul>'; items.forEach(function(x){ c+='<li>'+esc(t(x))+'</li>'; }); return c+'</ul></div>'; }
+    h+='<p class="mut">'+esc(t('Devvy is a free helper to clean up and update drivers on Windows 10 and 11. It has no ads, no accounts and no paid versions. It runs from the folder you downloaded: it is not installed. Author: zuwann. Open source (MIT license): the scripts are plain text files you can read.'))+'</p>';
+    h+=card('What it reads (it changes nothing)',['The list of devices, including the ones not connected.','The drivers in the Windows driver store and which device uses each one.','The Bluetooth pairings.','The state of Microsoft Defender, and basic data of the PC (Windows, processor, memory, disk, graphics card).']);
+    h+=card('What it changes (only when you press Apply and confirm)',['It removes the devices, Bluetooth pairings and drivers you chose in the tabs.','It installs the drivers you chose from the Microsoft catalog.','If you ask for it, before changing it makes a restore point and a copy of the drivers.','If you turn the option on, it tells Windows not to install again the drivers you removed (a Windows policy that you can undo in Settings).','It adds temporary exceptions to Microsoft Defender, which it removes when you exit.','If you restart Windows from the program, it creates a one-time scheduled task that starts the program at the next sign-in to check the PC, and deletes itself (you can turn it off in Settings).']);
+    h+=card('What goes online',['Only when you press Search: the hardware codes of the devices (like VEN_xxxx&DEV_xxxx[&SUBSYS_xxxxxxxx]) go to catalog.update.microsoft.com, never names, serial numbers or PC data.','The drivers you choose are downloaded from Microsoft sites only.','Nothing else: no statistics, no telemetry, no accounts. Reports stay on this PC. If you share a report, you send it yourself.']);
+    h+='<div class="card"><h3>'+esc(t('How the downloaded drivers are checked'))+'</h3><ul><li>'+esc(t('The SHA-256 fingerprint of each downloaded package is shown while it is installed and saved in the list below.'))+'</li><li>'+esc(t('The signature of the driver is checked: if it is missing or does not match, the package is refused and nothing is installed.'))+'</li><li>'+esc(t('A driver signed by Microsoft Windows Hardware Compatibility Publisher has passed the Microsoft certification (WHQL). Windows checks the signature again when it installs the driver.'))+'</li></ul>';
+    h+='<p class="mut">'+esc(t('The list of the packages installed so far is in the Device management tab.'))+'</p>';
+    h+='</div><div class="card"><h3>'+esc(t('Where the files are'))+'</h3><table><tr><td><b>'+esc(t('Program'))+'</b></td><td><code>'+esc(A.folder)+'</code></td></tr><tr><td><b>'+esc(t('Data (reports, backups, logs)'))+'</b></td><td><code>'+esc(A.data)+'</code></td></tr></table></div>';
+    h+='<div class="card"><h3>'+esc(t('Check that the program is the original'))+'</h3><p class="mut">'+esc(t('Every release publishes the SHA-256 of its zip file. These are the fingerprints of the files you are running: if you change a file, its fingerprint changes.'))+'</p><details><summary>'+esc(t('Show the fingerprints'))+'</summary><div class="wrap"><table>';
+    A.files.forEach(function(f){ h+='<tr><td>'+esc(f.file)+'</td><td><code>'+esc(f.sha256)+'</code></td></tr>'; });
+    h+='</table></div></details></div>';
+    if(target){ target.innerHTML=h.replace(/^<h2>.*?<\/h2>/,''); } else { $('#main').innerHTML=h; }
+  });
+}
+function vSettings(){
+  return loadState().then(function(){
+    $('#main').innerHTML='<h2>'+esc(t('Settings'))+'</h2>'+settingsForm(false)+profRow();
+  });
+}
+function profRow(){
+  return '<div class="row"><button class="b" id="savesettings">'+esc(t('Save settings'))+'</button><button class="b sec" id="profexp" title="'+esc(t('A profile is a small file with your choices: excluded devices, options, your own knowledge rows and support pages. Export it from one PC and import it on another so you do not set everything again. It never contains serial numbers, reports or the data folder, and importing only adds: nothing of yours is deleted.'))+'">'+esc(t('Export profile'))+'</button><button class="b sec" id="profimp">'+esc(t('Import profile'))+'</button><input type="file" id="proffile" accept=".json,application/json" style="display:none"></div>';
+}
+function loadUpdate(){
+  var el=$('#updbox'); if(!el) return;
+  el.innerHTML='<div class="card"><h3>'+esc(t('Program update'))+'</h3><p class="mut">'+esc(t('Searching for a new release on GitHub...'))+'</p></div>';
+  api('/api/update/check').then(function(r){
+    S.upd=(r&&r.ok&&r.needed)?r:null; var el2=$('#updbox'); if(!el2) return; var h='<div class="card"><h3>'+esc(t('Program update'))+'</h3>';
+    if(!r.ok){ h+='<p class="mut">'+esc(r.ready===false?t('The GitHub address of the project is not set yet: nothing to download.'):(r.error||t('Cannot check now.')))+'</p><div class="row"><button class="b sec" id="updrecheck">'+esc(t('Check again'))+'</button></div>'; }
+    else if(!r.needed){ h+='<p>'+esc(t('Installed version:'))+' <b>'+esc(r.current)+'</b></p><p class="mut">'+esc(t('Devvy is already up to date.'))+'</p><div class="row"><button class="b sec" id="updrecheck">'+esc(t('Check again'))+'</button></div>'; }
+    else {
+      h+='<p>'+esc(t('Installed version:'))+' <b>'+esc(r.current)+'</b> &rarr; '+esc(t('Available:'))+' <b>'+esc(r.latest)+'</b></p><p class="mut">'+esc(t('New: {0}   Changed: {1}   To remove: {2}',r.added,r.changed,r.removed))+'</p>';
+      h+='<p class="mut">'+esc(t('Only the new or changed files are downloaded and checked with SHA-256; your data, settings and tables are not touched. When it is done Devvy restarts.'))+'</p><div class="row"><button class="b ok" data-run="selfupdate">'+esc(t('Update now'))+'</button></div>';
+      var ub=$('#updbadge'); if(ub){ ub.style.display=''; ub.textContent='!'; }
+    }
+    el2.innerHTML=h+'</div>';
+  }).catch(function(x){ var el3=$('#updbox'); if(el3) el3.innerHTML='<div class="card"><h3>'+esc(t('Program update'))+'</h3><p class="mut">'+esc(x.message)+'</p><div class="row"><button class="b sec" id="updrecheck">'+esc(t('Check again'))+'</button></div></div>'; });
+}
+function askRestartAfterUpdate(){
+  ask({title:t('Update finished'),text:t('The update is done. This page will now be closed and Devvy will start again by itself: a new page opens in a few seconds. Press OK to continue.'),ok:t('OK'),single:true}).then(function(){
+    api('/api/restart',{}).then(function(){
+      $('#cftitle').textContent=t('Restarting'); $('#cfbody').textContent=t('Devvy is restarting. This page is closing; the new one opens by itself in a few seconds.');
+      var ft=document.querySelector('#cf .cfoot'); if(ft) ft.style.display='none'; $('#cf').style.display='flex'; setTimeout(function(){ try{ window.close(); }catch(e){} },4000);
+    }).catch(function(x){ notice(x.message,true); });
+  });
+}
+function loadKb(){
+  api('/api/kb').then(function(k){ var el=$('#kbbox'); if(!el) return; var cur=Math.max(k.shipped||0,k.downloaded||0);
+    el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p><div class="row"><button class="b sec" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'<hr style="border:0;border-top:1px solid var(--bd,#8884);margin:14px 0">'+kbShareInner('update')+'</div>'; }).catch(function(){});
+}
+function exShow(p){ return /^(?:[^\\.*+?^${}()|[\]]|\\.)*$/.test(p)?p.replace(/\\(.)/g,'$1'):p; }
+function drawEx(){
+  var l=(S.state.settings.exclusions||[]).filter(function(x){ return x; }), el=$('#exlist'); if(!el) return;
+  if(!l.length){ el.innerHTML='<p class="mut">'+esc(t('Nothing is excluded.'))+'</p>'; return; }
+  var devs=S.data.devices||[];
+  var h='<div class="wrap"><table class="sortable" data-tid="ex"><tr><th>'+esc(t('Device'))+'</th><th>'+esc(t('Manufacturer / class'))+'</th><th>'+esc(t('Hardware ID'))+'</th><th>'+esc(t('Driver'))+'</th><th data-ns></th></tr>';
+  l.forEach(function(x,i){
+    var re=null; try{ re=new RegExp(x,'i'); }catch(e){}
+    var m=re?devs.filter(function(r){ return re.test(r.FriendlyName||'')||re.test(r.Manufacturer||'')||re.test(r.DriverInf||'')||re.test(r.DriverProvider||''); }):[], r0=m[0];
+    var more=m.length>1?'<br><span class="mut">'+esc(t('and {0} more matching device(s)',m.length-1))+'</span>':'';
+    if(r0) h+='<tr><td>'+esc(r0.FriendlyName||exShow(x))+more+'</td><td>'+esc(r0.Manufacturer)+'<br><span class="mut">'+esc(r0.Class)+'</span></td><td><code>'+esc(r0.InstanceId)+'</code></td><td>'+esc(r0.DriverProvider)+' '+esc(r0.DriverInf)+'<br><span class="mut">'+esc(r0.DriverVersion)+' '+esc(r0.DriverDate)+'</span></td>';
+    else h+='<tr><td>'+esc(exShow(x))+'</td><td colspan="3" class="mut">'+esc(t('Not found in the inventory.'))+'</td>';
+    h+='<td><button class="b small sec" data-exrm="'+i+'" type="button">'+esc(t('Remove from the list'))+'</button></td></tr>';
+  });
+  el.innerHTML=h+'</table></div>';
+}
+function saveEx(l){ return api('/api/settings',{exclusions:l}).then(function(){ return loadState(); }).then(function(){ drawEx(); }).catch(function(x){ notice(x.message,true); }); }
+function vManage(){
+  var h='<h2>'+esc(t('Device management'))+'</h2>';
+  h+='<div class="card"><h3>'+esc(t('Exclusions'))+'</h3><p class="mut">'+esc(t('Devices that Devvy never removes or replaces. To exclude one, use the Exclude button in the Updates tab: nothing is excluded by default.'))+'</p><div id="exlist"></div></div>';
+  h+='<div class="card"><h3>'+esc(t('Devices blocked from coming back'))+'</h3><p class="mut">'+esc(t('Windows is stopped from installing these devices again, with any driver. Unblock one to let Windows install it normally.'))+'</p><div id="blocked"><p class="mut">'+esc(t('Loading...'))+'</p></div></div>';
+  h+='<div class="card"><h3>'+esc(t('Drivers installed from the Microsoft catalog'))+'</h3><p class="mut">'+esc(t('Every package Devvy downloaded and installed, with the signature check and the SHA-256 fingerprint. To go back to the previous driver, use the Report tab.'))+'</p><div id="dllist"><p class="mut">'+esc(t('Loading...'))+'</p></div></div>';
+  $('#main').innerHTML=h; load('devices').then(drawEx,drawEx);
+  api('/api/about').then(function(A){
+    var el=$('#dllist'); if(!el) return;
+    if(!A.downloads.length){ el.innerHTML='<p class="mut">'+esc(t('No driver has been downloaded yet.'))+'</p>'; return; }
+    var x='<div class="wrap"><table class="sortable" data-tid="dl" data-desc="1"><tr><th>'+esc(t('Date'))+'</th><th>'+esc(t('Package'))+'</th><th>'+esc(t('Signed by'))+'</th><th>SHA-256</th></tr>';
+    A.downloads.slice().reverse().forEach(function(d){ x+='<tr><td>'+esc(d.date)+'</td><td>'+esc(d.package)+'</td><td>'+esc(d.signer)+'<br><span class="mut">'+esc(d.result)+'</span></td><td><code>'+esc(d.sha256)+'</code></td></tr>'; });
+    el.innerHTML=x+'</table></div>';
+  }).catch(function(){});
+  return loadBlocked();
+}
+function loadBlocked(){
+  return api('/api/blocked').then(function(d){
+    var l=d.list||[], el=$('#blocked'); if(!el) return;
+    if(!l.length){ el.innerHTML='<p class="mut">'+esc(t('No device is blocked.'))+'</p>'; return; }
+    var h='<div class="wrap"><table class="sortable" data-tid="blk"><tr><th>'+esc(t('Hardware ID'))+'</th><th>'+esc(t('Removed driver'))+'</th><th>'+esc(t('Date'))+'</th><th data-ns></th></tr>';
+    l.forEach(function(b){ h+='<tr><td><code>'+esc(b.Id)+'</code></td><td>'+esc(b.Provider)+' '+esc(b.Inf)+'</td><td>'+esc(b.Date)+'</td><td><button class="b sec small" data-unblock="'+esc(b.Id)+'" type="button">'+esc(t('Unblock'))+'</button></td></tr>'; });
+    el.innerHTML=h+'</table></div>';
+  }).catch(function(){ var el=$('#blocked'); if(el) el.innerHTML=''; });
+}
+
+/* ---------- jobs and console ---------- */
+function showJob(j){
+  S.job=j;
+  var run=(j.status==='running');
+  $('#dot').className='dot '+(run?'run':(j.status==='done'?'ok':((j.status==='error'||j.status==='cancelled')?'bad':'')));
+  $('#jtitle').textContent=j.status==='none'?'':(S.postWork?t('After the restart')+': ':'')+t(KINDS[j.kind]||j.kind);
+  $('#jstate').textContent=run?t('running, step {0} of {1}', j.step, j.steps):(j.status==='done'?t('finished'):(j.status==='cancelled'?t('stopped by you'):(j.status==='error'?t('stopped: code {0}', j.exit):'')));
+  $('#modal').style.display=(j.status!=='none'&&(run||S.open))?'flex':'none';
+  $('#jnote').textContent=(run&&S.postWork)?t('Windows restarted and Devvy started again by itself: it is checking that everything works and, if you asked for it, goes on with the cleaning. Please wait, nothing is needed from you.'):(run?t('You cannot use the page while the job is running.'):t('Job finished: you can close this window.'));
+  $('#cancel').disabled=!run; $('#close').disabled=run;
+  var pc=Math.max(0,Math.min(100,j.pct||0)); if(j.status==='done')pc=100; $('#pfill').style.width=pc+'%'; $('#ppct').textContent=pc+'%';
+  $('#pstep').textContent=run?t('step {0} of {1}', j.step, j.steps):'';
+  var ak=$('#ask');
+  if(j.question&&j.question.text&&run&&!(j.question.id&&j.question.id===S.ansId)){
+    var dt=(j.question.id||'')+'|'+j.question.text, lab={}, re=/\[(\w)\]\s*([^\[]*)/g, mm;
+    while((mm=re.exec(j.question.text))!==null){ lab[mm[1].toUpperCase()]=mm[2].replace(/\s+$/,''); }
+    var qt=j.question.text, base=qt.replace(/\s*\[\w\][^\[]*/g,'').trim()||qt;
+    if(S.qShown!==dt){ S.qShown=dt; var qid=j.question.id||'';
+      var opts=j.question.valid.map(function(k){ return {k:k,label:(lab[k]?lab[k]:k),cls:(/^(N|M|X)$/.test(k)?'wb':'')}; });
+      ask({title:t('Question'),text:base,opts:opts}).then(function(k){ if(!k){ S.qShown=''; return; } return api('/api/answer',{answer:k}).then(function(){ S.ansId=qid; pollJob(); }).catch(function(x){ S.qShown=''; notice(x.message,true); }); });
+    }
+  } else { if(S.qShown){ S.qShown=''; if(S.cf&&S.cfOpts) S.cf(null); } }
+  if(j.status==='done'&&j.reboot&&!S.rebNo&&!S.rebAsked){ S.rebAsked=true; askReboot(); }
+  var txt=String(j.text||'').replace(/\x1b\[[0-9;]*[A-Za-z]/g,'').replace(/##(PROG \d+\/\d+|REBOOT|UPDATED|DEFENDER[^#]*)##\r?\n?/g,'');
+  var out=$('#out'), bottom=(out.scrollTop+out.clientHeight>=out.scrollHeight-30);
+  if(out.textContent!==txt){ out.textContent=txt; if(bottom) out.scrollTop=out.scrollHeight; }
+}
+function pollJob(){
+  api('/api/job').then(function(j){
+    showJob(j);
+    if(j.status!=='running'){ clearInterval(S.polling); S.polling=null; document.querySelectorAll('button[data-run],button[data-fix],#go').forEach(function(b){ if(b.id!=='bsearch') b.disabled=false; }); afterJob(j); }
+  }).catch(function(){});
+}
+function removeKeys(){ var o={}; ['devices','drivers'].forEach(function(ty){ var T=TAB[ty]; (S.data[ty]||[]).forEach(function(r){ if(isDel(S.mod[ty][r[T.key]]||r.Action)) o[ty+'|'+r[T.key]]=1; }); }); return o; }
+function checkCascade(){
+  // Removing something can free what depended on it (a driver, then the device it served, then ...).
+  // Devvy follows the chain by itself, keeps every choice the person made and never goes beyond 3 extra rounds.
+  var B=S.lastApply; if(!B){ S.launching=false; return; }
+  loadState().then(function(){ return Promise.all([load('devices'),load('drivers')]); }).then(function(){
+    var isR=function(x){ return /^REMOVE/.test(String(x.Action||'')); }, fresh=0, keep=[];
+    ['devices','drivers'].forEach(function(ty){ var T=TAB[ty], tc=S.touched[ty]||{};
+      (S.data[ty]||[]).forEach(function(r){ var k=r[T.key];
+        if(tc[k]!==undefined){ if(String(r.Action)!==tc[k]) S.mod[ty][k]=tc[k]; return; }
+        if(isR(r)&&!(ty==='drivers'&&inUse(r))&&!S.prevRemove[ty+'|'+k]) fresh++; }); });
+    var stuck=0; ['devices','drivers'].forEach(function(ty){ var T=TAB[ty]; (S.data[ty]||[]).forEach(function(r){ if(isR(r)&&!(ty==='drivers'&&inUse(r))&&S.prevRemove[ty+'|'+r[T.key]]) stuck++; }); });
+    if(fresh===0){ S.launching=false; S.postWork=false; if(S.cascDone){ notice(t('Devvy also removed the leftovers that depended on what you removed.')); S.cascDone=0; } if(stuck>0&&S.casc>0) notice(t('{0} items could not be removed by Windows: see the report of the last operation.',stuck),true); return; }
+    if(S.casc>=3){ S.launching=false; S.postWork=false; S.open=false; $('#modal').style.display='none'; ask({title:t('More leftovers found'),text:t('Removing things freed other leftovers: {0} items are now suggested for removal. Review them?',fresh),ok:t('Review'),cancel:t('Not now')}).then(function(y){ if(y) go('devices'); }); return; }
+    S.casc++; S.cascDone=(S.cascDone||0)+fresh; S.prevRemove=removeKeys();
+    return saveAll().then(function(){ S.refresh=true; S.cascade=true; return launch({action:'execute',apply:true,backup:'done',confirm:true,blockReinstall:B.blockReinstall,parts:B.parts}); });
+  }).catch(function(){ S.launching=false; });
+}
+function afterJob(j){
+  if(j.status==='none'||j.status==='running') return;
+  var dk=j.id+':'+j.status; if(S.doneKey===dk) return; S.doneKey=dk;
+  S.launching=false; var hadCont=!!S.cont;
+  if(S.postWork&&(j.status!=='done'||(j.kind==='postcheck'&&!hadCont))) S.postWork=false;
+  if(j.status!=='running') refreshBell();
+  if(j.kind==='inventory'&&j.status==='done'&&!S.refresh){ S.prop={from:S.tab,text:t('Inventory ready: now you can choose what to keep and what to remove.'),next:(S.tab==='start'?'devices':null)}; }
+  if(j.kind==='search'&&j.status==='done'){ S.prop={from:'updates',search:true,text:t('Search finished: choose below the packages to install.'),next:null}; }
+  if(j.kind==='inventory'){ S.refresh=false; }
+  if(j.kind==='inventory'&&j.status==='done'&&S.cascade){ S.cascade=false; S.launching=true; checkCascade(); }
+  if(j.kind==='postcheck'&&j.status==='done'&&S.cont){
+    // after the restart Devvy goes on by itself with what the person had chosen before: same choices, same rounds
+    var c=S.cont; S.cont=null; S.lastApply={backup:'done',blockReinstall:!!c.blockReinstall,parts:c.parts}; S.touched={devices:{},drivers:{},bluetooth:{}};
+    ['devices','drivers','bluetooth'].forEach(function(ty){ var o2=(c.touched||{})[ty]||{}; Object.keys(o2).forEach(function(k){ S.touched[ty][k]=o2[k]; }); });
+    S.casc=0; S.cascDone=0; S.prevRemove={}; S.resumed=true;
+    S.launching=true; setTimeout(checkCascade,700);
+  }
+  if(j.kind==='apply'&&j.status==='done'&&!j.reboot&&!(S.queue&&S.queue.length)){ S.refresh=true; S.cascade=true; S.queue=['inventory']; }
+  if(j.kind==='apply'&&j.status==='done'){ S.prop={from:'report',text:t('Changes completed. Create the report to see the before and after.'),next:(S.tab==='report'?null:'report')}; if(S.tab==='run') S.prop.from='run'; }
+  if(j.kind==='defender'){ loadState(); }
+  if(j.kind==='selfupdate'&&j.status==='done'&&j.updated){ askRestartAfterUpdate(); }
+  if(j.kind==='problem'&&j.status==='done'&&S.tab==='report'){ vReport(); }
+  if((j.kind==='problem'||j.kind==='anonymize')&&j.status==='done'){ sendOffer(j.kind==='problem'?'problem':'copies'); }
+  if(j.kind==='rollback'&&j.status==='done'){ S.prop={from:'report',text:t('Done. Restart the PC to finish going back to the previous driver.'),next:null}; }
+  if(j.kind==='fix'&&j.status==='done'){ S.prop={from:'start',text:t('Done. Run the check again to see the result.'),next:null}; }
+  if(j.kind){ S.last={kind:j.kind,status:j.status,exit:j.exit}; }
+  if(j.kind==='inventory'&&j.status==='done'&&S.afterInv){ var fi=S.afterInv; S.afterInv=null; loadState().then(function(){ drawTabs(); if(hasInv()){ S.open=false; $('#modal').style.display='none'; fi(); } }); }
+  if(j.kind==='search'&&j.status==='done'&&S.afterSearch){ S.afterSearch=false; S.open=false; $('#modal').style.display='none'; api('/api/health').then(function(d){ var u=(d.items||[]).filter(function(x){return x.id==='updates';})[0]; if(u&&u.count>0){ go('updates'); } else { S.flow=null; go('start'); notice(t('Search finished: no newer driver was found on the Microsoft catalog.')); } }); }
+  if(j.kind==='report'&&j.status==='done'&&S.flow==='check'){ S.flow=null; S.open=false; $('#modal').style.display='none'; go('report'); }
+  if(S.queue&&S.queue.length){ if(j.status==='cancelled'){ S.queue=[]; } else { var nq=S.queue.shift(); S.launching=true; setTimeout(function(){ launch({action:nq},6); },300); } }
+  if(S.tab!=='devices'&&S.tab!=='drivers'&&S.tab!=='bluetooth'&&S.tab!=='settings'){ go(S.tab); }
+}
+function launch(body,retry){
+  S.launching=true; S.open=true; S.rebNo=false; S.rebAsked=false;
+  return api('/api/run',body).then(function(){
+    document.querySelectorAll('button[data-run],button[data-fix],#go').forEach(function(b){ b.disabled=true; });
+    if(S.polling) clearInterval(S.polling); S.polling=setInterval(pollJob,1000); pollJob();
+  })
+  .catch(function(e){ if(retry>0){ setTimeout(function(){ launch(body,retry-1); },1200); return; } S.open=false; S.launching=false; notice(e.message,true); });
+}
+
+/* ---------- events ---------- */
+document.addEventListener('keydown',function(e){ if(e.key!=='Escape') return; if(S.cf){ if(!S.cfOpts) S.cf(false); return; } if(S.pop) closePop(); });
+document.addEventListener('click',function(e){
+  // a browser translator wraps the text of buttons in <font>: look for the button the click belongs to
+  var t0=(e.target&&e.target.closest)?(e.target.closest('button,[data-tab],[data-go],[data-run],[data-kbsend],[data-fix],[data-save],[data-ans],[data-unblock]')||e.target):e.target, d=t0.dataset||{};
+  if(t0.closest&&t0.closest('#pop')&&(d.run||d.kbsend||d.fix||d.go||d.flow)){ closePop(); }
+  if(d.pop){ if(S.pop===d.pop){ closePop(); } else { openPop(d.pop); } return; }
+  if(t0.id==='popclose'){ closePop(); return; }
+  if(t0.id==='updrecheck'){ loadUpdate(); return; }
+  if(t0.id==='pop'){ closePop(); return; }
+  if(d.tab){ go(d.tab); return; }
+  if(d.flow){ startFlow(d.flow,d.go); return; }
+  if(d.pinforget!==undefined){ api('/api/pins',{forget:d.pinforget}).then(function(){ notice(t('Done.')); go('start'); }).catch(function(x){ notice(x.message,true); }); return; }
+  if(d.go){ go(d.go); return; }
+  if(t0.getAttribute&&t0.getAttribute('data-sort')!==null){ var st=t0.getAttribute('data-st'), ci=parseInt(t0.getAttribute('data-sort'),10), F2=S.filter[st]; if(F2.sort&&F2.sort.i===ci){ F2.sort.d=-F2.sort.d; } else { F2.sort={i:ci,d:1}; } var y=window.scrollY; vTable(st).then(function(){ window.scrollTo(0,y); }); return; }
+  if(d.unexcl!==undefined){ var pu=reEsc(d.unexcl); var ex2=(S.state.settings.exclusions||[]).filter(function(x){ return x!==pu; }); api('/api/settings',{exclusions:ex2}).then(function(){ return loadState(); }).then(function(){ notice(t('Removed from exclusions.')); vUpdates(); }).catch(function(x){ notice(x.message,true); }); return; }
+  if(t0.id==='profexp'||(t0.closest&&t0.closest('#profexp'))){ api('/api/profile').then(function(pr){ var b=new Blob([JSON.stringify(pr,null,2)],{type:'application/json'}), a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='devvy-profile.json'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); notice(t('Profile exported: devvy-profile.json')); }).catch(function(x){ notice(x.message,true); }); return; }
+  if(t0.id==='profimp'){ var fi=$('#proffile'); if(fi) fi.click(); return; }
+  if(d.newest!==undefined){ var gg={}; (S.data.catalog||[]).forEach(function(c){ var k=c.ShortId+'|'+c.Device; (gg[k]=gg[k]||[]).push(c); }); Object.keys(gg).forEach(function(k){ var f0=gg[k][0]; if(HIGH.indexOf(f0.Class)>=0||isExcl(f0.Device)) return; var b0=bestFor(gg[k]); if(b0) S.cat[k]={updateId:b0.UpdateId,risk:false}; }); vUpdates(); return; }
+  if(d.clearcat!==undefined){ S.cat={}; vUpdates(); return; }
+  if(d.excl!==undefined||d.exclname!==undefined){ var ek=d.excl, g0=(d.exclname!==undefined)?{Device:d.exclname}:(S.data.catalog||[]).filter(function(c){ return (c.ShortId+'|'+c.Device)===ek; })[0]; if(g0){ var ex=(S.state.settings.exclusions||[]).slice(); ex.push(reEsc(g0.Device)); if(ek) delete S.cat[ek]; api('/api/settings',{exclusions:ex}).then(function(){ return loadState(); }).then(function(){ notice(t('Excluded: it will be skipped.')); vUpdates(); }).catch(function(x){ notice(x.message,true); }); } return; }
+  if(d.unblock){ ask({title:t('Unblock device'),text:t('Let Windows install this device again?'),ok:t('Unblock')}).then(function(y){ if(y){ api('/api/unblock',{id:d.unblock}).then(function(){ notice(t('Unblocked.')); loadBlocked(); refreshBell(); }).catch(function(x){ notice(x.message,true); }); } }); return; }
+  if(d.run==='def-restore'){ ask({title:t('Remove the Defender exceptions?'),text:t('Without the exceptions Defender may block or slow down Devvy, and some operations may fail or work only in part. You can add them again at any time.'),ok:t('Remove exceptions'),cancel:t('Cancel'),cls:'warn'}).then(function(y){ if(y) launch({action:'def-restore'}); }); return; }
+  if(d.kbsend){ S.kbFrom=d.kbsend; launch({action:'anonymize'}); return; }
+  if(d.run){ launch({action:d.run}); return; }
+  if(d.copy!==undefined){ var cb=t0.closest?t0.closest('[data-copy]'):null; try{ navigator.clipboard.writeText(d.copy).then(function(){ if(cb){ var o0=cb.textContent; cb.textContent=t('Copied.'); setTimeout(function(){ cb.textContent=o0; },1500); } }).catch(function(){ notice(t('Cannot copy: select the text and copy it.'),true); }); }catch(e){ notice(t('Cannot copy: select the text and copy it.'),true); } return; }
+  if(d.pzip){ api('/api/openfolder',{file:d.pzip}).catch(function(x){ notice(x.message,true); }); return; }
+  if(d.pissue){ var ok0=openIssue((S.prob||{}).zip,'bug'); if(!ok0) notice(t('The GitHub page of the project is not set yet: the issue text was copied, paste it in a new issue.')); return; }
+  if(d.rb){ ask({title:t('Go back to the previous driver'),text:t('Reinstall the previous driver of "{0}"? The driver now in use for this device is replaced; the PC may need a restart.',d.rbname||''),ok:t('Go back'),cls:'red'}).then(function(y){ if(y){ launch({action:'rollback',key:d.rb}); } }); return; }
+  if(d.fix){ launch({action:'fix',fix:d.fix}); return; }
+  if(d.save){ save(d.save).then(function(r){ S.prop={from:S.tab,text:t('Choices saved ({0} changes). If you are done here, go to the next step.', r.changed),next:nextOf(S.tab)}; go(S.tab); }).catch(function(x){ notice(x.message,true); }); return; }
+  if(t0.id==='savecat'){ saveCat().then(function(r){ S.prop={from:'updates',text:t('Choice saved: {0} packages. Now you can install them.', r.chosen),next:'run'}; go('updates'); }).catch(function(x){ notice(x.message,true); }); return; }
+  if(t0.id==='firstsave'){ saveSettings(true).then(function(){ return loadI18n(); }).then(function(){ go('start'); var st=S.state.settings, q=[]; if(st.defender==='always' && !S.state.defender) q.push('def-prepare'); q.push('selftest'); q.push('inventory'); S.queue=q.slice(1); return launch({action:q[0]},6); }).catch(function(x){ notice(x.message,true); }); return; }
+  if(t0.dataset&&t0.dataset.ts){ var tb0=t0.closest('table'), st0=S.tsort[t0.dataset.ts], c0=parseInt(t0.dataset.col,10); if(st0.i===c0) st0.d=-st0.d; else { st0.i=c0; st0.d=1; } applySort(tb0); return; }
+  if(d.exrm!==undefined){ var cur2=(S.state.settings.exclusions||[]).filter(function(x){ return x; }); cur2.splice(parseInt(d.exrm,10),1); saveEx(cur2); return; }
+  if(t0.id==='savesettings'){ saveSettings(false).then(function(r){ try{ sessionStorage.setItem('dp_saved',t('Settings saved.')+' '+(r.notes||[]).join(' ')); }catch(x){} location.reload(); }).catch(function(x){ notice(x.message,true); }); return; }
+  if(d.ans){ var qid=(S.job&&S.job.question&&S.job.question.id)||$('#ask').dataset.qid||''; document.querySelectorAll('#askb button').forEach(function(b){ b.disabled=true; }); api('/api/answer',{answer:d.ans}).then(function(){ S.ansId=qid; $('#ask').style.display='none'; $('#ask').dataset.k=''; pollJob(); }).catch(function(x){ notice(x.message,true); document.querySelectorAll('#askb button').forEach(function(b){ b.disabled=false; }); }); return; }
+  if(t0.id==='cancel'){ ask({title:t('Stop the job'),text:t('Stop the running job? The operations already done stay.'),ok:t('Stop the job'),cls:'red',cancel:t('Keep going')}).then(function(y){ if(y){ api('/api/cancel',{}).then(function(){ pollJob(); }).catch(function(x){ notice(x.message,true); }); } }); return; }
+  if(t0.id==='defno'){ S.defAsked=true; go('start'); return; }
+  if(t0.id==='close'){ S.open=false; $('#modal').style.display='none'; return; }
+  if(t0.id==='exit'){ ask({title:t('Close Devvy'),text:t('Close the interface and the PowerShell engine?'),ok:t('Exit'),cls:'red'}).then(function(y){ if(y){ api('/api/exit',{}).then(showClosing).catch(function(x){ notice(x.message,true); }); } }); return; }
+  if(t0.id==='cfok'){ if(S.cf) S.cf(true); return; }
+  if(d.cfk!==undefined){ if(S.cf) S.cf(d.cfk); return; }
+  if(t0.id==='cfno'||t0.id==='cf'){ if(S.cf&&!S.cfOpts) S.cf(false); return; }
+  if(t0.id==='go'){
+    var E=S.run;
+    if(E.apply && !E.backup){ notice(t('Choose which backup to make (or "no backup").'),true); return; }
+    var parts=Object.keys(E.parts).filter(function(k){return E.parts[k];});
+    if(!parts.length){ notice(t('You did not choose any operation.'),true); return; }
+    var go3=function(){ return Promise.all([saveAll(),saveCat()]).then(function(){ if(E.apply){ S.casc=0; S.cascDone=0; S.lastApply={backup:'done',blockReinstall:!!S.state.settings.blockReinstall,parts:parts.filter(function(k){return k!=='catalog-install';})}; S.prevRemove=removeKeys(); } return launch({action:'execute',apply:E.apply,backup:E.backup,confirm:E.apply,blockReinstall:!!S.state.settings.blockReinstall,parts:parts}); }).catch(function(x){ notice(x.message,true); }); };
+    if(E.apply){
+      var step1=(E.backup==='none')?ask({title:t('No driver backup'),text:t('You chose not to back up the drivers. If something goes wrong you will not be able to go back to the previous drivers. Are you sure you do not want the backup?'),ok:t('Continue without backup'),cls:'red',cancel:t('Go back')}):Promise.resolve(true);
+      step1.then(function(y){ if(!y) return; return ask({title:t('Apply the changes'),text:t('The PC will be changed with the backup you chose. Do you want to continue?'),ok:t('Apply the changes'),cls:'red'}).then(function(y2){ if(y2) go3(); }); });
+    } else go3();
+  }
+});
+document.addEventListener('change',function(e){
+  if(e.target&&e.target.name==='s_def'){ var dw=$('#defwarn'); if(dw) dw.style.display=(e.target.value==='never'&&e.target.checked)?'':'none'; }
+  var t0=e.target, d=t0.dataset||{};
+  if(d.type){ S.mod[d.type][d.k]=t0.value; (S.touched[d.type]=S.touched[d.type]||{})[d.k]=t0.value; var tr=t0.closest('tr'); if(tr) tr.className=isDel(t0.value)?'del':''; return; }
+  if(t0.id==='inuse'){ S.filter.drivers.inuse=t0.checked; go('drivers'); return; }
+  if(t0.id==='only'){ S.filter[S.tab].only=t0.checked; go(S.tab); return; }
+  if(t0.id==='proffile'){ var fl=t0.files&&t0.files[0]; if(!fl) return; var rd=new FileReader(); rd.onload=function(){ var pr; try{ pr=JSON.parse(String(rd.result).replace(/^\uFEFF/,'')); }catch(x){ notice(t('This is not a Devvy profile file.'),true); return; } ask({title:t('Import profile'),text:t('Import this profile? Its exclusions, knowledge rows and support pages are added to yours; nothing of yours is deleted.'),ok:t('Import profile'),cancel:t('Cancel')}).then(function(y){ if(!y) return; api('/api/profile',{profile:pr}).then(function(r){ return loadState().then(function(){ notice(t('Profile imported: {0} exclusion(s) in total, {1} knowledge row(s) and {2} support page(s) added.',r.exclusions,r.knowledgeAdded,r.supportAdded)+((r.invalid&&r.invalid.length)?' '+t('Skipped as invalid: {0}.',r.invalid.join(', ')):'')); }); }).catch(function(x){ notice(x.message,true); }); }); }; rd.readAsText(fl); t0.value=''; return; }
+  if(t0.id==='consent'){ $('#bsearch').disabled=!t0.checked; api('/api/settings',{catalogConsent:t0.checked}).then(function(){ return loadState(); }); return; }
+  if(d.cat!==undefined){ S.cat[d.cat]={updateId:t0.value,risk:false}; vUpdates(); return; }
+  if(d.risk!==undefined){ var c=S.cat[d.risk]; if(c) c.risk=t0.checked; return; }
+  if(d.part){ S.run.parts[d.part]=t0.checked; updateGo(); return; }
+  if(t0.name==='mode'){ S.run.apply=(t0.value==='app'); vRun(); return; }
+  if(t0.name==='bk'){ S.run.backup=t0.value; S.run.bkTouched=true; updateGo(); return; }
+});
+document.addEventListener('input',function(e){
+  var t0=e.target;
+  if(t0.id==='q'){ S.filter[S.tab].q=t0.value; clearTimeout(S.qt); var pos=t0.selectionStart; S.qt=setTimeout(function(){ vTable(S.tab).then(function(){ var q=$('#q'); if(q){ q.focus(); q.setSelectionRange(pos,pos); } }); },300); }
+});
+
+window.addEventListener('scroll',function(){ var b=$('#top'); if(b) b.classList.toggle('show',window.scrollY>120); },{passive:true});
+document.addEventListener('click',function(e){ if(e.target&&e.target.closest&&e.target.closest('#top')){ window.scrollTo({top:0,behavior:'smooth'}); } });
+function startUpdateCheck(){
+  var st=S.state&&S.state.settings; if(S.updDone||!st||!st.firstRunDone||st.updateCheck===false) return Promise.resolve(false); S.updDone=true;
+  var chk=api('/api/update/check'), to=new Promise(function(res){ setTimeout(function(){ res(null); },25000); });
+  return Promise.race([chk,to]).then(function(r){
+    if(!r||!r.ok||!r.needed) return false;
+    S.upd=r; var ub=$('#updbadge'); if(ub){ ub.style.display=''; ub.textContent='!'; } refreshBell();
+    // nothing else runs until the person decides: update now (download, install, restart) or go on with this version
+    return ask({title:t('New version available'),text:t('Devvy {0} is available (you have {1}). Devvy waits for your answer before doing anything else: update now (it downloads, installs and restarts) or go on with this version.',r.latest,r.current),ok:t('Update now'),cancel:t('Not now')}).then(function(y){
+      if(y){ launch({action:'selfupdate'}); return true; }
+      return false;
+    });
+  }).catch(function(){ return false; });
+}
+Promise.all([loadI18n(),loadState()]).then(function(){
+  try{ var sv=sessionStorage.getItem('dp_saved'); if(sv){ sessionStorage.removeItem('dp_saved'); notice(sv); } }catch(x){}
+  drawTabs(); go('start');
+  return api('/api/job');
+}).then(function(j){
+  if(j.status==='running'){ S.open=true; S.polling=setInterval(pollJob,1000); pollJob(); return; }
+  S.postWork=!!(S.state.postReboot&&S.state.settings.firstRunDone);
+  return (S.postWork?Promise.resolve(false):startUpdateCheck()).then(function(started){
+  if(started) return;
+  var st=S.state.settings;
+  if(!S.autoDone && st.firstRunDone){
+    var q=[]; q.push('selftest'); S.cont=(S.state.postReboot&&S.state.cont&&S.state.cont.parts&&S.state.cont.parts.length)?S.state.cont:null; if(st.inventoryAtStart||!hasInv()||invStale()||S.cont) q.push('inventory'); if(S.state.postReboot) q.push('postcheck');
+    if(q.length){ S.autoDone=true; S.queue=q.slice(1); launch({action:q[0]},6); }
+  }
+  });
+}).catch(function(e){ $('#main').innerHTML='<div class="card err">'+esc(e.message)+'</div>'; });
+</script>
+</body>
+</html>
