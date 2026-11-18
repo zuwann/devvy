@@ -1,5 +1,5 @@
 {
- "version": "0.10.81",
+ "version": "0.10.82",
  "deferred": [
   "devvy.bat"
  ],
@@ -16,13 +16,13 @@
   },
   {
    "path": "README.md",
-   "sha256": "1c984ac7e116ec479f19923527328b62dbe279054166d18aee1a798fcba06524",
+   "sha256": "45fadac7850ada715d5aac43899f38e36cf1888a8f46dfc7b8b360120bb64b79",
    "size": 12694
   },
   {
    "path": "devvy.bat",
-   "sha256": "5920f021396745ca9d36a7727e230d4c8394e90603a39b07c762b036a7a61ccf",
-   "size": 2354
+   "sha256": "6bc88075bbd4a75e0f05d0a6a336d444a8d0c54ddd40528592cdb7d23ed9c8d1",
+   "size": 2333
   },
   {
    "path": "scripts/00-backup.ps1",
@@ -161,8 +161,8 @@
   },
   {
    "path": "scripts/devvy-cli.ps1",
-   "sha256": "f740ef2b9810f75eb8768e85bd73a2f96a86ac4d764292de28be330fb1d7e98f",
-   "size": 10655
+   "sha256": "ea8343d87be13c8b1f57fdb9e1e99a8057f3704595347a3366569228d4fdb12d",
+   "size": 10810
   },
   {
    "path": "scripts/kb-version.txt",
@@ -231,7 +231,7 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "e15607102eed184b62bf24dfb9e0181a1890ba6a1612bcaf0d9dc5ad3ca54c88",
+   "sha256": "65f8298664a483360271893cf2eb1531376b82f3652ab2abc8edd2102783fdb3",
    "size": 123519
   }
  ]

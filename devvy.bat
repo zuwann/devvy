@@ -51,5 +51,5 @@ if %errorlevel% neq 0 (
   echo ERROR: command line mode needs an administrator prompt. 1>&2
   exit /b 5
 )
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" %2 %3 %4 %5 %6 %7 %8 %9
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" %*
 exit /b %errorlevel%

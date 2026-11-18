@@ -7,7 +7,8 @@
 # Exit codes: 0 nothing to do / done, 1 findings (Audit, or Clean preview) , 2 error, 3 restart needed, 4 not allowed (catalog consent off),
 #             5 not running as administrator.  Exclusions, language and options come from data\settings.json (same as the page).
 param(
-    [Parameter(Position = 0)][string]$Action = 'Help',
+    [Parameter(Position = 0)][string]$Mode = '/cli',   # devvy.bat passes all its arguments (%*), the first one is /cli: this keeps commas in lists intact
+    [Parameter(Position = 1)][string]$Action = 'Help',
     [ValidateSet('text', 'json')][string]$Output = 'text',
     [switch]$Apply,
     [string[]]$Parts = @('devices', 'drivers', 'oldversions', 'bluetooth'),
