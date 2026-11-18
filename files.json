@@ -1,5 +1,5 @@
 {
- "version": "0.10.84",
+ "version": "0.10.85",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,13 +21,13 @@
   },
   {
    "path": "README.md",
-   "sha256": "53e152046c15ce11d8953d3b2605c710e07fb49c36c1f00609f5438af6c1f294",
+   "sha256": "1ccabf16ae928ff0b09c60b0eb64a4a0ae588623cd7444034dad8fc1f4c10fba",
    "size": 12808
   },
   {
    "path": "devvy.bat",
-   "sha256": "a4c2108d3995e6f0fa1eb51ce9c4d501b2b29b5dbf69f14d982563ddadc589e3",
-   "size": 2717
+   "sha256": "94418058bd9322951344754fd91fdf3d33cd4ee9cb161804a5466bc3c7de76c7",
+   "size": 3151
   },
   {
    "path": "scripts/00-backup.ps1",
@@ -236,7 +236,7 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "f3f8a99375c37f3c60c8ba35a406e593f62824ea472cb4caa34b215a737d209d",
+   "sha256": "a27ae4d6610fb8b9cba9f20bfdbf9edfe861f7d70c87d07ac0011a5aca2cd4d6",
    "size": 123519
   }
  ]
