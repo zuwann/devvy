@@ -1181,7 +1181,6 @@
   "Command line: exit codes": "CODES DE SORTIE",
   "Command line: examples": "EXEMPLES",
   "Full guide:": "Guide complet :",
-  "Shows this help (also: /cli -h, /cli /?). It works without administrator rights.": "Affiche cette aide (aussi : /cli -h, /cli /?). Fonctionne sans droits administrateur.",
   "Read only: inventory and summary (ghost devices, old drivers, old Bluetooth pairings, drivers to check).": "Lecture seule : inventaire et résumé (périphériques fantômes, anciens pilotes, anciens appairages Bluetooth, pilotes à vérifier).",
   "Preview of the cleanup: nothing is removed. Add -Apply to really remove.": "Aperçu du nettoyage : rien n'est supprimé. Ajoutez -Apply pour supprimer vraiment.",
   "Read only: looks in the Microsoft catalog for newer drivers (needs the catalog consent in the settings).": "Lecture seule : cherche dans le catalogue Microsoft des pilotes plus récents (nécessite le consentement au catalogue dans les paramètres).",
@@ -1192,5 +1191,18 @@
   "Really do it (Clean, Update). Without it nothing changes.": "Exécute vraiment (Clean, Update). Sans cela, rien ne change.",
   "Clean only: devices, drivers, oldversions, bluetooth (comma list in quotes; default all).": "Clean uniquement : devices, drivers, oldversions, bluetooth (liste avec virgules entre guillemets ; tout par défaut).",
   "Clean -Apply only: none (default), drivers, or full (restore point + driver export).": "Clean -Apply uniquement : none (par défaut), drivers ou full (point de restauration + export des pilotes).",
-  "0 ok, 1 findings or update available, 2 error, 3 restart needed, 4 not allowed, 5 not administrator.": "0 ok, 1 résultats ou mise à jour disponible, 2 erreur, 3 redémarrage nécessaire, 4 non autorisé, 5 pas administrateur."
+  "0 ok, 1 findings or update available, 2 error, 3 restart needed, 4 not allowed, 5 not administrator.": "0 ok, 1 résultats ou mise à jour disponible, 2 erreur, 3 redémarrage nécessaire, 4 non autorisé, 5 pas administrateur.",
+  "Please wait: Devvy is working. Some steps take a minute or two, nothing is frozen.": "Patientez : Devvy travaille. Certaines étapes prennent une ou deux minutes, rien n'est bloqué.",
+  "This can take a minute or two...": "Cela peut prendre une ou deux minutes...",
+  "Exit code {0}: {1}": "Code de sortie {0} : {1}",
+  "all fine / done": "tout va bien / terminé",
+  "something found (or an update is available)": "quelque chose a été trouvé (ou une mise à jour est disponible)",
+  "error, see the log": "erreur, voir le journal",
+  "restart Windows to finish": "redémarrez Windows pour terminer",
+  "not allowed (catalog switched off in the settings)": "non autorisé (catalogue désactivé dans les paramètres)",
+  "administrator rights needed": "droits administrateur nécessaires",
+  "To see what Devvy can do run: devvy.bat -h": "Pour voir ce que Devvy peut faire, lancez : devvy.bat -h",
+  "Log:": "Journal :",
+  "Shows this help. It works without administrator rights.": "Affiche cette aide. Fonctionne sans droits administrateur.",
+  "Checking GitHub for a newer version...": "Vérification sur GitHub d'une version plus récente..."
 }

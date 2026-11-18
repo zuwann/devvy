@@ -5,12 +5,10 @@ title Devvy
 
 rem --- Command line mode (no web page): devvy.bat /cli <Audit|Clean|Search|Update|Profile> [options]. It never asks for elevation: start it from an administrator prompt or task.
 if /i "%~1"=="/cli" goto :cli
-rem Asking for help (devvy.bat -h, /?, --help, help) shows the command line help instead of opening the web page
+rem Asking for help (devvy.bat -h, /? or /help) shows the command line help instead of opening the web page
 if /i "%~1"=="-h" goto :clihelp
 if "%~1"=="/?" goto :clihelp
-if /i "%~1"=="--help" goto :clihelp
 if /i "%~1"=="/help" goto :clihelp
-if /i "%~1"=="help" goto :clihelp
 
 rem --- Self-elevation: if we are not administrators, relaunch with the UAC request ---
 net session >nul 2>&1
@@ -57,21 +55,22 @@ rem The whole block is read by cmd before it runs, so "Update -Apply" can replac
   rem help needs no administrator rights
   set "DV_NOADMIN="
   if "%~2"=="" set "DV_NOADMIN=1"
-  if /i "%~2"=="help" set "DV_NOADMIN=1"
   if /i "%~2"=="-h" goto :clihelp
-  if /i "%~2"=="--help" goto :clihelp
-  if "%~2"=="/?" set "DV_NOADMIN=1"
+  if "%~2"=="/?" goto :clihelp
+  if /i "%~2"=="/help" goto :clihelp
   if not defined DV_NOADMIN (
     net session >nul 2>&1
     if errorlevel 1 (
       echo ERROR: command line mode needs an administrator prompt. 1>&2
+      echo Exit code 5: administrator rights needed 1>&2
       exit /b 5
     )
+    echo Devvy: starting, please wait... 1>&2
   )
   powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" %*
   exit /b %errorlevel%
 )
 
 :clihelp
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" /cli Help
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" /cli /help
 exit /b 0

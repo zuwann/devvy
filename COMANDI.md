@@ -15,7 +15,7 @@ Per amministratori e attività pianificate: stesse funzioni della pagina web, ma
 
 | Comando | Cosa fa | Cambia qualcosa? |
 |---|---|---|
-| `devvy.bat /cli Help` (o solo `/cli`, `-h`, `/?`) | Mostra l'aiuto con tutti i comandi, anche senza essere amministratore | No |
+| `devvy.bat -h` (o `/?`, `/help`) | Mostra l'aiuto con tutti i comandi, anche senza essere amministratore | No |
 | `devvy.bat /cli Audit` | Inventario e riepilogo: dispositivi fantasma, driver vecchi, abbinamenti Bluetooth vecchi, driver da controllare | No |
 | `devvy.bat /cli Clean` | Anteprima della pulizia: cosa verrebbe rimosso | No |
 | `devvy.bat /cli Clean -Apply` | Pulizia vera, ripetuta finché compaiono altri residui (massimo 3 giri in più), poi inventario finale | **Sì** |
@@ -46,7 +46,7 @@ Per amministratori e attività pianificate: stesse funzioni della pagina web, ma
 | 4 | Non consentito (catalogo disattivato nelle impostazioni) |
 | 5 | Non sei amministratore |
 
-Da PowerShell leggi il codice con `$LASTEXITCODE`, da cmd con `echo %errorlevel%`.
+Il codice viene **stampato anche a fine comando** (riga "Codice di uscita N: ..."). Per leggerlo in uno script: da PowerShell `$LASTEXITCODE`, da cmd `echo %errorlevel%` (in PowerShell `%errorlevel%` NON funziona).
 
 ## Esempi
 
@@ -74,6 +74,7 @@ Non pianificare `Clean -Apply` senza averlo provato prima a mano: rimuove davver
 
 ## Note
 
+- All'avvio compare subito un messaggio di attesa; rimozioni, aggiornamenti e backup scrivono a schermo cosa fanno (anche nell'anteprima di `Clean`).
 - Le domande che nella pagina compaiono come popup, qui non vengono mai fatte: lo script sceglie sempre la risposta prudente.
 - `Update -Apply` sostituisce anche `devvy.bat` a fine lavoro: non serve riavviare nulla.
 - Una cartella di rete va bene, ma il prompt amministratore non vede le unità mappate dell'utente normale: usa il percorso UNC (`\\server\cartella`).

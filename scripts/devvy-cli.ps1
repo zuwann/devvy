@@ -24,14 +24,13 @@ if ($IsWindows -ne $false) {
     $p0 = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
     $isAdmin = $p0.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
-function Show-Help([string]$Unknown = '') {
+function Show-Help {
     $c = { param($a, $b) Write-Host ('  ' + $a.PadRight(34)) -NoNewline -ForegroundColor Cyan; Write-Host $b }
-    if ($Unknown) { [Console]::Error.WriteLine((T 'Unknown action: {0}' $Unknown)); Write-Host '' }
     Write-Host (T 'Devvy on the command line (no web page). Start it from an administrator prompt:') -ForegroundColor Green
     Write-Host '  devvy.bat /cli <Action> [options]'
     Write-Host ''
     Write-Host (T 'Command line: actions') -ForegroundColor Yellow
-    & $c 'Help' (T 'Shows this help (also: /cli -h, /cli /?). It works without administrator rights.')
+    & $c '-h  /?  /help' (T 'Shows this help. It works without administrator rights.')
     & $c 'Audit' (T 'Read only: inventory and summary (ghost devices, old drivers, old Bluetooth pairings, drivers to check).')
     & $c 'Clean' (T 'Preview of the cleanup: nothing is removed. Add -Apply to really remove.')
     & $c 'Search' (T 'Read only: looks in the Microsoft catalog for newer drivers (needs the catalog consent in the settings).')
@@ -57,8 +56,9 @@ function Show-Help([string]$Unknown = '') {
     Write-Host ''
     Write-Host ((T 'Full guide:') + ' COMANDI.md')
 }
-if (@('', 'help', '-h', '--help', '/?', '-?', '/h') -contains "$Action".ToLower()) { Show-Help; exit 0 }
-if (-not $isAdmin) { [Console]::Error.WriteLine((T 'ERROR: this script needs administrator rights.')); exit 5 }
+if (@('-h', '/?', '/help') -contains "$Action".ToLower()) { Show-Help; exit 0 }
+if (-not $Action -or $Action -eq 'Help') { Write-Host (T 'To see what Devvy can do run: devvy.bat -h'); exit 0 }
+if (-not $isAdmin) { [Console]::Error.WriteLine((T 'ERROR: this script needs administrator rights.')); [Console]::Error.WriteLine((T 'Exit code {0}: {1}' 5 (T 'administrator rights needed'))); exit 5 }
 $Parts = @($Parts | ForEach-Object { "$_".Split(',') } | ForEach-Object { $_.Trim().ToLower() } | Where-Object { $_ })
 $json = ($Output -eq 'json')
 $ps = 'powershell.exe'
@@ -68,14 +68,26 @@ $logDir = Join-Path $script:DataRoot 'logs'; New-Item -ItemType Directory -Force
 $logFile = Join-Path $logDir ('cli-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.txt')
 $script:Reboot = $false; $script:Errors = New-Object System.Collections.Generic.List[string]
 function Say([string]$Text, [string]$Color = 'Gray') { if (-not $json) { Write-Host $Text -ForegroundColor $Color } }
+Say (T 'Please wait: Devvy is working. Some steps take a minute or two, nothing is frozen.') 'Yellow'
 
-function Invoke-Step([string]$Title, [string]$Script, [string[]]$More = @()) {
+function Invoke-Step([string]$Title, [string]$Script, [string[]]$More = @(), [switch]$Show, [string]$Hint = '') {
     Say ('> ' + $Title) 'Green'
+    if ($Hint) { Say ('  ' + $Hint) 'DarkGray' }
     $arg = @('-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', (Join-Path $PSScriptRoot $Script)) + $More
-    $txt = (& $ps @arg 2>&1 | ForEach-Object { "$_" } | Out-String)
+    # the child writes UTF-8 (DEVVY_WEB=1): read it as UTF-8 so accents are right, then give the console encoding back
+    $oldEnc = $null
+    try { $oldEnc = [Console]::OutputEncoding; [Console]::OutputEncoding = New-Object Text.UTF8Encoding($false) } catch { }
+    try { $txt = (& $ps @arg 2>&1 | ForEach-Object { "$_" } | Out-String) } finally { if ($oldEnc) { try { [Console]::OutputEncoding = $oldEnc } catch { } } }
     $code = $LASTEXITCODE
     Add-Content -Path $logFile -Value ("===== $Title ($Script) exit $code`r`n" + $txt) -Encoding UTF8
     if ($txt -match '##REBOOT##') { $script:Reboot = $true }
+    if ($Show) {
+        foreach ($ln in ($txt -split "\r?\n")) {
+            $l = $ln.TrimEnd(); if (-not $l.Trim() -or $l -match '^\s*##') { continue }
+            $col = 'Gray'; if ($l -match '(?i)error|errore|fail|non rimoss|NOT') { $col = 'Yellow' }
+            Say ('  ' + $l.TrimStart()) $col
+        }
+    }
     if ($null -ne $code -and $code -ne 0) { $script:Errors.Add("$Title (exit $code)"); Say ('  ' + (T 'It ended with an error, see the log:') + ' ' + $logFile) 'Yellow' }
     return $code
 }
@@ -100,6 +112,12 @@ function Get-Total($f) { return ($f.ghostDevices.Count + $f.removableDrivers.Cou
 function Write-Result($Obj, [int]$Code) {
     $Obj['exitCode'] = $Code; $Obj['log'] = $logFile; $Obj['restartNeeded'] = $script:Reboot; $Obj['errors'] = @($script:Errors)
     if ($json) { Write-Output (ConvertTo-Json -InputObject $Obj -Depth 6) }
+    else {
+        $what = @{ 0 = (T 'all fine / done'); 1 = (T 'something found (or an update is available)'); 2 = (T 'error, see the log'); 3 = (T 'restart Windows to finish'); 4 = (T 'not allowed (catalog switched off in the settings)'); 5 = (T 'administrator rights needed') }[$Code]
+        $col = 'Green'; if ($Code -eq 1 -or $Code -eq 3) { $col = 'Yellow' } elseif ($Code -ge 2) { $col = 'Red' }
+        Write-Host ''; Write-Host (T 'Exit code {0}: {1}' $Code $what) -ForegroundColor $col
+        Write-Host ((T 'Log:') + ' ' + $logFile) -ForegroundColor DarkGray
+    }
     exit $Code
 }
 function Show-Summary($f) {
@@ -114,7 +132,7 @@ $base = [ordered]@{ program = 'Devvy'; version = $ver; action = $Action; apply =
 
 switch -Regex ($Action) {
     '^(?i)audit$' {
-        $null = Invoke-Step (T 'PC inventory') '04-inventory-all.ps1'
+        $null = Invoke-Step (T 'PC inventory') '04-inventory-all.ps1' -Hint (T 'This can take a minute or two...')
         $null = Invoke-Step (T 'Drivers to check') '06-drivers-to-check.ps1' @('-SkipWindowsUpdate')
         $f = Get-Findings; Show-Summary $f
         $o = $base; $o['summary'] = (& $summ $f); $o['findings'] = $f
@@ -122,25 +140,25 @@ switch -Regex ($Action) {
         Write-Result $o $code
     }
     '^(?i)clean$' {
-        if ($Apply -and $Backup -ne 'none') { $null = Invoke-Step (T 'Backup') '00-backup.ps1' @('-Mode', $(if ($Backup -eq 'full') { 'Full' } else { 'Drivers' })) }
+        if ($Apply -and $Backup -ne 'none') { $null = Invoke-Step (T 'Backup') '00-backup.ps1' @('-Mode', $(if ($Backup -eq 'full') { 'Full' } else { 'Drivers' })) -Show }
         $s = Read-Settings
         $round = 0; $maxRound = 4; $log = New-Object System.Collections.Generic.List[object]
         do {
             $round++
             Say ((T 'Round {0}' $round)) 'Cyan'
-            $null = Invoke-Step (T 'PC inventory') '04-inventory-all.ps1'
+            $null = Invoke-Step (T 'PC inventory') '04-inventory-all.ps1' -Hint (T 'This can take a minute or two...')
             $f = Get-Findings; Show-Summary $f
             if ($round -eq 1) { $first = & $summ $f }
             if ((Get-Total $f) -eq 0) { break }
             $ap = @(); if ($Apply) { $ap = @('-Apply') }
-            if ($Parts -contains 'devices' -and $f.ghostDevices.Count -gt 0) { $null = Invoke-Step (T 'Remove ghost devices') '22-remove-devices.ps1' $ap }
-            if ($Parts -contains 'drivers' -and $f.removableDrivers.Count -gt 0) { $a2 = $ap; if ($Apply -and $s.blockReinstall) { $a2 = @('-Apply', '-BlockReinstall') }; $null = Invoke-Step (T 'Remove drivers') '23-remove-drivers.ps1' $a2 }
-            if ($Parts -contains 'oldversions') { $null = Invoke-Step (T 'Remove old driver versions') '25-remove-old-versions.ps1' $ap }
-            if ($Parts -contains 'bluetooth' -and $f.bluetoothPairings.Count -gt 0) { $null = Invoke-Step (T 'Remove Bluetooth pairings') '21-remove-bluetooth.ps1' $ap }
+            if ($Parts -contains 'devices' -and $f.ghostDevices.Count -gt 0) { $null = Invoke-Step (T 'Remove ghost devices') '22-remove-devices.ps1' $ap -Show }
+            if ($Parts -contains 'drivers' -and $f.removableDrivers.Count -gt 0) { $a2 = $ap; if ($Apply -and $s.blockReinstall) { $a2 = @('-Apply', '-BlockReinstall') }; $null = Invoke-Step (T 'Remove drivers') '23-remove-drivers.ps1' $a2 -Show }
+            if ($Parts -contains 'oldversions') { $null = Invoke-Step (T 'Remove old driver versions') '25-remove-old-versions.ps1' $ap -Show }
+            if ($Parts -contains 'bluetooth' -and $f.bluetoothPairings.Count -gt 0) { $null = Invoke-Step (T 'Remove Bluetooth pairings') '21-remove-bluetooth.ps1' $ap -Show }
             $log.Add([ordered]@{ round = $round; found = (& $summ $f) })
             if (-not $Apply) { break }
         } while ($round -lt $maxRound -and -not $script:Reboot)
-        if ($Apply) { $null = Invoke-Step (T 'PC inventory') '04-inventory-all.ps1'; $f = Get-Findings }
+        if ($Apply) { $null = Invoke-Step (T 'PC inventory') '04-inventory-all.ps1' -Hint (T 'This can take a minute or two...'); $f = Get-Findings }
         $o = $base; $o['firstFound'] = $first; $o['rounds'] = $log.ToArray(); $o['remaining'] = (& $summ $f)
         $code = 0
         if ($script:Errors.Count -gt 0) { $code = 2 } elseif ($script:Reboot -and $Apply) { $code = 3 } elseif (-not $Apply -and (Get-Total $f) -gt 0) { $code = 1 }
@@ -149,21 +167,23 @@ switch -Regex ($Action) {
     '^(?i)search$' {
         if ($s0 = Read-Settings) { if ($s0.catalogConsent -eq $false) { [Console]::Error.WriteLine((T 'The catalog search is switched off in the settings.')); Write-Result $base 4 } }
         $null = Invoke-Step (T 'Drivers to check') '06-drivers-to-check.ps1' @('-SkipWindowsUpdate')
-        $null = Invoke-Step (T 'Microsoft catalog') '08-catalog-search.ps1' @('-SkipConfirm')
+        $null = Invoke-Step (T 'Microsoft catalog') '08-catalog-search.ps1' @('-SkipConfirm') -Hint (T 'This can take a minute or two...')
         $rows = @(Get-Rows 'catalog' | Where-Object { $_.UpdateId -and $_.NewerThanCurrent -ne 'NO' })
         Say ('  ' + (T 'Newer drivers found: {0}' $rows.Count))
+        foreach ($r in $rows) { Say ('   - ' + $r.Device + ': ' + $r.Version + ' (' + $r.Date + ')  <-  ' + $r.CurrentDriver) 'Yellow' }
         $o = $base; $o['newerDrivers'] = @($rows | ForEach-Object { [ordered]@{ device = $_.Device; title = $_.Title; version = $_.Version; date = $_.Date; current = $_.CurrentDriver } })
         $code = 0; if ($script:Errors.Count -gt 0) { $code = 2 } elseif ($rows.Count -gt 0) { $code = 1 }
         Write-Result $o $code
     }
     '^(?i)update$' {
+        Say ('> ' + (T 'Checking GitHub for a newer version...')) 'Green'
         $plan = Get-UpdatePlan
         if (-not $plan.ok) { [Console]::Error.WriteLine($plan.error); $o = $base; $o['error'] = $plan.error; Write-Result $o 2 }
         $o = $base; $o['installed'] = $plan.current; $o['latest'] = $plan.latest; $o['updateAvailable'] = [bool]$plan.needed
         if (-not $plan.needed) { Say ('  ' + (T 'Devvy is already up to date.')) 'Green'; Say ('  ' + (T 'Installed version:') + ' ' + $plan.current); Write-Result $o 0 }
         Say ('  ' + (T 'Update available: {0} (installed: {1}). To install it: devvy.bat /cli Update -Apply' $plan.latest $plan.current)) 'Yellow'
         if (-not $Apply) { Write-Result $o 1 }
-        $code = Invoke-Step (T 'Updating Devvy') '29-self-update.ps1'
+        $code = Invoke-Step (T 'Updating Devvy') '29-self-update.ps1' -Show
         if ($code -ne 0) { Write-Result $o 2 }
         # devvy.bat could not change while a program was running: nobody is running it now except this very call (its CLI block is read in advance), so put it in place
         $root = Split-Path $PSScriptRoot
@@ -198,5 +218,5 @@ switch -Regex ($Action) {
         }
         [Console]::Error.WriteLine('Profile: use -Import <file.json> or -Export <file.json>'); Write-Result $base 2
     }
-    default { Show-Help $Action; exit 2 }
+    default { [Console]::Error.WriteLine((T 'Unknown action: {0}' $Action)); [Console]::Error.WriteLine((T 'To see what Devvy can do run: devvy.bat -h')); Write-Result $base 2 }
 }
