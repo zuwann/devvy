@@ -139,7 +139,7 @@ if ($env:DEVVY_WEB -eq '1') { try { [Console]::OutputEncoding = New-Object Syste
 # English text without translation: values written to CSV files stay language neutral (the screen translates them with Convert-ReasonText)
 function TE {
     param([string]$Text)
-    if ($args.Count -gt 0) { return [string]::Format($Text, [object[]]$args) }
+    if ($args.Count -gt 0) { return [string]::Format([Globalization.CultureInfo]::InvariantCulture, $Text, [object[]]$args) }
     return $Text
 }
 $script:ReasonTemplates = @(
