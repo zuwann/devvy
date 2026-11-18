@@ -10,7 +10,7 @@
 
 Devvy is a light and transparent tool to maintain, update and clean up drivers and devices on Windows. Unlike commercial "driver booster" tools it installs no service, bundles nothing and never forces updates you do not need. It starts a small local web server (only `127.0.0.1`) and runs plain PowerShell scripts (`.ps1`) that you can read, with a web page as the interface. When you close it, nothing stays running.
 
-> **Status: experimental beta (0.10.78).** Written and tested mostly on Linux with simulated Windows functions, then used on real PCs by the author. Use it at your own risk and read the [DISCLAIMER](DISCLAIMER.txt) and the Safety section.
+> **Status: experimental beta (0.10.79).** Written and tested mostly on Linux with simulated Windows functions, then used on real PCs by the author. Use it at your own risk and read the [DISCLAIMER](DISCLAIMER.txt) and the Safety section.
 
 ### Why it is different
 
@@ -48,6 +48,12 @@ Requirements: Windows 10 2004 (build 19041) or later, Windows PowerShell 5.1 (in
 Languages: English, Italian, Spanish, German and French (`scripts/locales/*.json`). To add a language copy `it.json` and translate the values; the English text is the key.
 Settings, reports, logs and backups live in the `data` folder (or the folder you choose in Settings).
 
+### Command line and scheduled tasks
+
+From an **administrator** prompt: `devvy.bat /cli Audit -Output json` (read only), `Clean` (preview; add `-Apply` to really remove), `Search` (catalog), `Profile -Import file.json` / `-Export file.json`. Exit codes: 0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator. Quote comma lists: `-Parts "devices,drivers"`. Log in `data\logs\cli-*.txt`.
+Weekly audit as a scheduled task (run once from an administrator prompt, adjust the path):
+`schtasks /Create /TN "Devvy weekly audit" /SC WEEKLY /D MON /ST 09:00 /RL HIGHEST /TR "cmd /c \"C:\Tools\devvy\devvy.bat\" /cli Audit -Output json > \"C:\Tools\devvy-audit.json\""`
+
 ### Safety
 
 - No telemetry. The web page listens only on `127.0.0.1`, with a random secret code.
@@ -73,7 +79,7 @@ License: MIT. Author: zuwann.
 
 Devvy è uno strumento leggero e trasparente per la manutenzione, l'aggiornamento e la pulizia di driver e dispositivi su Windows. A differenza dei software commerciali tipo "driver booster" non installa servizi, non contiene software aggiuntivo e non forza aggiornamenti inutili. Avvia un piccolo server web locale (solo `127.0.0.1`) ed esegue semplici script PowerShell (`.ps1`) che puoi leggere, con una pagina web come interfaccia. Quando lo chiudi, non resta in esecuzione nulla.
 
-> **Stato: beta sperimentale (0.10.78).** Scritto e provato soprattutto su Linux con funzioni Windows simulate, poi usato su PC reali dall'autore. Usalo a tuo rischio e leggi il [DISCLAIMER](DISCLAIMER.txt) e la sezione Sicurezza.
+> **Stato: beta sperimentale (0.10.79).** Scritto e provato soprattutto su Linux con funzioni Windows simulate, poi usato su PC reali dall'autore. Usalo a tuo rischio e leggi il [DISCLAIMER](DISCLAIMER.txt) e la sezione Sicurezza.
 
 ### Perché è diverso
 
@@ -110,6 +116,11 @@ Devvy è uno strumento leggero e trasparente per la manutenzione, l'aggiornament
 Requisiti: Windows 10 2004 (build 19041) o successivo, Windows PowerShell 5.1 (incluso), diritti di amministratore, internet per la ricerca dei driver.
 Lingue: inglese, italiano, spagnolo, tedesco e francese (`scripts/locales/*.json`). Per aggiungere una lingua copia `it.json` e traduci i valori; il testo inglese è la chiave.
 Impostazioni, report, log e backup stanno nella cartella `data` (o nella cartella scelta nelle Impostazioni).
+
+### Riga di comando e attività pianificate
+
+Da un prompt **amministratore**: `devvy.bat /cli Audit -Output json` (sola lettura), `Clean` (anteprima; con `-Apply` rimuove davvero), `Search` (catalogo), `Profile -Import file.json` / `-Export file.json`. Codici di uscita: 0 ok, 1 trovato qualcosa, 2 errore, 3 serve riavvio, 4 non consentito, 5 non amministratore. Le liste con virgole vanno tra virgolette: `-Parts "devices,drivers"`. Log in `data\logs\cli-*.txt`.
+Controllo settimanale come attività pianificata (da eseguire una volta da prompt amministratore, adatta il percorso): vedi l'esempio `schtasks` nella sezione inglese.
 
 ### Sicurezza
 

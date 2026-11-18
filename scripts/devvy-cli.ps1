@@ -2,6 +2,7 @@
 #   Audit   read-only: inventory + findings (ghost devices, old Bluetooth pairings, removable drivers, drivers to check)
 #   Clean   preview of the cleanup; with -Apply it really removes, repeats while new leftovers appear (max 3 extra rounds)
 #   Search  read-only: asks the Microsoft catalog for newer drivers (needs the catalog consent in the settings)
+#   Profile -Import <file.json> adds a profile exported from the page (exclusions, options, user rows); -Export <file.json> writes one
 # Options: -Output text|json   -Apply   -Parts devices,drivers,oldversions,bluetooth (default all)   -Backup none|drivers|full (before -Apply)
 # Exit codes: 0 nothing to do / done, 1 findings (Audit, or Clean preview) , 2 error, 3 restart needed, 4 not allowed (catalog consent off),
 #             5 not running as administrator.  Exclusions, language and options come from data\settings.json (same as the page).
@@ -10,7 +11,9 @@ param(
     [ValidateSet('text', 'json')][string]$Output = 'text',
     [switch]$Apply,
     [string[]]$Parts = @('devices', 'drivers', 'oldversions', 'bluetooth'),
-    [ValidateSet('none', 'drivers', 'full')][string]$Backup = 'none'
+    [ValidateSet('none', 'drivers', 'full')][string]$Backup = 'none',
+    [string]$Import = '',
+    [string]$Export = ''
 )
 $ErrorActionPreference = 'Stop'
 . "$PSScriptRoot\common.ps1"
@@ -117,8 +120,26 @@ switch -Regex ($Action) {
         $code = 0; if ($script:Errors.Count -gt 0) { $code = 2 } elseif ($rows.Count -gt 0) { $code = 1 }
         Write-Result $o $code
     }
+    '^(?i)profile$' {
+        if ($Import) {
+            if (-not (Test-Path -LiteralPath $Import)) { [Console]::Error.WriteLine((T 'File not found: {0}' $Import)); Write-Result $base 2 }
+            try { $pr = ([IO.File]::ReadAllText((Resolve-Path -LiteralPath $Import).Path, [Text.Encoding]::UTF8)).TrimStart([char]0xFEFF) | ConvertFrom-Json } catch { $pr = $null }
+            $res = Import-DevvyProfile $pr
+            if (-not $res) { [Console]::Error.WriteLine((T 'This is not a Devvy profile file.')); Write-Result $base 2 }
+            Say ('  ' + (T 'Profile imported: {0} exclusion(s) in total, {1} knowledge row(s) and {2} support page(s) added.' $res.exclusions $res.knowledgeAdded $res.supportAdded)) 'Green'
+            if (@($res.invalid).Count -gt 0) { Say ('  ' + (T 'Skipped as invalid: {0}.' (@($res.invalid) -join ', '))) 'Yellow' }
+            $o = $base; $o['exclusions'] = $res.exclusions; $o['knowledgeAdded'] = $res.knowledgeAdded; $o['supportAdded'] = $res.supportAdded; $o['invalid'] = @($res.invalid)
+            Write-Result $o 0
+        }
+        if ($Export) {
+            [IO.File]::WriteAllText($Export, (ConvertTo-Json -InputObject (Get-DevvyProfile) -Depth 6), (New-Object Text.UTF8Encoding($false)))
+            Say ('  ' + (T 'Profile exported: devvy-profile.json')) 'Green'
+            Write-Result $base 0
+        }
+        [Console]::Error.WriteLine('Profile: use -Import <file.json> or -Export <file.json>'); Write-Result $base 2
+    }
     default {
-        Write-Host 'Devvy CLI: devvy.bat /cli <Audit|Clean|Search> [-Output json] [-Apply] [-Parts devices,drivers,oldversions,bluetooth] [-Backup none|drivers|full]'
+        Write-Host 'Devvy CLI: devvy.bat /cli <Audit|Clean|Search|Profile> [-Output json] [-Apply] [-Parts devices,drivers,oldversions,bluetooth] [-Backup none|drivers|full] | Profile -Import|-Export <file.json>'
         Write-Host 'Audit and Search only read. Clean only previews unless -Apply is given. Exit codes: 0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator.'
         exit 0
     }

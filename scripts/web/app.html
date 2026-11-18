@@ -125,7 +125,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 </head>
 <body>
 <header>
-  <h1>Devvy <small class="mut">0.10.78</small></h1>
+  <h1>Devvy <small class="mut">0.10.79</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="upd" data-pop="update" type="button" title="Updates"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M19 2v4h-4"/><path d="M5 22v-4h4"/></svg><span id="updbadge" class="belln" style="display:none"></span></button>
@@ -566,13 +566,20 @@ function vTable(type){
       var kv=function(r){ if(memo.has(r)) return memo.get(r); var v=(si<0)?String(S.mod[type][r[T.key]]||r.Action||''):String(T.cols[si][1](r)).replace(/<[^>]*>/g,' ').replace(/&[a-z#0-9]+;/g,' ').replace(/\s+/g,' ').trim(); memo.set(r,v); return v; };
       vis=vis.slice().sort(function(a,b){ return sd*kv(a).localeCompare(kv(b),undefined,{numeric:true,sensitivity:'base'}); });
     }
+    // several unused extension drivers of the same kind (one per laptop model) are folded into one line; the button opens them
+    var grp={}, grpWhat={}; F.open=F.open||{};
+    if(type==='drivers' && !F.q){ vis.forEach(function(r){ if(r.Class==='Extension' && r.KbId && !inUse(r) && !isDel(S.mod.drivers[r[T.key]]||r.Action)){ (grp[r.KbId]=grp[r.KbId]||[]).push(r); grpWhat[r.KbId]=r.What||r.Category||r.KbId; } }); Object.keys(grp).forEach(function(k){ if(grp[k].length<3) delete grp[k]; }); }
     var nDel=0; rows.forEach(function(r){ if(!(type==='drivers'&&inUse(r)) && isDel(S.mod[type][r[T.key]]||r.Action)) nDel++; });
     var h='<h2>'+esc(t(T.title))+'</h2>'+(type==='devices'?problemsCard(rows):'')+'<p class="mut">'+esc(t(T.note))+'</p><div class="row"><input type="text" id="q" placeholder="'+esc(t('Search...'))+'" value="'+esc(F.q)+'">'+
       (T.onlyLabel?'<label class="chk"><input type="checkbox" id="only" '+(F.only?'checked':'')+'> '+esc(t(T.onlyLabel))+'</label>':'')+
       (type==='drivers'?'<label class="chk"><input type="checkbox" id="inuse" '+(F.inuse?'checked':'')+'> '+esc(t('Also show drivers in use (they cannot be removed here)'))+'</label>':'')+'<span class="tag">'+esc(t('{0} shown of {1}', vis.length, rows.length))+'</span><span class="tag '+(nDel?'r':'')+'">'+esc(t('{0} to remove', nDel))+'</span><button class="b ok" data-save="'+type+'">'+esc(t('Save choices'))+'</button></div><div class="wrap"><table><tr>';
     function th(i,label){ var on=(F.sort.i===i), ar=on?(F.sort.d>0?' \u25B2':' \u25BC'):''; return '<th aria-sort="'+(on?(F.sort.d>0?'ascending':'descending'):'none')+'"><button type="button" class="thb'+(on?' on':'')+'" data-sort="'+i+'" data-st="'+type+'" title="'+esc(t('Sort by this column'))+'">'+esc(label)+ar+'</button></th>'; }
     h+=th(-1,t('Action')); T.cols.forEach(function(c,i){ h+=th(i,t(c[0])); }); h+='</tr>';
+    var gseen={};
     vis.slice(0,600).forEach(function(r){
+      var gk=(type==='drivers'&&r.Class==='Extension'&&r.KbId&&grp[r.KbId]&&grp[r.KbId].indexOf(r)>=0)?r.KbId:'';
+      if(gk && !gseen[gk]){ gseen[gk]=1; h+='<tr><td colspan="'+(T.cols.length+1)+'"><span class="tag g">'+esc(t('{0} similar extension drivers (all kept): {1}', grp[gk].length, grpWhat[gk]))+'</span> <button class="b small sec" data-grp="'+esc(gk)+'">'+esc(F.open[gk]?t('Hide them'):t('Show them'))+'</button></td></tr>'; }
+      if(gk && !F.open[gk]) return;
       var k=r[T.key], a=S.mod[type][k]||r.Action, prot=r.Protected, busy=(type==='drivers'&&inUse(r)); if(busy) a='KEEP';
       var sel='<select data-type="'+type+'" data-k="'+esc(k)+'"'+((prot||busy)?' disabled':'')+'>';
       T.values.forEach(function(v){ sel+='<option value="'+v+'"'+(v===a?' selected':'')+'>'+esc(t(v))+'</option>'; });
@@ -923,6 +930,7 @@ document.addEventListener('click',function(e){
   if(d.flow){ startFlow(d.flow,d.go); return; }
   if(d.pinforget!==undefined){ api('/api/pins',{forget:d.pinforget}).then(function(){ notice(t('Done.')); go('start'); }).catch(function(x){ notice(x.message,true); }); return; }
   if(d.go){ go(d.go); return; }
+  if(t0.getAttribute&&t0.getAttribute('data-grp')!==null){ var gk2=t0.getAttribute('data-grp'), F3=S.filter.drivers; F3.open=F3.open||{}; F3.open[gk2]=!F3.open[gk2]; var y2=window.scrollY; vTable('drivers').then(function(){ window.scrollTo(0,y2); }); return; }
   if(t0.getAttribute&&t0.getAttribute('data-sort')!==null){ var st=t0.getAttribute('data-st'), ci=parseInt(t0.getAttribute('data-sort'),10), F2=S.filter[st]; if(F2.sort&&F2.sort.i===ci){ F2.sort.d=-F2.sort.d; } else { F2.sort={i:ci,d:1}; } var y=window.scrollY; vTable(st).then(function(){ window.scrollTo(0,y); }); return; }
   if(d.unexcl!==undefined){ var pu=reEsc(d.unexcl); var ex2=(S.state.settings.exclusions||[]).filter(function(x){ return x!==pu; }); api('/api/settings',{exclusions:ex2}).then(function(){ return loadState(); }).then(function(){ notice(t('Removed from exclusions.')); vUpdates(); }).catch(function(x){ notice(x.message,true); }); return; }
   if(t0.id==='profexp'||(t0.closest&&t0.closest('#profexp'))){ api('/api/profile').then(function(pr){ var b=new Blob([JSON.stringify(pr,null,2)],{type:'application/json'}), a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='devvy-profile.json'; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); notice(t('Profile exported: devvy-profile.json')); }).catch(function(x){ notice(x.message,true); }); return; }

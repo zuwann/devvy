@@ -1167,5 +1167,9 @@
   "After the restart": "Nach dem Neustart",
   "Windows restarted and Devvy started again by itself: it is checking that everything works and, if you asked for it, goes on with the cleaning. Please wait, nothing is needed from you.": "Windows wurde neu gestartet und Devvy hat sich von selbst wieder gestartet: Es prüft, ob alles funktioniert, und setzt, falls gewünscht, die Bereinigung fort. Bitte warten, Sie müssen nichts tun.",
   "Already in the driver store (same version and maker): installing it again changes nothing.": "Bereits im Treiberspeicher (gleiche Version und Hersteller): Eine erneute Installation ändert nichts.",
-  "Newest in the catalog": "Neuestes im Katalog"
+  "Newest in the catalog": "Neuestes im Katalog",
+  "{0} similar extension drivers (all kept): {1}": "{0} ähnliche Erweiterungstreiber (alle bleiben): {1}",
+  "Show them": "Anzeigen",
+  "Hide them": "Ausblenden",
+  "File not found: {0}": "Datei nicht gefunden: {0}"
 }

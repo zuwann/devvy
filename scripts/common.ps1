@@ -1111,3 +1111,55 @@ function Get-PcSerial {
     }
     return ''
 }
+
+# ---------- Profile (export / import), used by the page and by the command line ----------
+function Get-DevvyProfile {
+    $st = Read-Settings
+    $rd = { param($n) $f = Join-Path $script:ScriptsDir $n; if (Test-Path $f) { [IO.File]::ReadAllText($f, [Text.Encoding]::UTF8).TrimStart([char]0xFEFF) } else { '' } }
+    $prof = [ordered]@{ devvy = 1; exported = (Get-Date -Format 'yyyy-MM-dd HH:mm')
+        settings = [ordered]@{ exclusions = @($st.exclusions); defender = "$($st.defender)"; backup = "$($st.backup)"; catalogConsent = [bool]$st.catalogConsent
+                               inventoryAtStart = [bool]$st.inventoryAtStart; blockReinstall = [bool]$st.blockReinstall; postRebootCheck = [bool]$st.postRebootCheck; updateCheck = ($st.updateCheck -ne $false); language = "$($st.language)" }
+        knowledgeUser = (& $rd 'knowledge-user.csv'); supportModelsUser = (& $rd 'support-models-user.csv') }
+    return $prof
+}
+
+# Merge a profile object (exported by Get-DevvyProfile) into this installation: ADDS only. Returns $null when it is not a Devvy profile.
+function Import-DevvyProfile($pr) {
+    if (-not $pr -or "$($pr.devvy)" -ne '1' -or -not $pr.settings) { return $null }
+    $st = Read-Settings; $done = @(); $bad = @()
+    $ex = @($st.exclusions)
+    foreach ($e in @($pr.settings.exclusions)) {
+        $t = ("$e").Trim(); if (-not $t) { continue }
+        try { $null = [regex]::new($t) } catch { $bad += $t; continue }
+        if ($ex -notcontains $t) { $ex += $t }
+    }
+    $st.exclusions = @($ex)
+    if (@('always', 'ask', 'never') -contains "$($pr.settings.defender)") { $st.defender = "$($pr.settings.defender)" }
+    if (@('ask', 'full', 'drivers', 'none') -contains "$($pr.settings.backup)") { $st.backup = "$($pr.settings.backup)" }
+    foreach ($k in @('catalogConsent', 'inventoryAtStart', 'blockReinstall', 'postRebootCheck', 'updateCheck')) { if ($null -ne $pr.settings.$k) { $st.$k = ($pr.settings.$k -eq $true) } }
+    Save-Settings $st
+    if (@($st.exclusions).Count -gt 0) { $script:ExclusionRegex = (@($st.exclusions) -join '|') }
+    $mergeCsv = {
+        param([string]$Name, [string]$Text, [string]$Key, [string[]]$Cols)
+        if (-not "$Text".Trim()) { return 0 }
+        $tmp = [IO.Path]::GetTempFileName()
+        try {
+            [IO.File]::WriteAllText($tmp, $Text, (New-Object Text.UTF8Encoding($true)))
+            $inc = @(Import-Csv -Path $tmp -Delimiter ';' -Encoding UTF8)
+        } catch { return 0 } finally { Remove-Item $tmp -Force -ErrorAction SilentlyContinue }
+        if ($inc.Count -eq 0 -or -not ($inc[0].PSObject.Properties.Name -contains $Key)) { return 0 }
+        $f = Join-Path $script:ScriptsDir $Name
+        $cur = @(); if (Test-Path $f) { $cur = @(Import-Csv -Path $f -Delimiter ';' -Encoding UTF8) }
+        $keys = @($cur | ForEach-Object { "$($_.$Key)".Trim().ToLower() }); $n = 0
+        foreach ($r in $inc) {
+            $kv = "$($r.$Key)".Trim().ToLower(); if (-not $kv -or $keys -contains $kv) { continue }
+            $o = [ordered]@{}; foreach ($c in $Cols) { $o[$c] = "$($r.$c)" }
+            $cur += [pscustomobject]$o; $keys += $kv; $n++
+        }
+        if ($n -gt 0) { $cur | Select-Object $Cols | Export-Csv -Path $f -Delimiter ';' -NoTypeInformation -Encoding UTF8 }
+        return $n
+    }
+    $nk = & $mergeCsv 'knowledge-user.csv' "$($pr.knowledgeUser)" 'Id' @('Id', 'Match', 'Exclude', 'Name', 'What', 'IfNeeded', 'IfNotNeeded', 'AppRegex', 'Risk', 'Depends', 'Auto')
+    $nm = & $mergeCsv 'support-models-user.csv' "$($pr.supportModelsUser)" 'Url' @('Sku', 'Model', 'Name', 'Url')
+    return [ordered]@{ ok = $true; exclusions = @($st.exclusions).Count; knowledgeAdded = [int]$nk; supportAdded = [int]$nm; invalid = @($bad) }
+}
