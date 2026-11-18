@@ -48,10 +48,18 @@ rem confuse this window (cmd reads a plain batch file line by line, by file posi
 :cli
 rem The whole block is read by cmd before it runs, so "Update -Apply" can replace this file safely
 (
-  net session >nul 2>&1
-  if errorlevel 1 (
-    echo ERROR: command line mode needs an administrator prompt. 1>&2
-    exit /b 5
+  rem help needs no administrator rights
+  set "DV_NOADMIN="
+  if "%~2"=="" set "DV_NOADMIN=1"
+  if /i "%~2"=="help" set "DV_NOADMIN=1"
+  if /i "%~2"=="-h" set "DV_NOADMIN=1"
+  if "%~2"=="/?" set "DV_NOADMIN=1"
+  if not defined DV_NOADMIN (
+    net session >nul 2>&1
+    if errorlevel 1 (
+      echo ERROR: command line mode needs an administrator prompt. 1>&2
+      exit /b 5
+    )
   )
   powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" %*
   exit /b %errorlevel%

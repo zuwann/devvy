@@ -15,7 +15,7 @@ Per amministratori e attività pianificate: stesse funzioni della pagina web, ma
 
 | Comando | Cosa fa | Cambia qualcosa? |
 |---|---|---|
-| `devvy.bat /cli` | Mostra l'aiuto | No |
+| `devvy.bat /cli Help` (o solo `/cli`, `-h`, `/?`) | Mostra l'aiuto con tutti i comandi, anche senza essere amministratore | No |
 | `devvy.bat /cli Audit` | Inventario e riepilogo: dispositivi fantasma, driver vecchi, abbinamenti Bluetooth vecchi, driver da controllare | No |
 | `devvy.bat /cli Clean` | Anteprima della pulizia: cosa verrebbe rimosso | No |
 | `devvy.bat /cli Clean -Apply` | Pulizia vera, ripetuta finché compaiono altri residui (massimo 3 giri in più), poi inventario finale | **Sì** |

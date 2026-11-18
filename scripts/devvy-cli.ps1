@@ -24,6 +24,40 @@ if ($IsWindows -ne $false) {
     $p0 = [Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()
     $isAdmin = $p0.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 }
+function Show-Help([string]$Unknown = '') {
+    $c = { param($a, $b) Write-Host ('  ' + $a.PadRight(34)) -NoNewline -ForegroundColor Cyan; Write-Host $b }
+    if ($Unknown) { [Console]::Error.WriteLine((T 'Unknown action: {0}' $Unknown)); Write-Host '' }
+    Write-Host (T 'Devvy on the command line (no web page). Start it from an administrator prompt:') -ForegroundColor Green
+    Write-Host '  devvy.bat /cli <Action> [options]'
+    Write-Host ''
+    Write-Host (T 'Command line: actions') -ForegroundColor Yellow
+    & $c 'Help' (T 'Shows this help (also: /cli -h, /cli /?). It works without administrator rights.')
+    & $c 'Audit' (T 'Read only: inventory and summary (ghost devices, old drivers, old Bluetooth pairings, drivers to check).')
+    & $c 'Clean' (T 'Preview of the cleanup: nothing is removed. Add -Apply to really remove.')
+    & $c 'Search' (T 'Read only: looks in the Microsoft catalog for newer drivers (needs the catalog consent in the settings).')
+    & $c 'Update' (T 'Checks for a newer Devvy. Add -Apply to install it.')
+    & $c 'Profile -Export <file.json>' (T 'Saves your exclusions, options and own table rows.')
+    & $c 'Profile -Import <file.json>' (T 'Adds a saved profile to this PC (nothing of yours is deleted).')
+    Write-Host ''
+    Write-Host (T 'Command line: options') -ForegroundColor Yellow
+    & $c '-Output text|json' (T 'Colored text (default) or one JSON object, for scripts.')
+    & $c '-Apply' (T 'Really do it (Clean, Update). Without it nothing changes.')
+    & $c '-Parts "devices,drivers,..."' (T 'Clean only: devices, drivers, oldversions, bluetooth (comma list in quotes; default all).')
+    & $c '-Backup none|drivers|full' (T 'Clean -Apply only: none (default), drivers, or full (restore point + driver export).')
+    Write-Host ''
+    Write-Host (T 'Command line: exit codes') -ForegroundColor Yellow
+    Write-Host ('  ' + (T '0 ok, 1 findings or update available, 2 error, 3 restart needed, 4 not allowed, 5 not administrator.'))
+    Write-Host ''
+    Write-Host (T 'Command line: examples') -ForegroundColor Yellow
+    Write-Host '  devvy.bat /cli Audit'
+    Write-Host '  devvy.bat /cli Audit -Output json'
+    Write-Host '  devvy.bat /cli Clean -Parts "devices,bluetooth"'
+    Write-Host '  devvy.bat /cli Clean -Apply -Backup drivers'
+    Write-Host '  devvy.bat /cli Update -Apply'
+    Write-Host ''
+    Write-Host ((T 'Full guide:') + ' COMANDI.md')
+}
+if (@('', 'help', '-h', '--help', '/?', '-?', '/h') -contains "$Action".ToLower()) { Show-Help; exit 0 }
 if (-not $isAdmin) { [Console]::Error.WriteLine((T 'ERROR: this script needs administrator rights.')); exit 5 }
 $Parts = @($Parts | ForEach-Object { "$_".Split(',') } | ForEach-Object { $_.Trim().ToLower() } | Where-Object { $_ })
 $json = ($Output -eq 'json')
@@ -164,9 +198,5 @@ switch -Regex ($Action) {
         }
         [Console]::Error.WriteLine('Profile: use -Import <file.json> or -Export <file.json>'); Write-Result $base 2
     }
-    default {
-        Write-Host 'Devvy CLI: devvy.bat /cli <Audit|Clean|Search|Update|Profile> [-Output json] [-Apply] [-Parts devices,drivers,oldversions,bluetooth] [-Backup none|drivers|full] | Profile -Import|-Export <file.json>'
-        Write-Host 'Audit and Search only read. Clean only previews unless -Apply is given. Exit codes: 0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator.'
-        exit 0
-    }
+    default { Show-Help $Action; exit 2 }
 }
