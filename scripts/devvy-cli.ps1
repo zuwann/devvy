@@ -2,6 +2,7 @@
 #   Audit   read-only: inventory + findings (ghost devices, old Bluetooth pairings, removable drivers, drivers to check)
 #   Clean   preview of the cleanup; with -Apply it really removes, repeats while new leftovers appear (max 3 extra rounds)
 #   Search  read-only: asks the Microsoft catalog for newer drivers (needs the catalog consent in the settings)
+#   Update  checks GitHub for a newer release (exit 1 = available); with -Apply it downloads, verifies (SHA-256) and installs it
 #   Profile -Import <file.json> adds a profile exported from the page (exclusions, options, user rows); -Export <file.json> writes one
 # Options: -Output text|json   -Apply   -Parts devices,drivers,oldversions,bluetooth (default all)   -Backup none|drivers|full (before -Apply)
 # Exit codes: 0 nothing to do / done, 1 findings (Audit, or Clean preview) , 2 error, 3 restart needed, 4 not allowed (catalog consent off),
@@ -121,6 +122,30 @@ switch -Regex ($Action) {
         $code = 0; if ($script:Errors.Count -gt 0) { $code = 2 } elseif ($rows.Count -gt 0) { $code = 1 }
         Write-Result $o $code
     }
+    '^(?i)update$' {
+        $plan = Get-UpdatePlan
+        if (-not $plan.ok) { [Console]::Error.WriteLine($plan.error); $o = $base; $o['error'] = $plan.error; Write-Result $o 2 }
+        $o = $base; $o['installed'] = $plan.current; $o['latest'] = $plan.latest; $o['updateAvailable'] = [bool]$plan.needed
+        if (-not $plan.needed) { Say ('  ' + (T 'Devvy is already up to date.')) 'Green'; Say ('  ' + (T 'Installed version:') + ' ' + $plan.current); Write-Result $o 0 }
+        Say ('  ' + (T 'Update available: {0} (installed: {1}). To install it: devvy.bat /cli Update -Apply' $plan.latest $plan.current)) 'Yellow'
+        if (-not $Apply) { Write-Result $o 1 }
+        $code = Invoke-Step (T 'Updating Devvy') '29-self-update.ps1'
+        if ($code -ne 0) { Write-Result $o 2 }
+        # devvy.bat could not change while a program was running: nobody is running it now except this very call (its CLI block is read in advance), so put it in place
+        $root = Split-Path $PSScriptRoot
+        $def = Join-Path $script:DataRoot 'update-staging\deferred'
+        if (Test-Path -LiteralPath $def) {
+            foreach ($f in @(Get-ChildItem -LiteralPath $def -File -Recurse)) {
+                $rel = $f.FullName.Substring($def.Length).TrimStart('\')
+                try { Copy-Item -LiteralPath $f.FullName -Destination (Join-Path $root $rel) -Force -ErrorAction Stop } catch { $script:Errors.Add("$rel : $($_.Exception.Message)") }
+            }
+        }
+        try { Remove-Item -LiteralPath (Join-Path $script:DataRoot 'update-staging') -Recurse -Force -ErrorAction SilentlyContinue } catch { }
+        $o['updated'] = ($script:Errors.Count -eq 0)
+        if ($script:Errors.Count -gt 0) { Write-Result $o 2 }
+        Say ('  ' + (T 'Devvy was updated to version {0}.' $plan.latest)) 'Green'
+        Write-Result $o 0
+    }
     '^(?i)profile$' {
         if ($Import) {
             if (-not (Test-Path -LiteralPath $Import)) { [Console]::Error.WriteLine((T 'File not found: {0}' $Import)); Write-Result $base 2 }
@@ -140,7 +165,7 @@ switch -Regex ($Action) {
         [Console]::Error.WriteLine('Profile: use -Import <file.json> or -Export <file.json>'); Write-Result $base 2
     }
     default {
-        Write-Host 'Devvy CLI: devvy.bat /cli <Audit|Clean|Search|Profile> [-Output json] [-Apply] [-Parts devices,drivers,oldversions,bluetooth] [-Backup none|drivers|full] | Profile -Import|-Export <file.json>'
+        Write-Host 'Devvy CLI: devvy.bat /cli <Audit|Clean|Search|Update|Profile> [-Output json] [-Apply] [-Parts devices,drivers,oldversions,bluetooth] [-Backup none|drivers|full] | Profile -Import|-Export <file.json>'
         Write-Host 'Audit and Search only read. Clean only previews unless -Apply is given. Exit codes: 0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator.'
         exit 0
     }

@@ -1171,5 +1171,7 @@
   "{0} similar extension drivers (all kept): {1}": "{0} pilotes d'extension similaires (tous conservés) : {1}",
   "Show them": "Les afficher",
   "Hide them": "Les masquer",
-  "File not found: {0}": "Fichier introuvable : {0}"
+  "File not found: {0}": "Fichier introuvable : {0}",
+  "Update available: {0} (installed: {1}). To install it: devvy.bat /cli Update -Apply": "Mise à jour disponible : {0} (installée : {1}). Pour l'installer : devvy.bat /cli Update -Apply",
+  "Devvy was updated to version {0}.": "Devvy a été mis à jour vers la version {0}."
 }

@@ -3,7 +3,7 @@ setlocal
 pushd "%~dp0" 2>nul || cd /d "%~dp0"
 title Devvy
 
-rem --- Command line mode (no web page): devvy.bat /cli <Audit|Clean|Search|Profile> [options]. It never asks for elevation: start it from an administrator prompt or task.
+rem --- Command line mode (no web page): devvy.bat /cli <Audit|Clean|Search|Update|Profile> [options]. It never asks for elevation: start it from an administrator prompt or task.
 if /i "%~1"=="/cli" goto :cli
 
 rem --- Self-elevation: if we are not administrators, relaunch with the UAC request ---
@@ -46,10 +46,13 @@ rem confuse this window (cmd reads a plain batch file line by line, by file posi
 )
 
 :cli
-net session >nul 2>&1
-if %errorlevel% neq 0 (
-  echo ERROR: command line mode needs an administrator prompt. 1>&2
-  exit /b 5
+rem The whole block is read by cmd before it runs, so "Update -Apply" can replace this file safely
+(
+  net session >nul 2>&1
+  if errorlevel 1 (
+    echo ERROR: command line mode needs an administrator prompt. 1>&2
+    exit /b 5
+  )
+  powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" %*
+  exit /b %errorlevel%
 )
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0scripts\devvy-cli.ps1" %*
-exit /b %errorlevel%
