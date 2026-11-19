@@ -1284,5 +1284,12 @@
   "remove the Defender exceptions": "quitar las excepciones de Defender",
   "the newest of each device": "el más nuevo de cada dispositivo",
   "update Devvy to {0}": "actualizar Devvy a {0}",
-  "Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.": "Inicia la página web (igual que devvy.bat solo). Pide derechos de administrador si hacen falta."
+  "Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.": "Inicia la página web (igual que devvy.bat solo). Pide derechos de administrador si hacen falta.",
+  "Driver in use": "Controlador en uso",
+  "From the command line": "Desde la línea de comandos",
+  "Everything the page does can also be done from a terminal. Start it from an administrator prompt: devvy.bat /cli followed by the action (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). The questions of the page ([F]/[S]/[M], confirmations, backup) appear in the terminal.": "Todo lo que hace la página también se puede hacer desde un terminal. Inícialo desde un símbolo del sistema de administrador: devvy.bat /cli seguido de la acción (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). Las preguntas de la página ([F]/[S]/[M], confirmaciones, copia de seguridad) aparecen en el terminal.",
+  "Without -Apply nothing is changed: you only get a preview. For scheduled tasks and scripts there is -Output json and a clear exit code (0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator).": "Sin -Apply no se cambia nada: solo obtienes una vista previa. Para tareas programadas y scripts existen -Output json y un código de salida claro (0 correcto, 1 hallazgos, 2 error, 3 hay que reiniciar, 4 no permitido, 5 no es administrador).",
+  "devvy.bat /gui opens this page, devvy.bat -h lists the commands.": "devvy.bat /gui abre esta página, devvy.bat -h muestra la lista de comandos.",
+  "Show the list of commands": "Mostrar la lista de comandos",
+  "Open the full guide of the commands (GitHub)": "Abrir la guía completa de los comandos (GitHub)"
 }

@@ -1284,5 +1284,12 @@
   "remove the Defender exceptions": "Defender-Ausnahmen entfernen",
   "the newest of each device": "der neueste je Gerät",
   "update Devvy to {0}": "Devvy auf {0} aktualisieren",
-  "Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.": "Startet die Webseite (wie devvy.bat allein). Fragt bei Bedarf nach Administratorrechten."
+  "Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.": "Startet die Webseite (wie devvy.bat allein). Fragt bei Bedarf nach Administratorrechten.",
+  "Driver in use": "Verwendeter Treiber",
+  "From the command line": "Über die Befehlszeile",
+  "Everything the page does can also be done from a terminal. Start it from an administrator prompt: devvy.bat /cli followed by the action (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). The questions of the page ([F]/[S]/[M], confirmations, backup) appear in the terminal.": "Alles, was die Seite kann, lässt sich auch im Terminal erledigen. Starte es in einer Eingabeaufforderung als Administrator: devvy.bat /cli gefolgt von der Aktion (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). Die Fragen der Seite ([F]/[S]/[M], Bestätigungen, Sicherung) erscheinen im Terminal.",
+  "Without -Apply nothing is changed: you only get a preview. For scheduled tasks and scripts there is -Output json and a clear exit code (0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator).": "Ohne -Apply wird nichts geändert: du bekommst nur eine Vorschau. Für geplante Aufgaben und Skripte gibt es -Output json und einen klaren Rückgabecode (0 ok, 1 Funde, 2 Fehler, 3 Neustart nötig, 4 nicht erlaubt, 5 kein Administrator).",
+  "devvy.bat /gui opens this page, devvy.bat -h lists the commands.": "devvy.bat /gui öffnet diese Seite, devvy.bat -h listet die Befehle auf.",
+  "Show the list of commands": "Befehlsliste anzeigen",
+  "Open the full guide of the commands (GitHub)": "Vollständige Befehlsanleitung öffnen (GitHub)"
 }

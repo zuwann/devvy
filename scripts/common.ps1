@@ -212,7 +212,7 @@ function Start-Log([string]$Name) {
 
 function Stop-Log {
     try { Stop-Transcript | Out-Null } catch { }
-    Write-Host ("Log: " + $script:LogPath)
+    Write-Host ((T 'Log:') + ' ' + $script:LogPath)
 }
 
 # Device by exact instance ID. Get-PnpDevice -InstanceId treats [ ] * ? as wildcards, and some IDs (Apple recovery mode:

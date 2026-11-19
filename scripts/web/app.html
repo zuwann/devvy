@@ -125,7 +125,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 </head>
 <body>
 <header>
-  <h1>Devvy <small class="mut">0.10.88</small></h1>
+  <h1>Devvy <small class="mut">0.10.89</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="upd" data-pop="update" type="button" title="Updates"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M19 2v4h-4"/><path d="M5 22v-4h4"/></svg><span id="updbadge" class="belln" style="display:none"></span></button>
@@ -737,6 +737,8 @@ function vAbout(target){
     h+='<p class="mut">'+esc(t('Devvy is a free helper to clean up and update drivers on Windows 10 and 11. It has no ads, no accounts and no paid versions. It runs from the folder you downloaded: it is not installed. Author: zuwann. Open source (MIT license): the scripts are plain text files you can read.'))+'</p>';
     h+=card('What it reads (it changes nothing)',['The list of devices, including the ones not connected.','The drivers in the Windows driver store and which device uses each one.','The Bluetooth pairings.','The state of Microsoft Defender, and basic data of the PC (Windows, processor, memory, disk, graphics card).']);
     h+=card('What it changes (only when you press Apply and confirm)',['It removes the devices, Bluetooth pairings and drivers you chose in the tabs.','It installs the drivers you chose from the Microsoft catalog.','If you ask for it, before changing it makes a restore point and a copy of the drivers.','If you turn the option on, it tells Windows not to install again the drivers you removed (a Windows policy that you can undo in Settings).','It adds temporary exceptions to Microsoft Defender, which it removes when you exit.','If you restart Windows from the program, it creates a one-time scheduled task that starts the program at the next sign-in to check the PC, and deletes itself (you can turn it off in Settings).']);
+    h+=card('From the command line',['Everything the page does can also be done from a terminal. Start it from an administrator prompt: devvy.bat /cli followed by the action (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). The questions of the page ([F]/[S]/[M], confirmations, backup) appear in the terminal.','Without -Apply nothing is changed: you only get a preview. For scheduled tasks and scripts there is -Output json and a clear exit code (0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator).','devvy.bat /gui opens this page, devvy.bat -h lists the commands.']);
+    h+='<div class="card"><details id="cmdbox"><summary>'+esc(t('Show the list of commands'))+'</summary><pre id="cmdtxt" class="mut" style="white-space:pre-wrap;margin:10px 0 0">'+esc(t('Loading...'))+'</pre></details>'+(A.guideUrl?'<p style="margin:12px 0 0"><a href="'+esc(A.guideUrl)+'" target="_blank" rel="noopener">'+esc(t('Open the full guide of the commands (GitHub)'))+'</a></p>':'')+'</div>';
     h+=card('What goes online',['Only when you press Search: the hardware codes of the devices (like VEN_xxxx&DEV_xxxx[&SUBSYS_xxxxxxxx]) go to catalog.update.microsoft.com, never names, serial numbers or PC data.','The drivers you choose are downloaded from Microsoft sites only.','Nothing else: no statistics, no telemetry, no accounts. Reports stay on this PC. If you share a report, you send it yourself.']);
     h+='<div class="card"><h3>'+esc(t('How the downloaded drivers are checked'))+'</h3><ul><li>'+esc(t('The SHA-256 fingerprint of each downloaded package is shown while it is installed and saved in the list below.'))+'</li><li>'+esc(t('The signature of the driver is checked: if it is missing or does not match, the package is refused and nothing is installed.'))+'</li><li>'+esc(t('A driver signed by Microsoft Windows Hardware Compatibility Publisher has passed the Microsoft certification (WHQL). Windows checks the signature again when it installs the driver.'))+'</li></ul>';
     h+='<p class="mut">'+esc(t('The list of the packages installed so far is in the Device management tab.'))+'</p>';
@@ -745,6 +747,7 @@ function vAbout(target){
     A.files.forEach(function(f){ h+='<tr><td>'+esc(f.file)+'</td><td><code>'+esc(f.sha256)+'</code></td></tr>'; });
     h+='</table></div></details></div>';
     if(target){ target.innerHTML=h.replace(/^<h2>.*?<\/h2>/,''); } else { $('#main').innerHTML=h; }
+    var cb=$('#cmdbox'); if(cb){ cb.addEventListener('toggle',function(){ if(!cb.open||cb.dataset.done) return; cb.dataset.done='1'; api('/api/commands').then(function(c){ $('#cmdtxt').textContent=(c.text||'').replace(/\r/g,'').trim()||t('Cannot check now.'); }).catch(function(x){ $('#cmdtxt').textContent=x.message; cb.dataset.done=''; }); }); }
   });
 }
 function vSettings(){
@@ -787,7 +790,7 @@ function drawEx(){
   var l=(S.state.settings.exclusions||[]).filter(function(x){ return x; }), el=$('#exlist'); if(!el) return;
   if(!l.length){ el.innerHTML='<p class="mut">'+esc(t('Nothing is excluded.'))+'</p>'; return; }
   var devs=S.data.devices||[];
-  var h='<div class="wrap"><table class="sortable" data-tid="ex"><tr><th>'+esc(t('Device'))+'</th><th>'+esc(t('Manufacturer / class'))+'</th><th>'+esc(t('Hardware ID'))+'</th><th>'+esc(t('Driver'))+'</th><th data-ns></th></tr>';
+  var h='<div class="wrap"><table class="sortable" data-tid="ex"><tr><th>'+esc(t('Device'))+'</th><th>'+esc(t('Manufacturer / class'))+'</th><th>'+esc(t('Hardware ID'))+'</th><th>'+esc(t('Driver in use'))+'</th><th data-ns></th></tr>';
   l.forEach(function(x,i){
     var re=null; try{ re=new RegExp(x,'i'); }catch(e){}
     var m=re?devs.filter(function(r){ return re.test(r.FriendlyName||'')||re.test(r.Manufacturer||'')||re.test(r.DriverInf||'')||re.test(r.DriverProvider||''); }):[], r0=m[0];

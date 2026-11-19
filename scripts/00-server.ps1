@@ -426,7 +426,24 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
             }
         } catch { }
         $dls = @(Read-CsvQuiet 'downloads' | ForEach-Object { @{ date = "$($_.Date)"; package = "$($_.Package)"; sha256 = "$($_.Sha256)"; signer = "$($_.Signer)"; result = "$($_.Result)" } })
-        Send-Json $ctx @{ files = @($script:AboutFiles); downloads = @($dls); data = "$script:DataRoot"; folder = "$script:Root" }
+        $guide = ''; if ($script:IssuesUrl -notmatch 'OWNER') { $guide = ($script:IssuesUrl -replace '/issues/new.*$', '/blob/main/COMMANDS.md') }
+        Send-Json $ctx @{ files = @($script:AboutFiles); downloads = @($dls); data = "$script:DataRoot"; folder = "$script:Root"; guideUrl = $guide }
+        return
+    }
+    if ($Path -eq '/api/commands') {
+        # the list of the command line commands, in the language of the page: it is the output of `devvy.bat -h` (same texts, same translations)
+        $of = Join-Path $webLog 'commands.txt'
+        $txt = ''
+        try {
+            Remove-Item -Path $of -Force -ErrorAction SilentlyContinue
+            $sp = @{ FilePath = 'powershell.exe'; ArgumentList = ('-NoProfile -ExecutionPolicy Bypass -File "' + (Join-Path $PSScriptRoot 'devvy-cli.ps1') + '" /cli /help'); PassThru = $true; RedirectStandardOutput = $of }
+            if ($IsWindows -ne $false) { $sp['WindowStyle'] = 'Hidden' }
+            $pc = Start-Process @sp
+            $null = $pc.Handle
+            if (-not $pc.WaitForExit(20000)) { try { $pc.Kill() } catch { } }
+            $txt = (Read-Shared $of)
+        } catch { }
+        Send-Json $ctx @{ text = "$txt" }
         return
     }
     if ($Path -eq '/api/update/check') {

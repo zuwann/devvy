@@ -80,7 +80,7 @@ function Show-Help {
     Write-Host '  devvy.bat /cli Install -Apply -Select newest -Backup full'
     Write-Host '  devvy.bat /cli Exclusions Add "Intel(R) UHD Graphics 630"'
     Write-Host ''
-    Write-Host ((T 'Full guide:') + ' COMANDI.md')
+    Write-Host ((T 'Full guide:') + ' COMMANDS.md')
 }
 if (@('-h', '/?', '/help') -contains "$Action".ToLower()) { Show-Help; exit 0 }
 if (-not $Action -or $Action -eq 'Help') { Write-Host (T 'To see what Devvy can do run: devvy.bat -h'); exit 0 }

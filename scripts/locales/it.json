@@ -1284,5 +1284,12 @@
   "remove the Defender exceptions": "togli le eccezioni di Defender",
   "the newest of each device": "il più nuovo di ogni dispositivo",
   "update Devvy to {0}": "aggiorna Devvy alla {0}",
-  "Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.": "Avvia la pagina web (come devvy.bat da solo). Chiede i diritti di amministratore se servono."
+  "Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.": "Avvia la pagina web (come devvy.bat da solo). Chiede i diritti di amministratore se servono.",
+  "Driver in use": "Driver in uso",
+  "From the command line": "Dalla riga di comando",
+  "Everything the page does can also be done from a terminal. Start it from an administrator prompt: devvy.bat /cli followed by the action (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). The questions of the page ([F]/[S]/[M], confirmations, backup) appear in the terminal.": "Tutto quello che fa la pagina si può fare anche da terminale. Avvialo da un prompt amministratore: devvy.bat /cli seguito dall'azione (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). Le domande della pagina ([F]/[S]/[M], conferme, backup) compaiono nel terminale.",
+  "Without -Apply nothing is changed: you only get a preview. For scheduled tasks and scripts there is -Output json and a clear exit code (0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator).": "Senza -Apply non cambia nulla: ottieni solo un'anteprima. Per le attività pianificate e gli script ci sono -Output json e un codice di uscita chiaro (0 ok, 1 trovato qualcosa, 2 errore, 3 serve riavvio, 4 non consentito, 5 non amministratore).",
+  "devvy.bat /gui opens this page, devvy.bat -h lists the commands.": "devvy.bat /gui apre questa pagina, devvy.bat -h elenca i comandi.",
+  "Show the list of commands": "Mostra l'elenco dei comandi",
+  "Open the full guide of the commands (GitHub)": "Apri la guida completa dei comandi (GitHub)"
 }
