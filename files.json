@@ -1,5 +1,5 @@
 {
- "version": "0.10.98",
+ "version": "0.10.99",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "ce86cd113d8a9376851369880d5ee94b79be313a00eb23beba123453ee961ecb",
+   "sha256": "ca5ba81043dd9e9cb3c61327fa4db6b082294d23a247a6aa649c4f04c270345d",
    "size": 12812
   },
   {
@@ -51,8 +51,8 @@
   },
   {
    "path": "scripts/00-server.ps1",
-   "sha256": "1f3f26d93f952d440f7704f6ba122319abf13b85a8f721b140425c57b78891cc",
-   "size": 56564
+   "sha256": "5c1b2be45cacf198f00febbf3af5aa4aedb6562d8501f722f8e36292034fa350",
+   "size": 56599
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
@@ -116,8 +116,8 @@
   },
   {
    "path": "scripts/22-remove-devices.ps1",
-   "sha256": "7e16d96a0376da6d326838ed4c846173354f5259b217357de905c8e68321c226",
-   "size": 2171
+   "sha256": "aebda09a13a471f8df3e21053721a3babf67f2e9154a6a493907971f8dbf13e2",
+   "size": 3168
   },
   {
    "path": "scripts/23-remove-drivers.ps1",
@@ -171,8 +171,8 @@
   },
   {
    "path": "scripts/devvy-cli.ps1",
-   "sha256": "c09fef771f23d22d9295df52531b13e02c6a00045088ff503f1d980007414cd6",
-   "size": 41622
+   "sha256": "d3154540079ee61a5bb4c6ead512609943d92946ea9f7f6ef14dae6357d337d4",
+   "size": 41710
   },
   {
    "path": "scripts/kb-version.txt",
@@ -241,7 +241,7 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "f3e341513145f2f5cfe884c368b12cfe50f2cb64f59b21dfaf72d87ec47f6283",
+   "sha256": "3662d8a79c3ece1b800f393f7a5bd04ba25ee227bd7bffce7e7c299708bb1f84",
    "size": 132098
   }
  ]

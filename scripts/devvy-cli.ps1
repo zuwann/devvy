@@ -338,7 +338,7 @@ switch -Regex ($Action) {
                 }
             }
             $ap = @(); if ($Apply) { $ap = @('-Apply') }
-            if ($Parts -contains 'devices' -and $f.ghostDevices.Count -gt 0) { $null = Invoke-Step (T 'Remove ghost devices') '22-remove-devices.ps1' $ap -Show }
+            if ($Parts -contains 'devices' -and $f.ghostDevices.Count -gt 0) { $a1 = $ap; if ($Apply -and $s.blockReinstall) { $a1 = @('-Apply', '-BlockReinstall') }; $null = Invoke-Step (T 'Remove ghost devices') '22-remove-devices.ps1' $a1 -Show }
             if ($Parts -contains 'drivers' -and $f.removableDrivers.Count -gt 0) { $a2 = $ap; if ($Apply -and $s.blockReinstall) { $a2 = @('-Apply', '-BlockReinstall') }; $null = Invoke-Step (T 'Remove drivers') '23-remove-drivers.ps1' $a2 -Show }
             if ($Parts -contains 'oldversions') { $null = Invoke-Step (T 'Remove old driver versions') '25-remove-old-versions.ps1' $ap -Show }
             if ($Parts -contains 'bluetooth' -and $f.bluetoothPairings.Count -gt 0) { $null = Invoke-Step (T 'Remove Bluetooth pairings') '21-remove-bluetooth.ps1' $ap -Show }

@@ -750,7 +750,7 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
                 if ($wanted -notcontains $k) { continue }
                 $a2 = @($execParts[$k])
                 if ($apply) { $a2 += '-Apply' }
-                if ($k -eq 'drivers' -and $body.blockReinstall -eq $true) { $a2 += '-BlockReinstall' }
+                if (($k -eq 'drivers' -or $k -eq 'devices') -and $apply -and $body.blockReinstall -eq $true) { $a2 += '-BlockReinstall' }
                 if ($k -eq 'catalog-install' -and $apply -and ($bk -eq 'full' -or $bk -eq 'drivers')) { $a2 += '-SaveOld' }
                 $steps += , $a2
             }
