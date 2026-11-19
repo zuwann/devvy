@@ -1,13 +1,13 @@
 {
- "version": "0.10.88",
+ "version": "0.10.90",
  "deferred": [
   "devvy.bat"
  ],
  "files": [
   {
-   "path": "COMANDI.md",
-   "sha256": "eb1a04d905b0a528380cd2fd1c69165d6aa113b0018c5da50472bde686144889",
-   "size": 8635
+   "path": "COMMANDS.md",
+   "sha256": "13dc3e09813e657a0b7da3e411b8b60d03171e03871f1d6c9968a625ed5aa87a",
+   "size": 15068
   },
   {
    "path": "DISCLAIMER.txt",
@@ -21,8 +21,8 @@
   },
   {
    "path": "README.md",
-   "sha256": "8b82be78caff5d46a0fd1ab83d26e6f9df87b8d736379afd4d29449d0b15323d",
-   "size": 12808
+   "sha256": "79f31a2c566b8ef21cfd2c11b9830e2e4e0d54e01d0ecf8992346c0e9b6469b7",
+   "size": 12812
   },
   {
    "path": "devvy.bat",
@@ -51,8 +51,8 @@
   },
   {
    "path": "scripts/00-server.ps1",
-   "sha256": "f9a03ee85231ea78c3fa122dafcbe33a1f8e4bd43b56dfd574b71934eadc00c3",
-   "size": 53640
+   "sha256": "4a44b642a01ebe21de803254d7bda6c72350d3f7e180bb15ecfdf2625eb96fca",
+   "size": 54699
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
@@ -161,13 +161,13 @@
   },
   {
    "path": "scripts/common.ps1",
-   "sha256": "399ce9b90715b59311118b80808ddfb772b818a5bb7ffe9daa0480521d8d0789",
-   "size": 68685
+   "sha256": "a708869c92424d2a744e841b62c93712774e92eae3b7aeb91e5df4d66b2dfff7",
+   "size": 68694
   },
   {
    "path": "scripts/devvy-cli.ps1",
-   "sha256": "afd68ab575d896fa86723eacf783a861ce3b991faf9417353ac1adac165002d9",
-   "size": 41621
+   "sha256": "c09fef771f23d22d9295df52531b13e02c6a00045088ff503f1d980007414cd6",
+   "size": 41622
   },
   {
    "path": "scripts/kb-version.txt",
@@ -181,23 +181,23 @@
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "2543d9f244ea81650d2d2155ab707de412d035393f741bee2cbb9822a0f75ed7",
-   "size": 145893
+   "sha256": "5fd7c841c5505f9d2c7930a61e54f6d369d51782e789b982d43ad036e2aad00e",
+   "size": 147399
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "158538c335c054497958988a434319c59fe7c1dd8d009c1e9076c38cf03f92ba",
-   "size": 144671
+   "sha256": "848f224f9d562bdae8f07acb2b2995b7f4a0a7eb91cf262f1d8a086f3045cfb8",
+   "size": 146217
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "909a33de4f2ce71634a9b981f0d42293be712518f3c1e00f322cc9d3fc1945c3",
-   "size": 148012
+   "sha256": "f8a51e141b0b6e2d4b5acd1fce88440d36de2336ed43f91e6a4c78521b250e53",
+   "size": 149540
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "4a884bcfe7a0195bde7cc293d7d5ffd07a1ec801673461f935a77bd622e6d393",
-   "size": 139776
+   "sha256": "e2025d2931a4be5a27af94e540fb646bff00827c483a07fe1f0b492b38f9622a",
+   "size": 141244
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -236,8 +236,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "293ba54d61b5ab4ed2b3fd177101ff5da062a33d323d0f7af3d698125ada9dca",
-   "size": 123519
+   "sha256": "be64daacb9dff64983591bbd6f20be7edfbdaa048c807af1eaf1d83e0e89e179",
+   "size": 124912
   }
  ]
 }
