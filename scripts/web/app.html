@@ -62,8 +62,13 @@ tr.dis td{opacity:.5}
 .tbar .sum{color:var(--mut)}.tbar .sum b{color:var(--fg)}.tbar .sum b.r{color:var(--err)}
 tr.grph td,tr.grpm td{background:var(--accbg,rgba(80,130,255,.08))}tr.grph td{border-top:1px solid var(--line)}tr.grpm td:first-child,tr.grph td:first-child{box-shadow:inset 3px 0 0 var(--acc)}
 code{font-family:ui-monospace,Consolas,monospace;font-size:.82rem;word-break:break-all}
-.tag{display:inline-block;padding:0 7px;border-radius:9px;font-size:.78rem;border:1px solid var(--line);color:var(--mut);margin-left:4px}
-.tag.r{color:var(--err);border-color:var(--err)}.tag.g{color:var(--ok);border-color:var(--ok)}.tag.y{color:var(--warn);border-color:var(--warn)}
+.tag{display:inline-block;font-size:.85rem;font-weight:700;color:var(--mut);margin-left:6px}
+.tag.r{color:var(--err)}.tag.g{color:var(--ok)}.tag.y{color:var(--warn)}
+label.chk.part{align-items:center;gap:10px;padding:9px 12px;border:1px solid var(--line);border-radius:8px;margin:6px 0;cursor:pointer}
+label.chk.part>span:first-of-type{flex:1}
+label.chk.part .tag{margin-left:12px;white-space:nowrap}
+label.chk.part:has(input:checked){border-color:var(--acc);background:rgba(80,130,255,.08)}
+label.chk.part:has(input:disabled){opacity:.6;cursor:default}
 .st.INFO{color:var(--mut)}
 .gear{display:inline-flex;align-items:center;justify-content:center;padding:7px 9px!important}
 .gear svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -139,7 +144,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.96</small></h1>
+  <h1>Devvy <small class="mut">0.10.97</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -572,7 +577,7 @@ function applySort(tb){
   for(var i=0;i<tb.rows[0].cells.length;i++){ var th=tb.rows[0].cells[i], b=th.querySelector('.thb'); if(!b) continue; var on=(i===st.i); b.classList.toggle('on',on); b.querySelector('.ar').textContent=on?(st.d>0?' \u25B2':' \u25BC'):''; th.setAttribute('aria-sort',on?(st.d>0?'ascending':'descending'):'none'); }
 }
 new MutationObserver(function(){ initSortables(); }).observe(document.documentElement,{childList:true,subtree:true});
-function bd(kind,text){ return '<span class="bd '+kind+'"><i class="dot '+kind+'"></i><b>'+esc(text)+'</b></span>'; }
+function bd(kind,text){ return '<span class="bd '+kind+'"><b>'+esc(text)+'</b></span>'; }
 function riskCell(r){ if(!r.Risk) return '<span class="mut">\u2013</span>'; return bd(r.Risk==='High'?'r':(r.Risk==='Medium'?'y':'g'), t(r.Risk)); }
 function isDel(a){ return /^REMOVE/.test(a); }
 function inUse(r){ return Number(r.UsedByPresent)>0; }
@@ -719,7 +724,7 @@ function vRun(){
     var h='';
     if(S.last && (S.last.kind==='preview'||S.last.kind==='apply')){ var U=S.last, prev=(U.kind==='preview'); h+='<div class="card '+(U.status==='done'?'':'err')+'"><h3>'+esc(t('Last job: {0}', t(KINDS[U.kind]||U.kind)))+' - '+(U.status==='done'?esc(t('completed')):esc(t('stopped (code {0})', U.exit)))+'</h3><p>'+esc(prev?t('It was a preview: nothing was changed and no driver was downloaded. To go ahead choose "Change the PC", tick "I confirm" and press "Apply the changes".'):t('Changes made. Create the report in the Report tab.'))+'</p></div>'; }
     h+='<h2>'+esc(t('Run'))+'</h2><p class="mut">'+esc(t('The choices made in the other tabs are saved automatically when you press Run. The operations run in order and stop at the first error.'))+'</p><div class="card"><h3>'+esc(t('What to do'))+'</h3>';
-    parts.forEach(function(p){ if(p[2]===0) E.parts[p[0]]=false; h+='<label class="chk"><input type="checkbox" data-part="'+p[0]+'" '+(E.parts[p[0]]?'checked':'')+(p[2]===0?' disabled':'')+'><span>'+esc(t(p[1]))+(p[2]>0?' <span class="tag r">'+esc(t('{0} chosen', p[2]))+'</span>':(p[2]===0?' <span class="tag">'+esc(t('nothing chosen'))+'</span>':''))+'</span></label>'; });
+    parts.forEach(function(p){ if(p[2]===0) E.parts[p[0]]=false; h+='<label class="chk part"><input type="checkbox" data-part="'+p[0]+'" '+(E.parts[p[0]]?'checked':'')+(p[2]===0?' disabled':'')+'><span>'+esc(t(p[1]))+'</span>'+(p[2]>0?'<span class="tag r">'+esc(t('{0} chosen', p[2]))+'</span>':(p[2]===0?'<span class="tag">'+esc(t('nothing chosen'))+'</span>':''))+'</label>'; });
     h+='</div><div class="card"><h3>'+esc(t('How'))+'</h3>'+
       '<label class="chk"><input type="radio" name="mode" value="prev" '+(!E.apply?'checked':'')+'><span><b>'+esc(t('Preview'))+'</b>: '+esc(t('shows what would be done, without changing anything (recommended the first time)'))+'</span></label>'+
       '<label class="chk"><input type="radio" name="mode" value="app" '+(E.apply?'checked':'')+'><span><b>'+esc(t('Change the PC'))+'</b>: '+esc(t('performs the chosen operations'))+'</span></label></div>';
