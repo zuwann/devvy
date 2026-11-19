@@ -1301,5 +1301,6 @@
  "All": "Tous",
  "Risk": "Risque",
  "Class": "Classe",
- "Group similar extension drivers": "Regrouper les pilotes d'extension similaires"
+ "Dark mode": "Mode sombre",
+ "Show the similar extension drivers (they appear highlighted)": "Afficher les pilotes d'extension similaires (ils apparaissent en surbrillance)"
 }

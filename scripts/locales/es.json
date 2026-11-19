@@ -1301,5 +1301,6 @@
  "All": "Todos",
  "Risk": "Riesgo",
  "Class": "Clase",
- "Group similar extension drivers": "Agrupar controladores de extensión similares"
+ "Dark mode": "Modo oscuro",
+ "Show the similar extension drivers (they appear highlighted)": "Mostrar los controladores de extensión similares (aparecen resaltados)"
 }

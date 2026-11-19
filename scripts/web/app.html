@@ -8,7 +8,8 @@
 <title>Devvy</title>
 <style>
 :root{--bg:#fff;--fg:#1d2733;--mut:#5b6877;--line:#d9dee5;--card:#f5f7fa;--ok:#1b7f3b;--warn:#9a6700;--err:#b42318;--acc:#0b63c5;--accfg:#fff;--term:#0f1419;--termfg:#d6e2ee}
-@media (prefers-color-scheme:dark){:root{--bg:#14181d;--fg:#e6ebf1;--mut:#9aa7b5;--line:#2b333c;--card:#1c2229;--ok:#4cc77a;--warn:#e3b341;--err:#ff7b72;--acc:#4c9aff;--accfg:#0b1620;--term:#0b0f13;--termfg:#cfdbe8}}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#14181d;--fg:#e6ebf1;--mut:#9aa7b5;--line:#2b333c;--card:#1c2229;--ok:#4cc77a;--warn:#e3b341;--err:#ff7b72;--acc:#4c9aff;--accfg:#0b1620;--term:#0b0f13;--termfg:#cfdbe8}}
+:root[data-theme=dark]{--bg:#14181d;--fg:#e6ebf1;--mut:#9aa7b5;--line:#2b333c;--card:#1c2229;--ok:#4cc77a;--warn:#e3b341;--err:#ff7b72;--acc:#4c9aff;--accfg:#0b1620;--term:#0b0f13;--termfg:#cfdbe8}
 a{color:var(--acc);text-decoration:underline;text-underline-offset:2px}a:visited{color:var(--acc)}a:hover{filter:brightness(1.2)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
@@ -51,7 +52,8 @@ th{color:var(--mut);font-size:.82rem;font-weight:600;position:sticky;top:0;backg
 tr.del td{background:rgba(180,35,24,.08)}
 
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--mut);vertical-align:middle}.dot.g{background:var(--ok)}.dot.y{background:var(--warn)}.dot.r{background:var(--err)}
-.bd{white-space:nowrap;display:inline-block;margin-top:4px}
+.bd{white-space:nowrap;display:inline-block;margin-top:4px}.bd.g b{color:var(--ok)}.bd.y b{color:var(--warn)}.bd.r b{color:var(--err)}
+tr.dis td{opacity:.5}
 .filt{padding:14px 16px}.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.fgrid label.fl{display:block;font-size:.8rem;color:var(--mut);margin-bottom:4px}.fgrid input,.fgrid select{width:100%}
 .fchecks{margin-top:12px;display:flex;flex-direction:column;gap:2px}
 .tbar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin:12px 0}
@@ -133,9 +135,10 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 </head>
 <body>
 <header>
-  <h1>Devvy <small class="mut">0.10.94</small></h1>
+  <h1>Devvy <small class="mut">0.10.95</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
+  <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
   <button class="b gear" id="upd" data-pop="update" type="button" title="Updates"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M19 2v4h-4"/><path d="M5 22v-4h4"/></svg><span id="updbadge" class="belln" style="display:none"></span></button>
   <button class="b gear" id="gear" data-pop="settings" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
   <button class="b gear" id="bug" data-pop="problem" type="button" title="Report a problem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7V6a3 3 0 0 1 6 0v1"/><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v5M3 12h4M17 12h4M4 6l3 2M20 6l-3 2M4 19l3-2M20 19l-3-2"/></svg></button>
@@ -183,7 +186,9 @@ function busy(){ return !!(S.launching||(S.job&&S.job.status==='running')||(S.qu
 function notice(msg, bad){ S.nq=S.nq||[]; S.nq.push({m:msg,b:bad}); drainNotices(); }
 function drainNotices(){ if(S.nqBusy) return; var n=(S.nq||[]).shift(); if(!n) return; if(S.cf||(!n.b&&busy())||(n.a&&S.job&&S.job.status==='running')){ S.nq.unshift(n); setTimeout(drainNotices,1500); return; }
   S.nqBusy=true; ask(n.a||{title:n.b?t('Attention'):t('Done.'),text:n.m,ok:t('OK'),single:true}).then(function(v){ S.nqBusy=false; if(n.cb) n.cb(v); drainNotices(); }); }
-function loadState(){ return api('/api/state').then(function(s){ S.state=s; $('#pcinfo').textContent=''; var bd=$('#defbadge'); bd.textContent=t('Defender exceptions active'); bd.style.display='none'; }); }
+function isDark(){ var th=S.state&&S.state.settings&&S.state.settings.theme; if(th==='dark') return true; if(th==='light') return false; try{ return window.matchMedia('(prefers-color-scheme: dark)').matches; }catch(e){ return false; } }
+function applyTheme(){ var th=S.state&&S.state.settings&&S.state.settings.theme, r=document.documentElement; if(th==='dark'||th==='light') r.setAttribute('data-theme',th); else r.removeAttribute('data-theme'); var b=$('#dark'); if(b){ b.classList.toggle('on',isDark()); b.setAttribute('aria-pressed',isDark()?'true':'false'); } }
+function loadState(){ return api('/api/state').then(function(s){ S.state=s; applyTheme(); $('#pcinfo').textContent=''; var bd=$('#defbadge'); bd.textContent=t('Defender exceptions active'); bd.style.display='none'; }); }
 function ask(o){ return new Promise(function(res){
   if(S.cf){ S.cf(false); }
   if(!(S.job&&S.job.status==='running')){ S.open=false; var mo=$('#modal'); if(mo) mo.style.display='none'; }
@@ -230,7 +235,7 @@ function finishClosing(){
   setTimeout(function(){ try{ window.open('','_self'); window.close(); }catch(x){} },1500);
 }
 function load(type){ return api('/api/data/'+type).then(function(d){ S.data[type]=d.rows; return d.rows; }); }
-function loadI18n(){ return api('/api/i18n').then(function(d){ DICT=d.strings||{}; document.documentElement.lang=d.lang; $('#exit').textContent=t('Exit'); $('#popclose').title=t('Close'); if($('#bug')) $('#bug').title=t('Report a problem'); if($('#help')) $('#help').title=t('Help'); $('#popclose').setAttribute('aria-label',t('Close')); $('#top').title=t('Back to top'); $('#top').setAttribute('aria-label',t('Back to top')); $('#cancel').textContent=t('Cancel'); $('#close').textContent=t('Close'); }); }
+function loadI18n(){ return api('/api/i18n').then(function(d){ DICT=d.strings||{}; document.documentElement.lang=d.lang; $('#exit').textContent=t('Exit'); $('#popclose').title=t('Close'); if($('#bug')) $('#bug').title=t('Report a problem'); if($('#dark')) $('#dark').title=t('Dark mode'); if($('#help')) $('#help').title=t('Help'); $('#popclose').setAttribute('aria-label',t('Close')); $('#top').title=t('Back to top'); $('#top').setAttribute('aria-label',t('Back to top')); $('#cancel').textContent=t('Cancel'); $('#close').textContent=t('Close'); }); }
 function tabName(k){ var n=''; TABS.forEach(function(x){ if(x[0]===k) n=x[1]; }); return t(n); }
 var LOCKED=['devices','drivers','bluetooth','updates','run'];
 function hasInv(){ var r=S.state&&S.state.report; return !!(r&&r.devices&&r.drivers&&r.bluetooth); }
@@ -562,7 +567,7 @@ function applySort(tb){
   for(var i=0;i<tb.rows[0].cells.length;i++){ var th=tb.rows[0].cells[i], b=th.querySelector('.thb'); if(!b) continue; var on=(i===st.i); b.classList.toggle('on',on); b.querySelector('.ar').textContent=on?(st.d>0?' \u25B2':' \u25BC'):''; th.setAttribute('aria-sort',on?(st.d>0?'ascending':'descending'):'none'); }
 }
 new MutationObserver(function(){ initSortables(); }).observe(document.documentElement,{childList:true,subtree:true});
-function bd(kind,text){ return '<span class="bd"><i class="dot '+kind+'"></i><b>'+esc(text)+'</b></span>'; }
+function bd(kind,text){ return '<span class="bd '+kind+'"><i class="dot '+kind+'"></i><b>'+esc(text)+'</b></span>'; }
 function riskCell(r){ if(!r.Risk) return '<span class="mut">\u2013</span>'; return bd(r.Risk==='High'?'r':(r.Risk==='Medium'?'y':'g'), t(r.Risk)); }
 function isDel(a){ return /^REMOVE/.test(a); }
 function inUse(r){ return Number(r.UsedByPresent)>0; }
@@ -584,7 +589,7 @@ function vTable(type){
     }
     // several unused extension drivers of the same kind (one per laptop model) are folded into one line; the button opens them
     var grp={}, grpWhat={}; F.open=F.open||{};
-    if(type==='drivers' && !F.q && F.grp!==false){ vis.forEach(function(r){ if(r.Class==='Extension' && !inUse(r) && !isDel(S.mod.drivers[r[T.key]]||r.Action)){ var gid=r.KbId||('prov:'+(r.Provider||'?')); (grp[gid]=grp[gid]||[]).push(r); grpWhat[gid]=r.KbId?(r.What||r.Category||r.KbId):(r.Provider||'?'); } }); Object.keys(grp).forEach(function(k){ if(grp[k].length<3) delete grp[k]; }); }
+    if(type==='drivers' && !F.q){ vis.forEach(function(r){ if(r.Class==='Extension' && !inUse(r) && !isDel(S.mod.drivers[r[T.key]]||r.Action)){ var gid=r.KbId||('prov:'+(r.Provider||'?')); (grp[gid]=grp[gid]||[]).push(r); grpWhat[gid]=r.KbId?(r.What||r.Category||r.KbId):(r.Provider||'?'); } }); Object.keys(grp).forEach(function(k){ if(grp[k].length<3) delete grp[k]; }); }
     var nDel=0; rows.forEach(function(r){ if(!(type==='drivers'&&inUse(r)) && isDel(S.mod[type][r[T.key]]||r.Action)) nDel++; });
     var fh='<div class="card filt"><div class="fgrid"><div><label class="fl" for="q">'+esc(t('Search'))+'</label><input type="text" id="q" placeholder="'+esc(t('Search...'))+'" value="'+esc(F.q)+'"></div>';
     FL.forEach(function(f){
@@ -592,20 +597,20 @@ function vTable(type){
       fh+='<div><label class="fl" for="f-'+f.id+'">'+esc(t(f.label))+'</label><select id="f-'+f.id+'" data-f="'+f.id+'"><option value="">'+esc(t('All'))+'</option>'+vals.map(function(v){ return '<option value="'+esc(v)+'"'+(F.sel[f.id]===v?' selected':'')+'>'+esc(f.tr?t(v):v)+'</option>'; }).join('')+'</select></div>';
     });
     fh+='</div><div class="fchecks">'+(T.onlyLabel?'<label class="chk"><input type="checkbox" id="only" '+(F.only?'checked':'')+'> '+esc(t(T.onlyLabel))+'</label>':'')+
-      (type==='drivers'?'<label class="chk"><input type="checkbox" id="inuse" '+(F.inuse?'checked':'')+'> '+esc(t('Also show drivers in use (they cannot be removed here)'))+'</label><label class="chk"><input type="checkbox" id="grp" '+(F.grp!==false?'checked':'')+'> '+esc(t('Group similar extension drivers'))+'</label>':'')+'</div></div>';
+      (type==='drivers'?'<label class="chk"><input type="checkbox" id="inuse" '+(F.inuse?'checked':'')+'> '+esc(t('Also show drivers in use (they cannot be removed here)'))+'</label><label class="chk"><input type="checkbox" id="grp" '+(F.ext?'checked':'')+'> '+esc(t('Show the similar extension drivers (they appear highlighted)'))+'</label>':'')+'</div></div>';
     var h='<h2>'+esc(t(T.title))+'</h2>'+(type==='devices'?problemsCard(rows):'')+'<p class="mut">'+esc(t(T.note))+'</p>'+fh+'<div class="wrap"><table><tr>';
     function th(i,label){ var on=(F.sort.i===i), ar=on?(F.sort.d>0?' \u25B2':' \u25BC'):''; return '<th aria-sort="'+(on?(F.sort.d>0?'ascending':'descending'):'none')+'"><button type="button" class="thb'+(on?' on':'')+'" data-sort="'+i+'" data-st="'+type+'" title="'+esc(t('Sort by this column'))+'">'+esc(label)+ar+'</button></th>'; }
     h+=th(-1,t('Action')); T.cols.forEach(function(c,i){ h+=th(i,t(c[0])); }); h+='</tr>';
     var gseen={};
     vis.slice(0,600).forEach(function(r){
       var gid2=r.KbId||('prov:'+(r.Provider||'?')), gk=(type==='drivers'&&r.Class==='Extension'&&grp[gid2]&&grp[gid2].indexOf(r)>=0)?gid2:'';
-      if(gk && !gseen[gk]){ gseen[gk]=1; h+='<tr class="grph"><td><button class="b small" data-grp="'+esc(gk)+'">'+(F.open[gk]?'\u25BE ':'\u25B8 ')+esc(F.open[gk]?t('Hide them'):t('Show them'))+'</button></td><td colspan="'+T.cols.length+'"><b>'+esc(t('{0} similar extension drivers (all kept): {1}', grp[gk].length, grpWhat[gk]))+'</b></td></tr>'; }
-      if(gk && !F.open[gk]) return;
+      if(gk && !gseen[gk]){ gseen[gk]=1; h+='<tr class="grph"><td colspan="'+(T.cols.length+1)+'"><b>'+esc(t('{0} similar extension drivers (all kept): {1}', grp[gk].length, grpWhat[gk]))+'</b></td></tr>'; }
+      if(gk && !F.ext) return;
       var k=r[T.key], a=S.mod[type][k]||r.Action, prot=r.Protected, busy=(type==='drivers'&&inUse(r)); if(busy) a='KEEP';
       var sel='<select data-type="'+type+'" data-k="'+esc(k)+'"'+((prot||busy)?' disabled':'')+'>';
       T.values.forEach(function(v){ sel+='<option value="'+v+'"'+(v===a?' selected':'')+'>'+esc(t(v))+'</option>'; });
-      sel+='</select>'+(prot?'<br>'+bd('g',t('excluded')):(busy?'<br>'+bd('g',t('in use')):''));
-      h+='<tr class="'+(isDel(a)?'del':'')+(gk?' grpm':'')+'"><td>'+sel+'</td>'; T.cols.forEach(function(c){ h+='<td>'+c[1](r)+'</td>'; }); h+='</tr>';
+      sel+='</select>'+(prot?'<br>'+bd('g',t('excluded')):'');
+      h+='<tr class="'+(isDel(a)?'del':'')+(gk?' grpm':'')+(busy?' dis':'')+'"><td>'+sel+'</td>'; T.cols.forEach(function(c){ h+='<td>'+c[1](r)+'</td>'; }); h+='</tr>';
     });
     h+='</table></div>'+(vis.length>600?'<p class="mut">'+esc(t('Showing the first 600: use the search to narrow down.'))+'</p>':'');
     h+='<div class="tbar"><span class="sum">'+esc(t('{0} shown of {1}', vis.length, rows.length))+' \u00B7 <b class="'+(nDel?'r':'')+'">'+esc(t('{0} to remove', nDel))+'</b></span><button class="b ok" data-save="'+type+'">'+esc(t('Save choices'))+'</button></div>';
@@ -954,6 +959,7 @@ document.addEventListener('keydown',function(e){ if(e.key!=='Escape') return; if
 document.addEventListener('click',function(e){
   // a browser translator wraps the text of buttons in <font>: look for the button the click belongs to
   var t0=(e.target&&e.target.closest)?(e.target.closest('button,[data-tab],[data-go],[data-run],[data-kbsend],[data-fix],[data-save],[data-ans],[data-unblock]')||e.target):e.target, d=t0.dataset||{};
+  if(t0.id==='dark'||(t0.closest&&t0.closest('#dark'))){ var nt=isDark()?'light':'dark'; S.state.settings.theme=nt; applyTheme(); api('/api/settings',{theme:nt}).catch(function(){}); return; }
   if(t0.closest&&t0.closest('#pop')&&(d.run||d.kbsend||d.fix||d.go||d.flow)){ closePop(); }
   if(d.pop){ if(S.pop===d.pop){ closePop(); } else { openPop(d.pop); } return; }
   if(t0.id==='popclose'){ closePop(); return; }
@@ -1013,7 +1019,7 @@ document.addEventListener('change',function(e){
   var t0=e.target, d=t0.dataset||{};
   if(d.type){ S.mod[d.type][d.k]=t0.value; (S.touched[d.type]=S.touched[d.type]||{})[d.k]=t0.value; var tr=t0.closest('tr'); if(tr) tr.className=isDel(t0.value)?'del':''; return; }
   if(d.f){ var Fz=S.filter[S.tab]; Fz.sel=Fz.sel||{}; Fz.sel[d.f]=t0.value; go(S.tab); return; }
-  if(t0.id==='grp'){ S.filter.drivers.grp=t0.checked; go('drivers'); return; }
+  if(t0.id==='grp'){ S.filter.drivers.ext=t0.checked; go('drivers'); return; }
   if(t0.id==='inuse'){ S.filter.drivers.inuse=t0.checked; go('drivers'); return; }
   if(t0.id==='only'){ S.filter[S.tab].only=t0.checked; go(S.tab); return; }
   if(t0.id==='proffile'){ var fl=t0.files&&t0.files[0]; if(!fl) return; var rd=new FileReader(); rd.onload=function(){ var pr; try{ pr=JSON.parse(String(rd.result).replace(/^\uFEFF/,'')); }catch(x){ notice(t('This is not a Devvy profile file.'),true); return; } ask({title:t('Import profile'),text:t('Import this profile? Its exclusions, knowledge rows and support pages are added to yours; nothing of yours is deleted.'),ok:t('Import profile'),cancel:t('Cancel')}).then(function(y){ if(!y) return; api('/api/profile',{profile:pr}).then(function(r){ return loadState().then(function(){ notice(t('Profile imported: {0} exclusion(s) in total, {1} knowledge row(s) and {2} support page(s) added.',r.exclusions,r.knowledgeAdded,r.supportAdded)+((r.invalid&&r.invalid.length)?' '+t('Skipped as invalid: {0}.',r.invalid.join(', ')):'')); }); }).catch(function(x){ notice(x.message,true); }); }); }; rd.readAsText(fl); t0.value=''; return; }

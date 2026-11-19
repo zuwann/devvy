@@ -8,7 +8,7 @@ $script:Root       = Split-Path -Parent $PSScriptRoot
 $script:SettingsDir  = Join-Path $script:Root 'data'
 $script:SettingsPath = Join-Path $script:SettingsDir 'settings.json'
 function Get-DefaultSettings {
-    @{ language = ''; exclusions = @(); defender = 'always'; backup = 'ask'; dataDir = ''; catalogConsent = $true; inventoryAtStart = $false; blockReinstall = $true; postRebootCheck = $true; updateCheck = $true; firstRunDone = $false; defenderApplied = $false }
+    @{ language = ''; exclusions = @(); defender = 'always'; backup = 'ask'; dataDir = ''; catalogConsent = $true; inventoryAtStart = $false; blockReinstall = $true; postRebootCheck = $true; updateCheck = $true; theme = ''; firstRunDone = $false; defenderApplied = $false }
 }
 # ---------- Open the Devvy page in the browser, whatever the browser profiles are ----------
 # Chromium browsers (Chrome, Edge, Brave, Vivaldi) show a profile picker (or open nothing) when several profiles exist: the page is

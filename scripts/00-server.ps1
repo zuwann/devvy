@@ -323,7 +323,7 @@ function Get-SettingsForPage {
     $langs = @()
     foreach ($c in (Get-AvailableLanguages)) { $nm = $c; if ($langNames.ContainsKey($c)) { $nm = $langNames[$c] }; $langs += @{ code = $c; name = $nm } }
     return @{ language = $script:Lang; detected = (Get-DetectedLanguage); languages = $langs; exclusions = @($s.exclusions); defender = "$($s.defender)"; backup = "$($s.backup)"
-              dataDir = "$($s.dataDir)"; dataDirNow = $script:DataRoot; catalogConsent = [bool]$s.catalogConsent; inventoryAtStart = [bool]$s.inventoryAtStart; blockReinstall = [bool]$s.blockReinstall; postRebootCheck = [bool]$s.postRebootCheck; updateCheck = ($s.updateCheck -ne $false); firstRunDone = [bool]$s.firstRunDone }
+              theme = "$($s.theme)"; dataDir = "$($s.dataDir)"; dataDirNow = $script:DataRoot; catalogConsent = [bool]$s.catalogConsent; inventoryAtStart = [bool]$s.inventoryAtStart; blockReinstall = [bool]$s.blockReinstall; postRebootCheck = [bool]$s.postRebootCheck; updateCheck = ($s.updateCheck -ne $false); firstRunDone = [bool]$s.firstRunDone }
 }
 
 function Handle-Api($ctx, [string]$Path, [string]$Method) {
@@ -624,6 +624,10 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         if ($null -ne $body.catalogConsent) { $s.catalogConsent = ($body.catalogConsent -eq $true) }
         if ($null -ne $body.postRebootCheck) { $s.postRebootCheck = ($body.postRebootCheck -eq $true) }
         if ($null -ne $body.updateCheck) { $s.updateCheck = ($body.updateCheck -eq $true) }
+        if ($null -ne $body.theme) {
+            if (@('', 'light', 'dark') -notcontains "$($body.theme)") { Send-Json $ctx @{ error = (T 'Invalid value') } 400; return }
+            $s.theme = "$($body.theme)"
+        }
         if ($null -ne $body.inventoryAtStart) { $s.inventoryAtStart = ($body.inventoryAtStart -eq $true) }
         if ($null -ne $body.blockReinstall) { $s.blockReinstall = ($body.blockReinstall -eq $true) }
         if ($null -ne $body.firstRunDone) { $s.firstRunDone = ($body.firstRunDone -eq $true) }
