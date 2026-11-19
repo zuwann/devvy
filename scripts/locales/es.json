@@ -1297,5 +1297,9 @@
  "No page is listed for the maker of this motherboard.": "No hay ninguna página indicada para el fabricante de esta placa base.",
  "Suggest the support page of this maker": "Sugerir la página de soporte de este fabricante",
  "Drivers of {0}": "Controladores de {0}",
- "Search page of {0}": "Página de búsqueda de {0}"
+ "Search page of {0}": "Página de búsqueda de {0}",
+ "All": "Todos",
+ "Risk": "Riesgo",
+ "Class": "Clase",
+ "Group similar extension drivers": "Agrupar controladores de extensión similares"
 }

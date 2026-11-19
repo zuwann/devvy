@@ -49,6 +49,13 @@ table{border-collapse:collapse;width:100%;margin:6px 0}
 th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--mut);font-size:.82rem;font-weight:600;position:sticky;top:0;background:var(--bg)}
 tr.del td{background:rgba(180,35,24,.08)}
+
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--mut);vertical-align:middle}.dot.g{background:var(--ok)}.dot.y{background:var(--warn)}.dot.r{background:var(--err)}
+.bd{white-space:nowrap;display:inline-block;margin-top:4px}
+.filt{padding:14px 16px}.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.fgrid label.fl{display:block;font-size:.8rem;color:var(--mut);margin-bottom:4px}.fgrid input,.fgrid select{width:100%}
+.fchecks{margin-top:12px;display:flex;flex-direction:column;gap:2px}
+.tbar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:space-between;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 16px;margin:12px 0}
+.tbar .sum{color:var(--mut)}.tbar .sum b{color:var(--fg)}.tbar .sum b.r{color:var(--err)}
 tr.grph td,tr.grpm td{background:var(--accbg,rgba(80,130,255,.08))}tr.grph td{border-top:1px solid var(--line)}tr.grpm td:first-child,tr.grph td:first-child{box-shadow:inset 3px 0 0 var(--acc)}
 code{font-family:ui-monospace,Consolas,monospace;font-size:.82rem;word-break:break-all}
 .tag{display:inline-block;padding:0 7px;border-radius:9px;font-size:.78rem;border:1px solid var(--line);color:var(--mut);margin-left:4px}
@@ -126,7 +133,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 </head>
 <body>
 <header>
-  <h1>Devvy <small class="mut">0.10.93</small></h1>
+  <h1>Devvy <small class="mut">0.10.94</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="upd" data-pop="update" type="button" title="Updates"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M19 2v4h-4"/><path d="M5 22v-4h4"/></svg><span id="updbadge" class="belln" style="display:none"></span></button>
@@ -531,10 +538,10 @@ function ident(r){
 var TAB = {
   devices:{ title:'Devices', key:'InstanceId', values:['KEEP','REMOVE'], onlyLabel:'Show only ghosts (not connected)', onlyFn:function(r){return r.Present==='NO';},
     note:'A ghost device is the leftover entry of a device that is no longer connected. Removing it is safe: if you plug it in again Windows installs it again.',
-    cols:[['Device',function(r){return esc(r.FriendlyName||r.Class)+(r.Present==='NO'?(r.GhostKind==='SAFE'?'<span class="tag g">'+esc(t('ghost: safe to remove'))+'</span>':'<span class="tag y">'+esc(t('ghost: physical hardware'))+'</span>'):'')+'<br><code>'+esc(r.InstanceId)+'</code>';}],['Category',function(r){return esc(r.Category);}],['Why',function(r){return esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+ident(r);}]] },
+    cols:[['Device',function(r){return esc(r.FriendlyName||r.Class)+(r.Present==='NO'?'<br>'+(r.GhostKind==='SAFE'?bd('g',t('ghost: safe to remove')):bd('y',t('ghost: physical hardware'))):'')+'<br><code>'+esc(r.InstanceId)+'</code>';}],['Category',function(r){return esc(r.Category);}],['Why',function(r){return esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+ident(r);}],['Risk',function(r){return riskCell(r);}]] },
   drivers:{ title:'Drivers in the driver store', key:'Driver', values:['KEEP','REMOVE','REMOVE+UNINSTALL'], onlyLabel:'Show only third-party drivers', onlyFn:function(r){return r.Origin==='Third-party';},
     note:'REMOVE takes the package out of the driver store (Windows refuses if it is in use). REMOVE+UNINSTALL also takes it off the devices that use it: use it only for components you do not need (for example uninstalled programs).',
-    cols:[['Driver',function(r){return '<code>'+esc(r.Driver)+'</code><br>'+esc(r.InfName);}],['Manufacturer / class',function(r){return esc(r.Provider)+'<br><span class="mut">'+esc(r.Class)+'</span>';}],['Version',function(r){return esc(r.Version)+'<br><span class="mut">'+esc(r.Date)+'</span>'+(r.Versions==='OldVersion'?'<span class="tag y">'+esc(t('old'))+'</span>':'');}],['Used by',function(r){return esc(t('{0} devices', r.UsedByPresent));}],['What it is / why',function(r){return ((r.What||r.KbId)?'<b>'+esc(r.What||r.Category)+'</b> ':'<span class="tag y">'+esc(t('unknown'))+'</span> ')+(r.Risk?'<span class="tag '+(r.Risk==='High'?'r':'')+'">'+esc(t('risk {0}', t(r.Risk)))+'</span>':'')+'<br>'+esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+((!(r.What||r.KbId))?'<details open><summary>'+esc(t('Identify'))+'</summary>'+ident(r).replace(/^<details><summary>[^<]*<\/summary>/,'').replace(/<\/details>$/,'')+'</details>':ident(r));}]] },
+    cols:[['Driver',function(r){return '<code>'+esc(r.Driver)+'</code><br>'+esc(r.InfName);}],['Manufacturer / class',function(r){return esc(r.Provider)+'<br><span class="mut">'+esc(r.Class)+'</span>';}],['Version',function(r){return esc(r.Version)+'<br><span class="mut">'+esc(r.Date)+'</span>'+(r.Versions==='OldVersion'?'<br>'+bd('y',t('old')):'');}],['Used by',function(r){return esc(t('{0} devices', r.UsedByPresent));}],['What it is / why',function(r){return ((r.What||r.KbId)?'<b>'+esc(r.What||r.Category)+'</b> ':bd('y',t('unknown'))+' ')+'<br>'+esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+((!(r.What||r.KbId))?'<details open><summary>'+esc(t('Identify'))+'</summary>'+ident(r).replace(/^<details><summary>[^<]*<\/summary>/,'').replace(/<\/details>$/,'')+'</details>':ident(r));}],['Risk',function(r){return riskCell(r);}]] },
   bluetooth:{ title:'Bluetooth pairings', key:'MAC', values:['KEEP','REMOVE'], onlyLabel:'', onlyFn:function(){return true;},
     note:'REMOVE deletes the pairing: you will have to pair the device again. Pairings left only in the registry are deleted too.',
     cols:[['Device',function(r){return esc(r.Name||t('(no name)'))+'<br><code>'+esc(r.MAC)+'</code>';}],['State',function(r){return (r.Present==='YES'?esc(t('connected')):esc(t('not connected')))+(r.InRegistry==='YES'?' - '+esc(t('in the registry')):'');}],['Why',function(r){return esc(r.Reason);}]] }
@@ -555,13 +562,21 @@ function applySort(tb){
   for(var i=0;i<tb.rows[0].cells.length;i++){ var th=tb.rows[0].cells[i], b=th.querySelector('.thb'); if(!b) continue; var on=(i===st.i); b.classList.toggle('on',on); b.querySelector('.ar').textContent=on?(st.d>0?' \u25B2':' \u25BC'):''; th.setAttribute('aria-sort',on?(st.d>0?'ascending':'descending'):'none'); }
 }
 new MutationObserver(function(){ initSortables(); }).observe(document.documentElement,{childList:true,subtree:true});
+function bd(kind,text){ return '<span class="bd"><i class="dot '+kind+'"></i><b>'+esc(text)+'</b></span>'; }
+function riskCell(r){ if(!r.Risk) return '<span class="mut">\u2013</span>'; return bd(r.Risk==='High'?'r':(r.Risk==='Medium'?'y':'g'), t(r.Risk)); }
 function isDel(a){ return /^REMOVE/.test(a); }
 function inUse(r){ return Number(r.UsedByPresent)>0; }
 function vTable(type){
   return load(type).then(function(rows){
     var T=TAB[type], F=S.filter[type]; if(!F.sort||F.sort.i===null) F.sort={i:0,d:1};
     if(!rows.length){ var done=!!(S.state&&S.state.report&&S.state.report[type]); $('#main').innerHTML='<h2>'+esc(t(T.title))+'</h2>'+'<p class="mut">'+esc(done?t('The inventory is done and found no items in this list.'):t('There is no inventory yet. Go to Start and press Create the full inventory.'))+'</p>'; return; }
-    var vis=rows.filter(function(r){ if(F.only && T.onlyLabel && !T.onlyFn(r)) return false; if(type==='drivers' && !F.inuse && inUse(r)) return false; if(F.q){ if(JSON.stringify(r).toLowerCase().indexOf(F.q.toLowerCase())<0) return false; } return true; });
+    F.sel=F.sel||{};
+    var act=function(r){ var a=S.mod[type][r[T.key]]||r.Action; if(type==='drivers'&&inUse(r)) a='KEEP'; return a; };
+    var FL=[{id:'act',label:'Action',val:act,fixed:T.values,tr:true}];
+    if(type==='drivers'){ FL.push({id:'risk',label:'Risk',val:function(r){return r.Risk||'';},fixed:['High','Medium','Low'],tr:true},{id:'cls',label:'Class',val:function(r){return r.Class||'';}},{id:'prov',label:'Manufacturer',val:function(r){return r.Provider||'';}}); }
+    if(type==='devices'){ FL.push({id:'risk',label:'Risk',val:function(r){return r.Risk||'';},fixed:['High','Medium','Low'],tr:true},{id:'cat',label:'Category',val:function(r){return r.Category||'';}}); }
+    if(type==='bluetooth'){ FL.push({id:'st',label:'State',val:function(r){return r.Present==='YES'?'connected':'not connected';},fixed:['connected','not connected'],tr:true}); }
+    var vis=rows.filter(function(r){ if(F.only && T.onlyLabel && !T.onlyFn(r)) return false; if(type==='drivers' && !F.inuse && inUse(r)) return false; for(var fi=0;fi<FL.length;fi++){ var sv=F.sel[FL[fi].id]; if(sv && FL[fi].val(r)!==sv) return false; } if(F.q){ if(JSON.stringify(r).toLowerCase().indexOf(F.q.toLowerCase())<0) return false; } return true; });
     if(F.sort.i!==null){
       var si=F.sort.i, sd=F.sort.d, memo=new Map();
       var kv=function(r){ if(memo.has(r)) return memo.get(r); var v=(si<0)?String(S.mod[type][r[T.key]]||r.Action||''):String(T.cols[si][1](r)).replace(/<[^>]*>/g,' ').replace(/&[a-z#0-9]+;/g,' ').replace(/\s+/g,' ').trim(); memo.set(r,v); return v; };
@@ -569,11 +584,16 @@ function vTable(type){
     }
     // several unused extension drivers of the same kind (one per laptop model) are folded into one line; the button opens them
     var grp={}, grpWhat={}; F.open=F.open||{};
-    if(type==='drivers' && !F.q){ vis.forEach(function(r){ if(r.Class==='Extension' && !inUse(r) && !isDel(S.mod.drivers[r[T.key]]||r.Action)){ var gid=r.KbId||('prov:'+(r.Provider||'?')); (grp[gid]=grp[gid]||[]).push(r); grpWhat[gid]=r.KbId?(r.What||r.Category||r.KbId):(r.Provider||'?'); } }); Object.keys(grp).forEach(function(k){ if(grp[k].length<3) delete grp[k]; }); }
+    if(type==='drivers' && !F.q && F.grp!==false){ vis.forEach(function(r){ if(r.Class==='Extension' && !inUse(r) && !isDel(S.mod.drivers[r[T.key]]||r.Action)){ var gid=r.KbId||('prov:'+(r.Provider||'?')); (grp[gid]=grp[gid]||[]).push(r); grpWhat[gid]=r.KbId?(r.What||r.Category||r.KbId):(r.Provider||'?'); } }); Object.keys(grp).forEach(function(k){ if(grp[k].length<3) delete grp[k]; }); }
     var nDel=0; rows.forEach(function(r){ if(!(type==='drivers'&&inUse(r)) && isDel(S.mod[type][r[T.key]]||r.Action)) nDel++; });
-    var h='<h2>'+esc(t(T.title))+'</h2>'+(type==='devices'?problemsCard(rows):'')+'<p class="mut">'+esc(t(T.note))+'</p><div class="row"><input type="text" id="q" placeholder="'+esc(t('Search...'))+'" value="'+esc(F.q)+'">'+
-      (T.onlyLabel?'<label class="chk"><input type="checkbox" id="only" '+(F.only?'checked':'')+'> '+esc(t(T.onlyLabel))+'</label>':'')+
-      (type==='drivers'?'<label class="chk"><input type="checkbox" id="inuse" '+(F.inuse?'checked':'')+'> '+esc(t('Also show drivers in use (they cannot be removed here)'))+'</label>':'')+'<span class="tag">'+esc(t('{0} shown of {1}', vis.length, rows.length))+'</span><span class="tag '+(nDel?'r':'')+'">'+esc(t('{0} to remove', nDel))+'</span><button class="b ok" data-save="'+type+'">'+esc(t('Save choices'))+'</button></div><div class="wrap"><table><tr>';
+    var fh='<div class="card filt"><div class="fgrid"><div><label class="fl" for="q">'+esc(t('Search'))+'</label><input type="text" id="q" placeholder="'+esc(t('Search...'))+'" value="'+esc(F.q)+'"></div>';
+    FL.forEach(function(f){
+      var vals=f.fixed; if(!vals){ var m={}; rows.forEach(function(r){ var v=f.val(r); if(v) m[v]=1; }); vals=Object.keys(m).sort(function(a,b){ return a.localeCompare(b,undefined,{sensitivity:'base'}); }); }
+      fh+='<div><label class="fl" for="f-'+f.id+'">'+esc(t(f.label))+'</label><select id="f-'+f.id+'" data-f="'+f.id+'"><option value="">'+esc(t('All'))+'</option>'+vals.map(function(v){ return '<option value="'+esc(v)+'"'+(F.sel[f.id]===v?' selected':'')+'>'+esc(f.tr?t(v):v)+'</option>'; }).join('')+'</select></div>';
+    });
+    fh+='</div><div class="fchecks">'+(T.onlyLabel?'<label class="chk"><input type="checkbox" id="only" '+(F.only?'checked':'')+'> '+esc(t(T.onlyLabel))+'</label>':'')+
+      (type==='drivers'?'<label class="chk"><input type="checkbox" id="inuse" '+(F.inuse?'checked':'')+'> '+esc(t('Also show drivers in use (they cannot be removed here)'))+'</label><label class="chk"><input type="checkbox" id="grp" '+(F.grp!==false?'checked':'')+'> '+esc(t('Group similar extension drivers'))+'</label>':'')+'</div></div>';
+    var h='<h2>'+esc(t(T.title))+'</h2>'+(type==='devices'?problemsCard(rows):'')+'<p class="mut">'+esc(t(T.note))+'</p>'+fh+'<div class="wrap"><table><tr>';
     function th(i,label){ var on=(F.sort.i===i), ar=on?(F.sort.d>0?' \u25B2':' \u25BC'):''; return '<th aria-sort="'+(on?(F.sort.d>0?'ascending':'descending'):'none')+'"><button type="button" class="thb'+(on?' on':'')+'" data-sort="'+i+'" data-st="'+type+'" title="'+esc(t('Sort by this column'))+'">'+esc(label)+ar+'</button></th>'; }
     h+=th(-1,t('Action')); T.cols.forEach(function(c,i){ h+=th(i,t(c[0])); }); h+='</tr>';
     var gseen={};
@@ -584,10 +604,11 @@ function vTable(type){
       var k=r[T.key], a=S.mod[type][k]||r.Action, prot=r.Protected, busy=(type==='drivers'&&inUse(r)); if(busy) a='KEEP';
       var sel='<select data-type="'+type+'" data-k="'+esc(k)+'"'+((prot||busy)?' disabled':'')+'>';
       T.values.forEach(function(v){ sel+='<option value="'+v+'"'+(v===a?' selected':'')+'>'+esc(t(v))+'</option>'; });
-      sel+='</select>'+(prot?'<br><span class="tag g">'+esc(t('excluded'))+'</span>':(busy?'<br><span class="tag g">'+esc(t('in use'))+'</span>':''));
+      sel+='</select>'+(prot?'<br>'+bd('g',t('excluded')):(busy?'<br>'+bd('g',t('in use')):''));
       h+='<tr class="'+(isDel(a)?'del':'')+(gk?' grpm':'')+'"><td>'+sel+'</td>'; T.cols.forEach(function(c){ h+='<td>'+c[1](r)+'</td>'; }); h+='</tr>';
     });
     h+='</table></div>'+(vis.length>600?'<p class="mut">'+esc(t('Showing the first 600: use the search to narrow down.'))+'</p>':'');
+    h+='<div class="tbar"><span class="sum">'+esc(t('{0} shown of {1}', vis.length, rows.length))+' \u00B7 <b class="'+(nDel?'r':'')+'">'+esc(t('{0} to remove', nDel))+'</b></span><button class="b ok" data-save="'+type+'">'+esc(t('Save choices'))+'</button></div>';
     $('#main').innerHTML=h;
   });
 }
@@ -991,6 +1012,8 @@ document.addEventListener('change',function(e){
   if(e.target&&e.target.name==='s_def'){ var dw=$('#defwarn'); if(dw) dw.style.display=(e.target.value==='never'&&e.target.checked)?'':'none'; }
   var t0=e.target, d=t0.dataset||{};
   if(d.type){ S.mod[d.type][d.k]=t0.value; (S.touched[d.type]=S.touched[d.type]||{})[d.k]=t0.value; var tr=t0.closest('tr'); if(tr) tr.className=isDel(t0.value)?'del':''; return; }
+  if(d.f){ var Fz=S.filter[S.tab]; Fz.sel=Fz.sel||{}; Fz.sel[d.f]=t0.value; go(S.tab); return; }
+  if(t0.id==='grp'){ S.filter.drivers.grp=t0.checked; go('drivers'); return; }
   if(t0.id==='inuse'){ S.filter.drivers.inuse=t0.checked; go('drivers'); return; }
   if(t0.id==='only'){ S.filter[S.tab].only=t0.checked; go(S.tab); return; }
   if(t0.id==='proffile'){ var fl=t0.files&&t0.files[0]; if(!fl) return; var rd=new FileReader(); rd.onload=function(){ var pr; try{ pr=JSON.parse(String(rd.result).replace(/^\uFEFF/,'')); }catch(x){ notice(t('This is not a Devvy profile file.'),true); return; } ask({title:t('Import profile'),text:t('Import this profile? Its exclusions, knowledge rows and support pages are added to yours; nothing of yours is deleted.'),ok:t('Import profile'),cancel:t('Cancel')}).then(function(y){ if(!y) return; api('/api/profile',{profile:pr}).then(function(r){ return loadState().then(function(){ notice(t('Profile imported: {0} exclusion(s) in total, {1} knowledge row(s) and {2} support page(s) added.',r.exclusions,r.knowledgeAdded,r.supportAdded)+((r.invalid&&r.invalid.length)?' '+t('Skipped as invalid: {0}.',r.invalid.join(', ')):'')); }); }).catch(function(x){ notice(x.message,true); }); }); }; rd.readAsText(fl); t0.value=''; return; }
