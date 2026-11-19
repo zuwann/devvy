@@ -1302,5 +1302,7 @@
  "Class": "Classe",
  "Dark mode": "Modalità scura",
  "Show the similar extension drivers (they appear highlighted)": "Mostra i driver di estensione simili (compaiono evidenziati)",
- "Similar extension driver": "Driver di estensione simile"
+ "Similar extension driver": "Driver di estensione simile",
+ "Older than the last restart.": "Più vecchio dell'ultimo riavvio.",
+ "Windows may have changed drivers since then: create the inventory again to see them.": "Da allora Windows potrebbe aver cambiato dei driver: crea di nuovo l'inventario per vederli."
 }

@@ -1302,5 +1302,7 @@
  "Class": "Klasse",
  "Dark mode": "Dunkelmodus",
  "Show the similar extension drivers (they appear highlighted)": "Ähnliche Erweiterungstreiber anzeigen (sie erscheinen hervorgehoben)",
- "Similar extension driver": "Ähnlicher Erweiterungstreiber"
+ "Similar extension driver": "Ähnlicher Erweiterungstreiber",
+ "Older than the last restart.": "Älter als der letzte Neustart.",
+ "Windows may have changed drivers since then: create the inventory again to see them.": "Windows hat seitdem möglicherweise Treiber geändert: Erstellen Sie das Inventar neu, um sie zu sehen."
 }

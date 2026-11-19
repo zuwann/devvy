@@ -1302,5 +1302,7 @@
  "Class": "Classe",
  "Dark mode": "Mode sombre",
  "Show the similar extension drivers (they appear highlighted)": "Afficher les pilotes d'extension similaires (ils apparaissent en surbrillance)",
- "Similar extension driver": "Pilote d'extension similaire"
+ "Similar extension driver": "Pilote d'extension similaire",
+ "Older than the last restart.": "Plus ancien que le dernier redémarrage.",
+ "Windows may have changed drivers since then: create the inventory again to see them.": "Depuis, Windows a peut-être modifié des pilotes : recréez l'inventaire pour les voir."
 }

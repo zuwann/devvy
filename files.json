@@ -1,5 +1,5 @@
 {
- "version": "0.10.97",
+ "version": "0.10.98",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "6c6174b22632641085a56657cd10cb50f9560e23f3ae27be7d4ac73fc69cc220",
+   "sha256": "ce86cd113d8a9376851369880d5ee94b79be313a00eb23beba123453ee961ecb",
    "size": 12812
   },
   {
@@ -186,23 +186,23 @@
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "b4b3e86d9e01448ba462d6da9b93887eaf9b4c7d008bc228bd90cf8f3a8d7e3b",
-   "size": 146965
+   "sha256": "a8c476c9851474d0cc30bcc894efcc705963448fe18923b198e31124b2778ac6",
+   "size": 147229
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "7e3e40a4d2466dd0950123971b98e72cae0870a160ece94f1392509edc302ef3",
-   "size": 145792
+   "sha256": "7d58aec8f7d725fbc8c689823f9c5630de810d607e68d4918f8627af4c378715",
+   "size": 146058
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "1966b096ca6df9c304e5a641a6d6d9eeaffae5d143cd286536e22470fcd4a873",
-   "size": 149110
+   "sha256": "3e02c2002593bb04ad4259e4a53a507301bed3caf4dc1fce94b1287cedade430",
+   "size": 149368
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "fbc69f3fed93d2858d3b21b3704c6e4b3dfac34f1537d2373d92a434e9d71eab",
-   "size": 140809
+   "sha256": "b2e72ada2e0f9c53e35f0872d56b8ae8ffbbe9a3174bbf18885dd31359633488",
+   "size": 141064
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -241,8 +241,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "ef8db7e248602546905a7a667b9ae542e313ebd04ffc3fbe89d09e455de4fe2a",
-   "size": 131851
+   "sha256": "f3e341513145f2f5cfe884c368b12cfe50f2cb64f59b21dfaf72d87ec47f6283",
+   "size": 132098
   }
  ]
 }

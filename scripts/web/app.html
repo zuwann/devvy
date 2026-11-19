@@ -144,7 +144,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.97</small></h1>
+  <h1>Devvy <small class="mut">0.10.98</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -437,6 +437,7 @@ function glanceData(){
       var invs=[['devices','Devices inventory'],['drivers','Drivers inventory'],['bluetooth','Bluetooth inventory']], miss=invs.filter(function(o){ return !R[o[0]]; });
       if(miss.length===invs.length){ add('WARN',t('PC inventory'),t('Not done yet.'),t('Create the inventory to see what can be cleaned or updated.'),btn('Create the full inventory','data-run="inventory"')); }
       else { var first=true; invs.forEach(function(o){ if(R[o[0]]) add('OK',t(o[1]),t('Done.')+(S.state.times&&S.state.times[o[0]]?' '+fmtTime(S.state.times[o[0]]):'')); else { add('WARN',t(o[1]),t('Not done yet.'),t('Create the inventory to see what can be cleaned or updated.'),first?btn('Create the full inventory','data-run="inventory"'):''); first=false; } }); }
+      if(miss.length<invs.length && invStale()) add('WARN',t('PC inventory'),t('Older than the last restart.'),t('Windows may have changed drivers since then: create the inventory again to see them.'),btn('Create the full inventory','data-run="inventory"'));
       SEC=2; // 3. Defender
       (function(){
         var dl=res[2], dbt=btn('Status and diagnosis','data-run="def-status"');
@@ -1072,7 +1073,7 @@ Promise.all([loadI18n(),loadState()]).then(function(){
   if(started) return;
   var st=S.state.settings;
   if(!S.autoDone && st.firstRunDone){
-    var q=[]; q.push('selftest'); S.cont=(S.state.postReboot&&S.state.cont&&S.state.cont.parts&&S.state.cont.parts.length)?S.state.cont:null; if(st.inventoryAtStart||!hasInv()||invStale()||S.cont) q.push('inventory'); if(S.state.postReboot) q.push('postcheck');
+    var q=[]; q.push('selftest'); S.cont=(S.state.postReboot&&S.state.cont&&S.state.cont.parts&&S.state.cont.parts.length)?S.state.cont:null; if(st.inventoryAtStart||!hasInv()||S.cont) q.push('inventory'); if(S.state.postReboot) q.push('postcheck');
     if(q.length){ S.autoDone=true; S.queue=q.slice(1); launch({action:q[0]},6); }
   }
   });
