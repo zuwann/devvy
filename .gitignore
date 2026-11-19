@@ -5,3 +5,5 @@ scripts/knowledge-user.csv
 scripts/support-models-user.csv
 # Notes for the assistant: local only, never on GitHub
 CLAUDE.md
+__pycache__/
+*.pyc

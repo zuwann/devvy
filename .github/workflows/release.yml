@@ -25,7 +25,7 @@ jobs:
         run: |
           name="devvy-${GITHUB_REF_NAME}"
           mkdir -p "dist/devvy"
-          cp -r devvy.bat scripts files.json README.md COMANDI.md LICENSE DISCLAIMER.txt dist/devvy/
+          cp -r devvy.bat scripts files.json README.md COMMANDS.md LICENSE DISCLAIMER.txt dist/devvy/
           (cd dist && zip -qr "$name.zip" devvy)
           (cd dist && sha256sum "$name.zip" > "$name.zip.sha256")
           ls -l dist

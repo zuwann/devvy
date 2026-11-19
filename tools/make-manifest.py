@@ -8,7 +8,7 @@ import hashlib, json, pathlib, re
 root = pathlib.Path(__file__).resolve().parent.parent
 SKIP_DIRS = {'data', '.git', '__pycache__', 'node_modules'}
 SHIPPED_DIRS = {'scripts'}
-SHIPPED_FILES = {'devvy.bat', 'README.md', 'COMANDI.md', 'LICENSE', 'DISCLAIMER.txt'}  # same list as the release zip (.github/workflows/release.yml)
+SHIPPED_FILES = {'devvy.bat', 'README.md', 'COMMANDS.md', 'LICENSE', 'DISCLAIMER.txt'}  # same list as the release zip (.github/workflows/release.yml)
 SKIP_NAMES = {'files.json', 'CLAUDE.md'}
 SKIP_SUFFIX = ('.zip', '.sha256', '-user.csv')
 
