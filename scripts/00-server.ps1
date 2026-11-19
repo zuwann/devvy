@@ -841,7 +841,8 @@ function Handle-Request($ctx) {
     if ($req.Headers['Host'] -ne ('127.0.0.1:' + $port)) { Send-Resp $ctx 403 'text/plain' 'Invalid host'; return }
     if ($path -eq '/' -and $m -eq 'GET') {
         if ($req.QueryString['t'] -ne $token) { Send-Resp $ctx 403 'text/plain' (T 'Open the page from the link shown in the PowerShell window.'); return }
-        Send-Resp $ctx 200 'text/html' $appHtml ('pt=' + $token + '; Path=/; HttpOnly; SameSite=Strict')
+        $pageHtml = $appHtml; if (@('light', 'dark') -contains "$($script:Settings.theme)") { $pageHtml = $appHtml.Replace('<html lang="en"', ('<html data-theme="' + $script:Settings.theme + '" lang="en"')) }
+        Send-Resp $ctx 200 'text/html' $pageHtml ('pt=' + $token + '; Path=/; HttpOnly; SameSite=Strict')
         return
     }
     if ($path -eq '/report' -and $m -eq 'GET') {

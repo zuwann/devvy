@@ -1168,7 +1168,6 @@
  "Windows restarted and Devvy started again by itself: it is checking that everything works and, if you asked for it, goes on with the cleaning. Please wait, nothing is needed from you.": "Windows è stato riavviato e Devvy è ripartito da solo: sta controllando che tutto funzioni e, se lo avevi chiesto, prosegue con la pulizia. Attendi, non serve fare nulla.",
  "Already in the driver store (same version and maker): installing it again changes nothing.": "Già presente nell'archivio dei driver (stessa versione e produttore): reinstallarlo non cambia nulla.",
  "Newest in the catalog": "Il più recente nel catalogo",
- "{0} similar extension drivers (all kept): {1}": "{0} driver di estensione simili (tutti mantenuti): {1}",
  "Show them": "Mostrali",
  "Hide them": "Nascondili",
  "File not found: {0}": "File non trovato: {0}",
@@ -1302,5 +1301,6 @@
  "Risk": "Rischio",
  "Class": "Classe",
  "Dark mode": "Modalità scura",
- "Show the similar extension drivers (they appear highlighted)": "Mostra i driver di estensione simili (compaiono evidenziati)"
+ "Show the similar extension drivers (they appear highlighted)": "Mostra i driver di estensione simili (compaiono evidenziati)",
+ "Similar extension driver": "Driver di estensione simile"
 }
