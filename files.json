@@ -1,13 +1,13 @@
 {
- "version": "0.10.86",
+ "version": "0.10.87",
  "deferred": [
   "devvy.bat"
  ],
  "files": [
   {
    "path": "COMANDI.md",
-   "sha256": "ea7bb89ad640779e32fc9dd6602e6dcc1f0824549f23a288b3c141aa5636b17a",
-   "size": 5108
+   "sha256": "d15417f7d6a296096fff986db9f08f5f7e9e5360a256786a1919eb931742c04c",
+   "size": 8469
   },
   {
    "path": "DISCLAIMER.txt",
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "76c1a67a3c01877eeedef5f7e6712f81052ab61532b5deb3a436e50e6cf419f8",
+   "sha256": "5388b144a866db4eee646a6970a42e4f825623903ca985329f372a6d6f98aef0",
    "size": 12808
   },
   {
@@ -166,8 +166,8 @@
   },
   {
    "path": "scripts/devvy-cli.ps1",
-   "sha256": "8d621dc6d2d1c6d6c4bac86b7c8fc023548a47df3d7d7af54b79a3d22b45e512",
-   "size": 16949
+   "sha256": "4b9cd9174d0911e2a3c1cbe9c4f729909007cc5d46eced7b24d05841a52e1ec8",
+   "size": 41452
   },
   {
    "path": "scripts/kb-version.txt",
@@ -181,23 +181,23 @@
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "6cbb5789d0d6ff95e0f47c79e8947f45699f7299b489c41c5ce7b95b23f12102",
-   "size": 137394
+   "sha256": "953eec2e0b5ed15b1475adcf5c9e673e681fa2405e8c8bebaefae27f87c7562c",
+   "size": 145701
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "814c89820781f22ac77a0d2460cd03ee4870363434600f29cf5182d0a2c257e7",
-   "size": 136178
+   "sha256": "130104b0b757374a23c9d5346844cf35a681bf7824ccf8518877575dc8fcfcb3",
+   "size": 144471
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "3309ffa351e984c7ee37f50cbc400e53c7f92cda91f4a5d5a2106bf55c417cdd",
-   "size": 139362
+   "sha256": "8019964347a014e53df2bbfb7882384d8840aa861da9e5ad15412db26dcfee4d",
+   "size": 147814
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "f43ba7021bd66f45b4ad0f4ef016f9767e4827080e72464c3459bc1951a1230c",
-   "size": 131483
+   "sha256": "1c08c9ba162ecab87e4fe620bdcb212f5988c041f5d5afa6b61a0b05569221b7",
+   "size": 139580
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -236,7 +236,7 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "1c37a705091beca62774617784d1eb383137132879fa7d0d405cb1e91a7e0c5a",
+   "sha256": "a93c61c5197d6ad2e1ac6db7a933bccd0f6f814b800330dfbb4cf65f11f8a9f9",
    "size": 123519
   }
  ]
