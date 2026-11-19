@@ -1,13 +1,13 @@
 {
- "version": "0.10.91",
+ "version": "0.10.92",
  "deferred": [
   "devvy.bat"
  ],
  "files": [
   {
    "path": "COMMANDS.md",
-   "sha256": "13dc3e09813e657a0b7da3e411b8b60d03171e03871f1d6c9968a625ed5aa87a",
-   "size": 15068
+   "sha256": "6de39c54021658b062cd4903e07a413625fb135e91aa34209546dda9df80b7dd",
+   "size": 7534
   },
   {
    "path": "DISCLAIMER.txt",
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "04585e4e0da7ff2e9902b8422110b9569fe29c52025d409fdb7ca2d613fe5542",
+   "sha256": "778b47689165349ce88eb9b22577a6c75128e5a98715265238f7a7e833bd15f2",
    "size": 12812
   },
   {
@@ -51,8 +51,8 @@
   },
   {
    "path": "scripts/00-server.ps1",
-   "sha256": "4a44b642a01ebe21de803254d7bda6c72350d3f7e180bb15ecfdf2625eb96fca",
-   "size": 54699
+   "sha256": "0c9d77c1316062d455e422adbd3e199d2270658d2c04daa06124f6a2d2d9a2ce",
+   "size": 56110
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
@@ -121,8 +121,8 @@
   },
   {
    "path": "scripts/23-remove-drivers.ps1",
-   "sha256": "c9c166bf6685f265efe4de38b39072e9b761864876923807ef3863ef937b6ef3",
-   "size": 4306
+   "sha256": "06b72f24b0687c5701f54b675672a773addcc5e9eb020a1c3cb317bb93779eb5",
+   "size": 4410
   },
   {
    "path": "scripts/24-update-drivers.ps1",
@@ -146,8 +146,8 @@
   },
   {
    "path": "scripts/28-update-knowledge.ps1",
-   "sha256": "fdd46298325b9e569beb2b5c47a8245b12e721a98dfc96ce5f3c63a2fc7e350f",
-   "size": 4078
+   "sha256": "71f5c37a404b43c96e885dbd118d659c7249b36b3559c2ffeaf8ff3aad8305a8",
+   "size": 4135
   },
   {
    "path": "scripts/29-self-update.ps1",
@@ -160,9 +160,14 @@
    "size": 5100
   },
   {
+   "path": "scripts/board-links.csv",
+   "sha256": "4dab65d25022278398db7b7c4c928a71858d4da143725ff0829395943047a6f5",
+   "size": 1003
+  },
+  {
    "path": "scripts/common.ps1",
-   "sha256": "a708869c92424d2a744e841b62c93712774e92eae3b7aeb91e5df4d66b2dfff7",
-   "size": 68694
+   "sha256": "161a6b1c1c6fa8196b64a717e97b53442b31af90794734960d57f735a0eb873f",
+   "size": 70396
   },
   {
    "path": "scripts/devvy-cli.ps1",
@@ -171,7 +176,7 @@
   },
   {
    "path": "scripts/kb-version.txt",
-   "sha256": "42e8a139cfc547f954cd294a5d2ec256687a1224aa366c24ac73bcfcc6632fb1",
+   "sha256": "711f6976ede93e64a66716c77701a07c2c86afb34f5a31a05d81deb99f6b3e54",
    "size": 11
   },
   {
@@ -181,23 +186,23 @@
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "5fd7c841c5505f9d2c7930a61e54f6d369d51782e789b982d43ad036e2aad00e",
-   "size": 147399
+   "sha256": "106862061b0e94adb9166a809ade1d74ec9d844a2105099fe1c99446f8c25077",
+   "size": 146787
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "848f224f9d562bdae8f07acb2b2995b7f4a0a7eb91cf262f1d8a086f3045cfb8",
-   "size": 146217
+   "sha256": "b072d781ee59e7d1b497283cf6d02cbb8f12166844ed82a8cb0ab6834278a23e",
+   "size": 145623
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "f8a51e141b0b6e2d4b5acd1fce88440d36de2336ed43f91e6a4c78521b250e53",
-   "size": 149540
+   "sha256": "3f70009b7da1ce093da4367f560449053999878f519f0cc82b43387e43f097d7",
+   "size": 148930
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "e2025d2931a4be5a27af94e540fb646bff00827c483a07fe1f0b492b38f9622a",
-   "size": 141244
+   "sha256": "f5fb69b7a906a255b7b54c4a28aa1e123a05fa36c4bc9d6cb28acf60a5378959",
+   "size": 140638
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -236,8 +241,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "2cb78b6fc1e0c4b7ebf1b5fbb9abccf46dcb02671966d15eb60fc91ca0b0196c",
-   "size": 124912
+   "sha256": "b2899e61c1572ac8396997f084380a9a8d2dd9d4ee4c3509c6553fd0d94364a7",
+   "size": 126991
   }
  ]
 }

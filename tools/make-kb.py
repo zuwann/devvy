@@ -9,7 +9,7 @@ root = pathlib.Path(__file__).resolve().parent.parent
 sc, kb = root / 'scripts', root / 'kb'
 kb.mkdir(exist_ok=True)
 files = {'knowledge.csv': sc / 'knowledge.csv', 'knowledge.it.csv': sc / 'locales' / 'knowledge.it.csv', 'knowledge.es.csv': sc / 'locales' / 'knowledge.es.csv', 'knowledge.de.csv': sc / 'locales' / 'knowledge.de.csv', 'knowledge.fr.csv': sc / 'locales' / 'knowledge.fr.csv',
-         'support-links.csv': sc / 'support-links.csv', 'support-models.csv': sc / 'support-models.csv'}
+         'support-links.csv': sc / 'support-links.csv', 'support-models.csv': sc / 'support-models.csv', 'board-links.csv': sc / 'board-links.csv'}
 entries = []
 for name, src in files.items():
     dst = kb / name

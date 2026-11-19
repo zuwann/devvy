@@ -56,7 +56,7 @@ if shutil.which('node') and m:
     if r.returncode:
         bad.append('app.html: JavaScript error: ' + r.stderr.strip().splitlines()[-1])
 
-heads = {'knowledge.csv': 'Id;Match', 'locales/knowledge.it.csv': 'Id;Name', 'locales/knowledge.es.csv': 'Id;Name', 'locales/knowledge.de.csv': 'Id;Name', 'locales/knowledge.fr.csv': 'Id;Name', 'support-links.csv': 'Match;Name;Url', 'support-models.csv': 'Sku;Url'}
+heads = {'knowledge.csv': 'Id;Match', 'locales/knowledge.it.csv': 'Id;Name', 'locales/knowledge.es.csv': 'Id;Name', 'locales/knowledge.de.csv': 'Id;Name', 'locales/knowledge.fr.csv': 'Id;Name', 'support-links.csv': 'Match;Name;Url', 'support-models.csv': 'Sku;Url', 'board-links.csv': 'Match;Name;Url'}
 for name, h in heads.items():
     p = sc / name
     if not p.exists():

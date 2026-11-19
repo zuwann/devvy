@@ -125,7 +125,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 </head>
 <body>
 <header>
-  <h1>Devvy <small class="mut">0.10.91</small></h1>
+  <h1>Devvy <small class="mut">0.10.92</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="upd" data-pop="update" type="button" title="Updates"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M19 2v4h-4"/><path d="M5 22v-4h4"/></svg><span id="updbadge" class="belln" style="display:none"></span></button>
@@ -568,7 +568,7 @@ function vTable(type){
     }
     // several unused extension drivers of the same kind (one per laptop model) are folded into one line; the button opens them
     var grp={}, grpWhat={}; F.open=F.open||{};
-    if(type==='drivers' && !F.q){ vis.forEach(function(r){ if(r.Class==='Extension' && r.KbId && !inUse(r) && !isDel(S.mod.drivers[r[T.key]]||r.Action)){ (grp[r.KbId]=grp[r.KbId]||[]).push(r); grpWhat[r.KbId]=r.What||r.Category||r.KbId; } }); Object.keys(grp).forEach(function(k){ if(grp[k].length<3) delete grp[k]; }); }
+    if(type==='drivers' && !F.q){ vis.forEach(function(r){ if(r.Class==='Extension' && !inUse(r) && !isDel(S.mod.drivers[r[T.key]]||r.Action)){ var gid=r.KbId||('prov:'+(r.Provider||'?')); (grp[gid]=grp[gid]||[]).push(r); grpWhat[gid]=r.KbId?(r.What||r.Category||r.KbId):(r.Provider||'?'); } }); Object.keys(grp).forEach(function(k){ if(grp[k].length<3) delete grp[k]; }); }
     var nDel=0; rows.forEach(function(r){ if(!(type==='drivers'&&inUse(r)) && isDel(S.mod[type][r[T.key]]||r.Action)) nDel++; });
     var h='<h2>'+esc(t(T.title))+'</h2>'+(type==='devices'?problemsCard(rows):'')+'<p class="mut">'+esc(t(T.note))+'</p><div class="row"><input type="text" id="q" placeholder="'+esc(t('Search...'))+'" value="'+esc(F.q)+'">'+
       (T.onlyLabel?'<label class="chk"><input type="checkbox" id="only" '+(F.only?'checked':'')+'> '+esc(t(T.onlyLabel))+'</label>':'')+
@@ -577,7 +577,7 @@ function vTable(type){
     h+=th(-1,t('Action')); T.cols.forEach(function(c,i){ h+=th(i,t(c[0])); }); h+='</tr>';
     var gseen={};
     vis.slice(0,600).forEach(function(r){
-      var gk=(type==='drivers'&&r.Class==='Extension'&&r.KbId&&grp[r.KbId]&&grp[r.KbId].indexOf(r)>=0)?r.KbId:'';
+      var gid2=r.KbId||('prov:'+(r.Provider||'?')), gk=(type==='drivers'&&r.Class==='Extension'&&grp[gid2]&&grp[gid2].indexOf(r)>=0)?gid2:'';
       if(gk && !gseen[gk]){ gseen[gk]=1; h+='<tr><td colspan="'+(T.cols.length+1)+'"><span class="tag g">'+esc(t('{0} similar extension drivers (all kept): {1}', grp[gk].length, grpWhat[gk]))+'</span> <button class="b small sec" data-grp="'+esc(gk)+'">'+esc(F.open[gk]?t('Hide them'):t('Show them'))+'</button></td></tr>'; }
       if(gk && !F.open[gk]) return;
       var k=r[T.key], a=S.mod[type][k]||r.Action, prot=r.Protected, busy=(type==='drivers'&&inUse(r)); if(busy) a='KEEP';
@@ -700,7 +700,7 @@ function vRun(){
   });
 }
 function vSupport(){
-  return api('/api/support').then(function(x){
+  return Promise.all([api('/api/support'),api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){})]).then(function(rr){ var x=rr[0];
     var l=x.list||[], dp=x.deep||[], h='<h2>'+esc(t('Maker support'))+'</h2><p class="mut">'+esc(t('Besides the Microsoft catalog, the maker of your PC or of its components often has its own tool or page with the drivers of your model. Devvy only opens the page in your browser: nothing is downloaded or sent, you choose what to install.'))+'</p>';
     var cp=function(v){ return v?'<button class="b sec small wb" data-copy="'+esc(v)+'">'+esc(t('Copy'))+'</button>':''; };
     var rows=[[t('Manufacturer'),esc(x.maker||t('Not detected'))],[t('Model'),esc(x.model||t('Not detected'))]];
@@ -710,6 +710,14 @@ function vSupport(){
     if(x.sku||x.serial) h+='<p class="mut">'+esc(t('Many makers find the exact product page from this number: paste it in the search box of their support site.'))+(x.serial?' '+esc(t('The serial number is personal: it is shown only here, do not publish screenshots with it.')):'')+'</p>';
     if((x.finder||[]).length) h+='<p>'+esc(t('To find the exact page of your product, paste the SKU or the serial number here:'))+' '+x.finder.map(function(y){ return '<a href="'+esc(y.url)+'" target="_blank" rel="noopener noreferrer">'+esc(y.name)+'</a>'; }).join(' · ')+'</p>';
     h+='</div>';
+    var bd=x.board||{}; S.board=bd;
+    if(bd.show&&(bd.maker||bd.model)){
+      h+='<div class="card"><h3>'+esc(t('Motherboard'))+'</h3><table><tr><td><b>'+esc(t('Manufacturer'))+'</b></td><td>'+esc(bd.maker||t('Not detected'))+'</td><td></td></tr><tr><td><b>'+esc(t('Model'))+'</b></td><td>'+(bd.model?'<code>'+esc(bd.model)+'</code>':esc(t('Not detected')))+'</td><td style="text-align:right;white-space:nowrap;width:1%">'+cp(bd.model)+'</td></tr></table>';
+      h+='<p class="mut">'+esc(t('On a desktop PC most drivers (chipset, audio, network, Wi-Fi) come from the maker of the motherboard. Open the page and paste the model in its search box.'))+'</p>';
+      if((bd.links||[]).length){ h+='<ul class="lnk">'; bd.links.forEach(function(y){ h+='<li><a href="'+esc(y.url)+'" target="_blank" rel="noopener noreferrer">'+esc(y.name)+'</a></li>'; }); h+='</ul>'; }
+      else h+='<p class="mut">'+esc(t('No page is listed for the maker of this motherboard.'))+'</p>';
+      h+='<div class="row"><button class="b sec" data-boardissue="1">'+esc(t('Suggest the support page of this maker'))+'</button></div></div>';
+    }
     h+='<div class="card"><h3>'+esc(t('Official support software and pages'))+'</h3>';
     if(l.length){ h+='<ul class="lnk">'; l.forEach(function(y){ h+='<li><a href="'+esc(y.url)+'" target="_blank" rel="noopener noreferrer">'+esc(y.name)+'</a></li>'; }); h+='</ul>'; }
     else { h+='<p class="mut">'+esc(t('No official page is listed for this PC. You can add rows to support-links.csv.'))+'</p>'; }
@@ -947,6 +955,8 @@ document.addEventListener('click',function(e){
   if(d.run){ launch({action:d.run}); return; }
   if(d.copy!==undefined){ var cb=t0.closest?t0.closest('[data-copy]'):null; try{ navigator.clipboard.writeText(d.copy).then(function(){ if(cb){ var o0=cb.textContent; cb.textContent=t('Copied.'); setTimeout(function(){ cb.textContent=o0; },1500); } }).catch(function(){ notice(t('Cannot copy: select the text and copy it.'),true); }); }catch(e){ notice(t('Cannot copy: select the text and copy it.'),true); } return; }
   if(d.pzip){ api('/api/openfolder',{file:d.pzip}).catch(function(x){ notice(x.message,true); }); return; }
+  if(d.boardissue){ var B=S.board||{}, P0=S.prob||{}, ttl0=L('Support link: ','Link di supporto: ')+(B.maker||''), body0=L('Please add the support/download page of this motherboard maker.\n\nBoard manufacturer: ','Aggiungete la pagina di supporto/download di questo produttore di schede madri.\n\nProduttore scheda: ')+(B.maker||'')+'\n'+L('Board model: ','Modello scheda: ')+(B.model||'')+'\n'+L('Page (URL):','Pagina (URL):')+' ';
+    if(P0.ready){ window.open(P0.issuesUrl+'?title='+encodeURIComponent(ttl0)+'&body='+encodeURIComponent(body0),'_blank','noopener'); } else { try{ navigator.clipboard.writeText(body0).catch(function(){}); }catch(e){} notice(t('The GitHub page of the project is not set yet: the issue text was copied, paste it in a new issue.')); } return; }
   if(d.pissue){ var ok0=openIssue((S.prob||{}).zip,'bug'); if(!ok0) notice(t('The GitHub page of the project is not set yet: the issue text was copied, paste it in a new issue.')); return; }
   if(d.rb){ ask({title:t('Go back to the previous driver'),text:t('Reinstall the previous driver of "{0}"? The driver now in use for this device is replaced; the PC may need a restart.',d.rbname||''),ok:t('Go back'),cls:'red'}).then(function(y){ if(y){ launch({action:'rollback',key:d.rb}); } }); return; }
   if(d.fix){ launch({action:'fix',fix:d.fix}); return; }

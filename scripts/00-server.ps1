@@ -505,7 +505,23 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
                 $u = & $fill "$($m.DeepUrl)"; if ($u) { $deep += @{ name = (T 'Product page of {0}' "$($pc.maker)"); url = $u } }
             }
         }
-        Send-Json $ctx @{ list = $rows; deep = $deep; maker = "$($pc.maker)"; model = "$($pc.model)"; finder = $finder; sku = "$($pc.sku)"; serial = "$serial" }
+        # Motherboard: pages of the board maker (board-links.csv). Url = support/download page, DeepUrl = built from {product}, Finder = search page where the model is pasted
+        $board = @{ maker = "$($pc.bmaker)"; model = "$($pc.bmodel)"; show = $false; links = @(); matched = $false }
+        if ($pc.bmaker -or $pc.bmodel) {
+            $sameAsPc = ($pc.laptop -and ("$($pc.model)" -like "*$($pc.bmodel)*" -or "$($pc.maker)" -like "*$(($pc.bmaker -split '\s+')[0])*"))
+            $board.show = (-not $sameAsPc)
+            $bf = Get-KbFile 'board-links.csv' $PSScriptRoot
+            if (Test-Path $bf) {
+                foreach ($b in @(Import-Csv -Path $bf -Delimiter ';' -Encoding UTF8 | Where-Object { $_.Url -match '^https://' -and $pc.bmaker -match $_.Match })) {
+                    $board.matched = $true
+                    $du = "$($b.DeepUrl)"
+                    if ($du -match '^https://' -and $pc.bmodel) { $board.links += @{ name = (T 'Drivers of {0}' "$($pc.bmodel)"); url = ($du -replace '\{product\}', [uri]::EscapeDataString("$($pc.bmodel)")); kind = 'deep' } }
+                    $board.links += @{ name = "$($b.Name)"; url = "$($b.Url)"; kind = 'page' }
+                    if ("$($b.Finder)" -match '^https://') { $board.links += @{ name = (T 'Search page of {0}' "$($b.Name)"); url = "$($b.Finder)"; kind = 'finder' } }
+                }
+            }
+        }
+        Send-Json $ctx @{ board = $board; list = $rows; deep = $deep; maker = "$($pc.maker)"; model = "$($pc.model)"; finder = $finder; sku = "$($pc.sku)"; serial = "$serial" }
         return
     }
     if ($Path -eq '/api/pc') { Send-Json $ctx (Get-PcInfo); return }

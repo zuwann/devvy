@@ -1,6 +1,6 @@
 {
- "version": 2026111701,
- "date": "2026-11-17",
+ "version": 2026111901,
+ "date": "2026-11-19",
  "files": [
   {
    "name": "knowledge.csv",
@@ -29,6 +29,10 @@
   {
    "name": "support-models.csv",
    "sha256": "eff175f6fd6ec256292fca3d2c309d20266546c562db12ef49429515bb3da2f3"
+  },
+  {
+   "name": "board-links.csv",
+   "sha256": "4dab65d25022278398db7b7c4c928a71858d4da143725ff0829395943047a6f5"
   }
  ]
 }

@@ -48,6 +48,7 @@ foreach ($r in $todo) {
     if ($p.Ok) {
         Add-Outcome $label $drv (T 'Removed') 'ok'
         if ($swcIds.Count -gt 0) { Start-Sleep -Seconds 2; try { $null = Remove-SwcGhosts $swcIds } catch { } }
+        else { try { Start-Sleep -Seconds 2; $null = Remove-RelatedGhosts "$($r.InfName)" } catch { } }
         if ($BlockReinstall) {
             if ($blockClasses -contains "$($r.Class)") { Add-Outcome $label $drv (T 'Not blocked from coming back: {0} drivers are too important to block' $r.Class) 'warn' }
             else {

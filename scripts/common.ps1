@@ -545,6 +545,24 @@ function Remove-SwcGhosts([string[]]$SwcIds) {
     }
     return $n
 }
+# Extension INFs have no SWC id of their own (it lives in the base package), so the software component they served stays behind as a
+# ghost (example: hpanalyticsext.inf -> SWD\DRIVERENUM\...#HPANALYTICSSOFTWARE). Only SAFE ghosts (virtual/system) whose last name
+# part starts with the INF name (without 'ext'/'extension') are removed; at least 6 characters must match.
+function Remove-RelatedGhosts([string]$InfName) {
+    $n = 0
+    $base = ("$InfName" -replace '(?i)\.inf$', '' -replace '(?i)(extension|ext)$', '').ToUpper()
+    if ($base.Length -lt 6) { return 0 }
+    $devs = @()
+    try { $devs = @(Get-PnpDevice -ErrorAction Stop | Where-Object { -not $_.Present -and $_.InstanceId -match '#' }) } catch { }
+    foreach ($d in $devs) {
+        $suffix = ($d.InstanceId -split '#')[-1].ToUpper()
+        if (-not $suffix.StartsWith($base)) { continue }
+        if ((Get-GhostKind $d.InstanceId "$($d.Class)" "$($d.FriendlyName)") -ne 'SAFE') { continue }
+        $r = Remove-DeviceNode -InstanceId $d.InstanceId
+        if ($r.Ok) { $n++; Write-Host ('  ' + (T 'Leftover component removed: {0}' $d.FriendlyName)) -ForegroundColor Green }
+    }
+    return $n
+}
 function Test-BlockableId([string]$Id) {
     return [bool]($Id -match '^(SWC\\[A-Za-z0-9_.&-]+$|USB\\VID_[0-9A-F]{4}&PID_[0-9A-F]{4}|PCI\\VEN_[0-9A-F]{4}&DEV_[0-9A-F]{4}|BTHENUM\\|BTH\\|HID\\VID_|ROOT\\|SWD\\|ACPI\\)')
 }
@@ -932,7 +950,7 @@ function Get-SetupApiTrail([string]$Needle, [int]$Max = 8) {
 # Basic data of the PC (cached): used by the page and by the report
 function Get-PcInfo {
     if ($script:PcInfo) { return $script:PcInfo }
-    $o = @{ os = ''; cpu = ''; ram = ''; disk = ''; gpu = ''; maker = ''; model = ''; sku = ''; laptop = $false; oem = $false }
+    $o = @{ os = ''; cpu = ''; ram = ''; disk = ''; gpu = ''; maker = ''; model = ''; sku = ''; bmaker = ''; bmodel = ''; laptop = $false; oem = $false }
     try { $o.os = ("$((Get-CimInstance Win32_OperatingSystem).Caption)" -replace '^Microsoft\s+', '').Trim() } catch { }
     try { $o.cpu = ("$(@(Get-CimInstance Win32_Processor)[0].Name)" -replace '\s+', ' ' -replace '\(R\)|\(TM\)', '').Trim() } catch { }
     try { $m = [double](Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory; if ($m -gt 0) { $o.ram = ('{0} GB' -f [math]::Round($m / 1GB)) } } catch { }
@@ -964,6 +982,15 @@ function Get-PcInfo {
         $o.maker = $maker; $o.model = $model; $o.laptop = $laptop
         $sku = ("$($cs.SystemSKUNumber)").Trim(); if ($sku -match 'To Be Filled|Default string|System SKU|^0+$|Not Applicable') { $sku = '' }; $o.sku = $sku
         $o.oem = ($brand -and -not $virtual -and ($laptop -or -not $generic))
+    } catch { }
+    # Motherboard (baseboard): on desktop PCs most drivers (chipset, audio, LAN, Wi-Fi) come from the board maker
+    try {
+        $bb = Get-CimInstance Win32_BaseBoard
+        $bm = ("$($bb.Manufacturer)").Trim(); $bp = ("$($bb.Product)").Trim()
+        $ph = 'To Be Filled|Default string|System Product Name|Not Applicable|Base Board|O\.E\.M|None|Unknown|^0+$|^\s*$'
+        if ($bm -match $ph) { $bm = '' }
+        if ($bp -match $ph) { $bp = '' }
+        $o.bmaker = $bm; $o.bmodel = $bp
     } catch { }
     $script:PcInfo = $o
     return $o
