@@ -36,6 +36,7 @@ function Show-Help {
     Write-Host (T 'Everything the page does can be done here. Questions appear in this window.')
     Write-Host ''
     Write-Host (T 'Command line: actions') -ForegroundColor Yellow
+    & $c '/gui  (devvy.bat /gui)' (T 'Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.')
     & $c '-h  /?  /help' (T 'Shows this help. It works without administrator rights.')
     & $c 'Check' (T 'System check (requirements). Add -Fix to repair what can be repaired.')
     & $c 'Inventory' (T 'Creates the inventory of devices, drivers and Bluetooth.')
@@ -72,6 +73,7 @@ function Show-Help {
     Write-Host ('  ' + (T '0 ok, 1 findings or update available, 2 error, 3 restart needed, 4 not allowed, 5 not administrator.'))
     Write-Host ''
     Write-Host (T 'Command line: examples') -ForegroundColor Yellow
+    Write-Host '  devvy.bat /gui'
     Write-Host '  devvy.bat /cli Audit -Output json'
     Write-Host '  devvy.bat /cli Clean -Apply -Backup drivers'
     Write-Host '  devvy.bat /cli Install'

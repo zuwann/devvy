@@ -7,6 +7,7 @@ Tutto quello che fa la pagina web si può fare anche da terminale, senza aprire 
 - Serve un **prompt dei comandi o PowerShell avviato come amministratore** (l'aiuto `-h` funziona anche senza). La riga di comando non chiede mai l'elevazione da sola: senza diritti stampa un errore ed esce con codice 5.
 - Spostati nella cartella di Devvy: `cd /d C:\Percorso\devvy`
 - Sintassi: `devvy.bat /cli <Azione> [opzioni]`. In PowerShell scrivi `.\devvy.bat ...`.
+- **Pagina web**: `devvy.bat /gui` (come `devvy.bat` da solo) avvia il server locale e apre il browser; chiede l'amministratore se serve.
 - **Aiuto**: `devvy.bat -h` (oppure `/?` o `/help`).
 - Le liste con la virgola vanno tra virgolette: `-Parts "devices,drivers"`.
 - Lingua, eccezioni e opzioni sono quelle salvate nelle impostazioni (`data\settings.json`), le stesse della pagina.
@@ -112,7 +113,7 @@ Non pianificare `Clean -Apply` o `Install -Apply` senza averli provati prima a m
 
 # English summary
 
-Everything the page does can be done from an **administrator** terminal: `devvy.bat /cli <Action> [options]` (help: `devvy.bat -h`). Script questions ([F]/[S]/[M], confirmations, backup choice) appear in the same window.
+Everything the page does can be done from an **administrator** terminal: `devvy.bat /cli <Action> [options]` (help: `devvy.bat -h`; web page: `devvy.bat /gui`). Script questions ([F]/[S]/[M], confirmations, backup choice) appear in the same window.
 
 - Actions: `Check` `Inventory` `Audit` `Clean` `Search` `Install` `Rollback` `Report` `Problem` `Share` `Defender` `Exclusions` `Blocked` `Settings` `KbUpdate` `PostCheck` `Update` `Profile` `Restart`.
 - Options: `-Output text|json`, `-Apply`, `-Yes`, `-Parts`, `-Backup none|drivers|full`, `-Review`, `-Select newest|1,3|all`, `-AcceptRisk`, `-Key`, `-Fix`, `-Restart`.

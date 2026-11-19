@@ -10,6 +10,9 @@ if /i "%~1"=="-h" goto :clihelp
 if "%~1"=="/?" goto :clihelp
 if /i "%~1"=="/help" goto :clihelp
 
+rem --- Web page: "devvy.bat" alone or "devvy.bat /gui" start it (any other argument than the ones above also ends here)
+if /i "%~1"=="/gui" set "DP_GUI=1"
+
 rem --- Self-elevation: if we are not administrators, relaunch with the UAC request ---
 net session >nul 2>&1
 if %errorlevel% equ 0 goto :admin

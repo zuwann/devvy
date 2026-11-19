@@ -1283,5 +1283,6 @@
   "no keyboard": "sin teclado",
   "remove the Defender exceptions": "quitar las excepciones de Defender",
   "the newest of each device": "el más nuevo de cada dispositivo",
-  "update Devvy to {0}": "actualizar Devvy a {0}"
+  "update Devvy to {0}": "actualizar Devvy a {0}",
+  "Starts the web page (the same as devvy.bat alone). It asks for administrator rights if needed.": "Inicia la página web (igual que devvy.bat solo). Pide derechos de administrador si hacen falta."
 }

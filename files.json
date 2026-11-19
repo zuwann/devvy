@@ -1,13 +1,13 @@
 {
- "version": "0.10.87",
+ "version": "0.10.88",
  "deferred": [
   "devvy.bat"
  ],
  "files": [
   {
    "path": "COMANDI.md",
-   "sha256": "d15417f7d6a296096fff986db9f08f5f7e9e5360a256786a1919eb931742c04c",
-   "size": 8469
+   "sha256": "eb1a04d905b0a528380cd2fd1c69165d6aa113b0018c5da50472bde686144889",
+   "size": 8635
   },
   {
    "path": "DISCLAIMER.txt",
@@ -21,13 +21,13 @@
   },
   {
    "path": "README.md",
-   "sha256": "5388b144a866db4eee646a6970a42e4f825623903ca985329f372a6d6f98aef0",
+   "sha256": "8b82be78caff5d46a0fd1ab83d26e6f9df87b8d736379afd4d29449d0b15323d",
    "size": 12808
   },
   {
    "path": "devvy.bat",
-   "sha256": "f081f933e429bdaee834c1012c30769ff2a6c18abc5d6bc40756e3a5f45c4fbe",
-   "size": 3132
+   "sha256": "1ffa03a013b5058a1a5f6a40d9715cf25bea78da32ad9d12c4e41ee6b6857116",
+   "size": 3292
   },
   {
    "path": "scripts/00-backup.ps1",
@@ -166,8 +166,8 @@
   },
   {
    "path": "scripts/devvy-cli.ps1",
-   "sha256": "4b9cd9174d0911e2a3c1cbe9c4f729909007cc5d46eced7b24d05841a52e1ec8",
-   "size": 41452
+   "sha256": "afd68ab575d896fa86723eacf783a861ce3b991faf9417353ac1adac165002d9",
+   "size": 41621
   },
   {
    "path": "scripts/kb-version.txt",
@@ -181,23 +181,23 @@
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "953eec2e0b5ed15b1475adcf5c9e673e681fa2405e8c8bebaefae27f87c7562c",
-   "size": 145701
+   "sha256": "2543d9f244ea81650d2d2155ab707de412d035393f741bee2cbb9822a0f75ed7",
+   "size": 145893
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "130104b0b757374a23c9d5346844cf35a681bf7824ccf8518877575dc8fcfcb3",
-   "size": 144471
+   "sha256": "158538c335c054497958988a434319c59fe7c1dd8d009c1e9076c38cf03f92ba",
+   "size": 144671
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "8019964347a014e53df2bbfb7882384d8840aa861da9e5ad15412db26dcfee4d",
-   "size": 147814
+   "sha256": "909a33de4f2ce71634a9b981f0d42293be712518f3c1e00f322cc9d3fc1945c3",
+   "size": 148012
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "1c08c9ba162ecab87e4fe620bdcb212f5988c041f5d5afa6b61a0b05569221b7",
-   "size": 139580
+   "sha256": "4a884bcfe7a0195bde7cc293d7d5ffd07a1ec801673461f935a77bd622e6d393",
+   "size": 139776
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -236,7 +236,7 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "a93c61c5197d6ad2e1ac6db7a933bccd0f6f814b800330dfbb4cf65f11f8a9f9",
+   "sha256": "293ba54d61b5ab4ed2b3fd177101ff5da062a33d323d0f7af3d698125ada9dca",
    "size": 123519
   }
  ]
