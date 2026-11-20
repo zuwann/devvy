@@ -739,7 +739,6 @@
  "(and Windows would be stopped from installing it again)": "(y se impediría que Windows lo vuelva a instalar)",
  "Not blocked from coming back: {0} drivers are too important to block": "No se impide que vuelva: los controladores de {0} son demasiado importantes para bloquearlos",
  "No device ID to block: Windows may install it again": "Sin ID de dispositivo que bloquear: Windows puede volver a instalarlo",
- "Windows is stopped from installing this device again (undo it in Settings)": "Se impide que Windows vuelva a instalar este dispositivo (deshazlo en Configuración)",
  "Could not block:": "No se pudo bloquear:",
  "build {0}: older than Windows 10 2004": "compilación {0}: anterior a Windows 10 2004",
  "Windows 10 2004 (build 19041) or later is recommended. On this version devices are removed with an alternative method; if something does not work, update Windows.": "Se recomienda Windows 10 2004 (compilación 19041) o posterior. En esta versión los dispositivos se eliminan con un método alternativo; si algo no funciona, actualiza Windows.",
@@ -1304,5 +1303,7 @@
  "Show the similar extension drivers (they appear highlighted)": "Mostrar los controladores de extensión similares (aparecen resaltados)",
  "Similar extension driver": "Controlador de extensión similar",
  "Older than the last restart.": "Más antiguo que el último reinicio.",
- "Windows may have changed drivers since then: create the inventory again to see them.": "Desde entonces Windows puede haber cambiado controladores: crea el inventario de nuevo para verlos."
+ "Windows may have changed drivers since then: create the inventory again to see them.": "Desde entonces Windows puede haber cambiado controladores: crea el inventario de nuevo para verlos.",
+ "Windows is stopped from installing this device again (undo it in Device management)": "Se impide que Windows vuelva a instalar este dispositivo (deshazlo en Gestión de dispositivos)",
+ "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Controlador de extensión: no se puede bloquear por sí solo, Windows puede traerlo de vuelta con su controlador base"
 }

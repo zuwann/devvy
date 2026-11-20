@@ -739,7 +739,6 @@
  "(and Windows would be stopped from installing it again)": "(et Windows ne pourrait plus le réinstaller)",
  "Not blocked from coming back: {0} drivers are too important to block": "Non empêché de revenir : les pilotes {0} sont trop importants pour être bloqués",
  "No device ID to block: Windows may install it again": "Aucun ID de périphérique à bloquer : Windows peut le réinstaller",
- "Windows is stopped from installing this device again (undo it in Settings)": "Windows ne peut plus réinstaller ce périphérique (annulable dans Paramètres)",
  "Could not block:": "Impossible de bloquer :",
  "build {0}: older than Windows 10 2004": "build {0} : plus ancien que Windows 10 2004",
  "Windows 10 2004 (build 19041) or later is recommended. On this version devices are removed with an alternative method; if something does not work, update Windows.": "Windows 10 2004 (build 19041) ou ultérieur est recommandé. Sur cette version, les périphériques sont supprimés avec une autre méthode ; si quelque chose ne fonctionne pas, mettez Windows à jour.",
@@ -1304,5 +1303,7 @@
  "Show the similar extension drivers (they appear highlighted)": "Afficher les pilotes d'extension similaires (ils apparaissent en surbrillance)",
  "Similar extension driver": "Pilote d'extension similaire",
  "Older than the last restart.": "Plus ancien que le dernier redémarrage.",
- "Windows may have changed drivers since then: create the inventory again to see them.": "Depuis, Windows a peut-être modifié des pilotes : recréez l'inventaire pour les voir."
+ "Windows may have changed drivers since then: create the inventory again to see them.": "Depuis, Windows a peut-être modifié des pilotes : recréez l'inventaire pour les voir.",
+ "Windows is stopped from installing this device again (undo it in Device management)": "Windows ne peut plus réinstaller ce périphérique (annulable dans Gestion des périphériques)",
+ "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Pilote d'extension : il ne peut pas être bloqué seul, Windows peut le ramener avec son pilote de base"
 }

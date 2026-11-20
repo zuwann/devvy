@@ -1,5 +1,5 @@
 {
- "version": "0.10.99",
+ "version": "0.10.100",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,8 +21,8 @@
   },
   {
    "path": "README.md",
-   "sha256": "ca5ba81043dd9e9cb3c61327fa4db6b082294d23a247a6aa649c4f04c270345d",
-   "size": 12812
+   "sha256": "cadd4d4e49b0a424ac739c3f6361a7392b2a85749decbb948f99823b75e0cc26",
+   "size": 12814
   },
   {
    "path": "devvy.bat",
@@ -116,13 +116,13 @@
   },
   {
    "path": "scripts/22-remove-devices.ps1",
-   "sha256": "aebda09a13a471f8df3e21053721a3babf67f2e9154a6a493907971f8dbf13e2",
-   "size": 3168
+   "sha256": "cf9f8e333a07a91b20494a3af8f1ed813bc461e57b218364dc565f86c13dd098",
+   "size": 3177
   },
   {
    "path": "scripts/23-remove-drivers.ps1",
-   "sha256": "06b72f24b0687c5701f54b675672a773addcc5e9eb020a1c3cb317bb93779eb5",
-   "size": 4410
+   "sha256": "4fa26c452357592f54c08f62fe26b8f8fa6255e35e797145216fc202b47f9369",
+   "size": 4601
   },
   {
    "path": "scripts/24-update-drivers.ps1",
@@ -186,23 +186,23 @@
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "a8c476c9851474d0cc30bcc894efcc705963448fe18923b198e31124b2778ac6",
-   "size": 147229
+   "sha256": "a46b0f99394658ea928caba604694118ff09ec6361357ff8cf80f602d89d9aa6",
+   "size": 147450
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "7d58aec8f7d725fbc8c689823f9c5630de810d607e68d4918f8627af4c378715",
-   "size": 146058
+   "sha256": "4e944fe8b658a792fe98417b54763723faaf2dae2f808168f7462a458e7b04b9",
+   "size": 146299
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "3e02c2002593bb04ad4259e4a53a507301bed3caf4dc1fce94b1287cedade430",
-   "size": 149368
+   "sha256": "a88198a327f06c977a64a6db5e34415594742aed66f6c77136fa450899397427",
+   "size": 149601
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "b2e72ada2e0f9c53e35f0872d56b8ae8ffbbe9a3174bbf18885dd31359633488",
-   "size": 141064
+   "sha256": "80d47a7ecffe815e2c6a4fcd1e231a691b7dde7e6c322fca0f5f762dcca20d92",
+   "size": 141284
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -241,8 +241,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "3662d8a79c3ece1b800f393f7a5bd04ba25ee227bd7bffce7e7c299708bb1f84",
-   "size": 132098
+   "sha256": "819d246266f4e17d5bed794ad1b0b9f26ee5957c6660eadd58e57e654ddcb248",
+   "size": 132099
   }
  ]
 }

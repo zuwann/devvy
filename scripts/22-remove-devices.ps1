@@ -37,7 +37,7 @@ foreach ($r in $todo) {
     if ($p.Ok -and -not (Get-PnpExact $id)) {
         Add-Outcome $label $id (T 'Removed') 'ok'
         foreach ($sid in $swcIds) {
-            try { $null = Add-BlockedId $sid $r.FriendlyName '' "$($r.Manufacturer)"; Add-Outcome $label $sid (T 'Windows is stopped from installing this device again (undo it in Settings)') 'ok' }
+            try { $null = Add-BlockedId $sid $r.FriendlyName '' "$($r.Manufacturer)"; Add-Outcome $label $sid (T 'Windows is stopped from installing this device again (undo it in Device management)') 'ok' }
             catch { Add-Outcome $label $sid ((T 'Could not block:') + ' ' + $_.Exception.Message) 'err' }
         }
     } else { $failed += $r }

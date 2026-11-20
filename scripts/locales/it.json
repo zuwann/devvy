@@ -739,7 +739,6 @@
  "(and Windows would be stopped from installing it again)": "(e Windows non potrebbe reinstallarlo)",
  "Not blocked from coming back: {0} drivers are too important to block": "Non bloccato: i driver di classe {0} sono troppo importanti per essere bloccati",
  "No device ID to block: Windows may install it again": "Nessun ID dispositivo da bloccare: Windows potrebbe reinstallarlo",
- "Windows is stopped from installing this device again (undo it in Settings)": "Windows non reinstallerà più questo dispositivo (annulla in Impostazioni)",
  "Could not block:": "Impossibile bloccare:",
  "build {0}: older than Windows 10 2004": "build {0}: precedente a Windows 10 2004",
  "Windows 10 2004 (build 19041) or later is recommended. On this version devices are removed with an alternative method; if something does not work, update Windows.": "Si consiglia Windows 10 2004 (build 19041) o successivo. Su questa versione i dispositivi si rimuovono con un metodo alternativo; se qualcosa non funziona, aggiorna Windows.",
@@ -1304,5 +1303,7 @@
  "Show the similar extension drivers (they appear highlighted)": "Mostra i driver di estensione simili (compaiono evidenziati)",
  "Similar extension driver": "Driver di estensione simile",
  "Older than the last restart.": "Più vecchio dell'ultimo riavvio.",
- "Windows may have changed drivers since then: create the inventory again to see them.": "Da allora Windows potrebbe aver cambiato dei driver: crea di nuovo l'inventario per vederli."
+ "Windows may have changed drivers since then: create the inventory again to see them.": "Da allora Windows potrebbe aver cambiato dei driver: crea di nuovo l'inventario per vederli.",
+ "Windows is stopped from installing this device again (undo it in Device management)": "Windows non reinstallerà più questo dispositivo (annulla in Gestione dispositivi)",
+ "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Driver di estensione: non si può bloccare da solo, Windows può riportarlo con il suo driver base"
 }
