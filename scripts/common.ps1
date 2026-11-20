@@ -502,7 +502,27 @@ $script:DenyKey = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows\DeviceInstallation\
 function Get-BlockedList {
     $f = Join-Path $script:DataRoot 'blocked-ids.json'
     if (-not (Test-Path $f)) { return @() }
-    try { return @(Get-Content -Path $f -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ }) } catch { return @() }
+    $list = @()
+    try { $list = @(Get-Content -Path $f -Raw -Encoding UTF8 | ConvertFrom-Json | ForEach-Object { $_ }) } catch { $list = @() }
+    return $list
+}
+# The Windows policy key is the truth: entries only in blocked-ids.json (not blocked any more) are dropped, ids blocked in the key but
+# unknown to the file (data folder deleted, other tool) are listed too.
+function Get-BlockedListReal {
+    $list = @(Get-BlockedList)
+    $sub = Join-Path $script:DenyKey 'DenyDeviceIDs'
+    if ($IsWindows -eq $false) { return $list }
+    $have = $null
+    try { $have = Get-ItemProperty -Path $sub -ErrorAction Stop } catch { }
+    $reg = @{}
+    if ($have) { foreach ($p in @($have.PSObject.Properties | Where-Object { $_.Name -notmatch '^PS' })) { $reg["$($p.Value)".ToUpper()] = "$($p.Name)" } }
+    $out = @($list | Where-Object { $reg.ContainsKey("$($_.Id)".ToUpper()) })
+    foreach ($k in $reg.Keys) {
+        if (-not ($out | Where-Object { "$($_.Id)".ToUpper() -eq $k })) {
+            $out += [pscustomobject]@{ Id = $k; Driver = (T 'Blocked earlier'); Inf = ''; Provider = ''; Date = ''; RegName = $reg[$k] }
+        }
+    }
+    return $out
 }
 function Save-BlockedList($List) {
     $f = Join-Path $script:DataRoot 'blocked-ids.json'
@@ -572,14 +592,19 @@ function Add-BlockedId {
     if (-not (Test-Path $sub)) { New-Item -Path $sub -Force | Out-Null }
     $have = Get-ItemProperty -Path $sub -ErrorAction SilentlyContinue
     $names = @($have.PSObject.Properties | Where-Object { $_.Name -notmatch '^PS' } | ForEach-Object { $_.Name })
-    foreach ($n in $names) { if ("$($have.$n)" -ieq $Id) { return 'exists' } }
+    $already = $null
+    foreach ($n in $names) { if ("$($have.$n)" -ieq $Id) { $already = $n } }
     $i = 1; while ($names -contains "$i") { $i++ }
-    New-ItemProperty -Path $sub -Name "$i" -Value $Id -PropertyType String -Force | Out-Null
-    Set-ItemProperty -Path $script:DenyKey -Name 'DenyDeviceIDs' -Value 1 -Type DWord
-    Set-ItemProperty -Path $script:DenyKey -Name 'DenyDeviceIDsRetroactive' -Value 0 -Type DWord
+    if ($null -eq $already) {
+        New-ItemProperty -Path $sub -Name "$i" -Value $Id -PropertyType String -Force | Out-Null
+        Set-ItemProperty -Path $script:DenyKey -Name 'DenyDeviceIDs' -Value 1 -Type DWord
+        Set-ItemProperty -Path $script:DenyKey -Name 'DenyDeviceIDsRetroactive' -Value 0 -Type DWord
+    }
+    # the list file is always brought up to date, also when Windows already had the id (file lost or older version)
     $list = @(Get-BlockedList | Where-Object { $_.Id -ine $Id })
-    $list += [pscustomobject]@{ Id = $Id; Driver = $Driver; Inf = $Inf; Provider = $Provider; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = "$i" }
+    $list += [pscustomobject]@{ Id = $Id; Driver = $Driver; Inf = $Inf; Provider = $Provider; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = $(if ($null -ne $already) { "$already" } else { "$i" }) }
     Save-BlockedList $list
+    if ($null -ne $already) { return 'exists' }
     return 'added'
 }
 function Remove-BlockedId([string]$Id) {

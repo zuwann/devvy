@@ -1305,5 +1305,6 @@
  "Older than the last restart.": "Älter als der letzte Neustart.",
  "Windows may have changed drivers since then: create the inventory again to see them.": "Windows hat seitdem möglicherweise Treiber geändert: Erstellen Sie das Inventar neu, um sie zu sehen.",
  "Windows is stopped from installing this device again (undo it in Device management)": "Windows wird daran gehindert, dieses Gerät erneut zu installieren (rückgängig in der Geräteverwaltung)",
- "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Erweiterungstreiber: lässt sich nicht allein blockieren, Windows kann ihn mit seinem Basistreiber zurückbringen"
+ "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Erweiterungstreiber: lässt sich nicht allein blockieren, Windows kann ihn mit seinem Basistreiber zurückbringen",
+ "Blocked earlier": "Früher blockiert"
 }

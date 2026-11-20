@@ -497,7 +497,7 @@ switch -Regex ($Action) {
         }
     }
     '^(?i)blocked$' {
-        $bl = @(Get-BlockedList)
+        $bl = @(Get-BlockedListReal)
         switch ("$Sub".ToLower()) {
             { $_ -in @('', 'list') } {
                 if ($bl.Count -eq 0) { Say ('  ' + (T 'No blocked devices.')) }

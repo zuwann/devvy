@@ -1305,5 +1305,6 @@
  "Older than the last restart.": "Más antiguo que el último reinicio.",
  "Windows may have changed drivers since then: create the inventory again to see them.": "Desde entonces Windows puede haber cambiado controladores: crea el inventario de nuevo para verlos.",
  "Windows is stopped from installing this device again (undo it in Device management)": "Se impide que Windows vuelva a instalar este dispositivo (deshazlo en Gestión de dispositivos)",
- "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Controlador de extensión: no se puede bloquear por sí solo, Windows puede traerlo de vuelta con su controlador base"
+ "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Controlador de extensión: no se puede bloquear por sí solo, Windows puede traerlo de vuelta con su controlador base",
+ "Blocked earlier": "Bloqueado anteriormente"
 }
