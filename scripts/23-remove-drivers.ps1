@@ -22,6 +22,7 @@ Write-Host (T 'Checking which drivers are in use right now...') -ForegroundColor
 $usage = Get-DriverUsage
 $blockClasses = @('Display', 'System', 'Firmware', 'SCSIAdapter', 'HDC', 'Processor', 'USB', 'Net', 'Bluetooth', 'Keyboard', 'Mouse', 'HIDClass', 'DiskDrive', 'Volume')
 $total = @($todo).Count; $index = 0
+$toHide = @()
 foreach ($r in $todo) {
     Write-Prog $index $total; $index++
     $drv = "$($r.Driver)".Trim()
@@ -53,7 +54,7 @@ foreach ($r in $todo) {
             if ($blockClasses -contains "$($r.Class)") { Add-Outcome $label $drv (T 'Not blocked from coming back: {0} drivers are too important to block' $r.Class) 'warn' }
             else {
                 $ids = @(@("$($r.HardwareIds)" -split '\s*\|\s*') + $swcIds | Where-Object { $_ -and (Test-BlockableId $_) } | Select-Object -Unique)
-                if ($ids.Count -eq 0) { if ("$($r.Class)" -eq 'Extension') { Add-Outcome $label $drv (T 'Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver') 'warn' } else { Add-Outcome $label $drv (T 'No device ID to block: Windows may install it again') 'warn' } }
+                if ($ids.Count -eq 0) { if ("$($r.Class)" -eq 'Extension') { $toHide += $r } else { Add-Outcome $label $drv (T 'No device ID to block: Windows may install it again') 'warn' } }
                 foreach ($id in $ids) {
                     try { $res = Add-BlockedId $id $drv $r.InfName $r.Provider; Add-Outcome $label $id (T 'Windows is stopped from installing this device again (undo it in Device management)') 'ok' }
                     catch { Add-Outcome $label $id ((T 'Could not block:') + ' ' + $_.Exception.Message) 'err' }
@@ -64,6 +65,16 @@ foreach ($r in $todo) {
     else { Add-Outcome $label $drv ((T 'NOT removed (in use?):') + ' ' + ($p.Output -replace '\s+', ' ')) 'err' }
 }
 
+if ($toHide.Count -gt 0) {
+    Write-Host (T 'Asking Windows Update to hide the removed extension drivers (it can take a minute)...') -ForegroundColor Green
+    $hres = $null
+    try { $hres = @(Hide-WuDriverUpdates $toHide) } catch { foreach ($pk in $toHide) { Add-Outcome ('{0} | {1} | {2}' -f $pk.Driver, $pk.InfName, $pk.Provider) $pk.Driver ((T 'Could not hide the Windows Update driver:') + ' ' + $_.Exception.Message) 'err' } }
+    foreach ($x in @($hres)) {
+        $lb = '{0} | {1} | {2}' -f $x.Pkg.Driver, $x.Pkg.InfName, $x.Pkg.Provider
+        if ($x.Hidden) { Add-Outcome $lb $x.Title (T 'Windows Update will not offer this driver again (undo it in Device management)') 'ok' }
+        else { Add-Outcome $lb $x.Pkg.Driver (T 'Windows Update is not offering this extension driver now: if it comes back, run the cleanup again') 'warn' }
+    }
+}
 Save-Outcomes 'drivers'
 Write-AfterRun $Apply @(T 'If a device stops working: Device Manager > right click the device > Update driver, or reinstall from the backup.')
 Stop-Log

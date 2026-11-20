@@ -1305,6 +1305,9 @@
  "Older than the last restart.": "Plus ancien que le dernier redémarrage.",
  "Windows may have changed drivers since then: create the inventory again to see them.": "Depuis, Windows a peut-être modifié des pilotes : recréez l'inventaire pour les voir.",
  "Windows is stopped from installing this device again (undo it in Device management)": "Windows ne peut plus réinstaller ce périphérique (annulable dans Gestion des périphériques)",
- "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Pilote d'extension : il ne peut pas être bloqué seul, Windows peut le ramener avec son pilote de base",
- "Blocked earlier": "Bloqué précédemment"
+ "Blocked earlier": "Bloqué précédemment",
+ "Asking Windows Update to hide the removed extension drivers (it can take a minute)...": "Demande à Windows Update de masquer les pilotes d'extension supprimés (cela peut prendre une minute)...",
+ "Could not hide the Windows Update driver:": "Impossible de masquer le pilote dans Windows Update :",
+ "Windows Update will not offer this driver again (undo it in Device management)": "Windows Update ne proposera plus ce pilote (annulez dans Gestion des appareils)",
+ "Windows Update is not offering this extension driver now: if it comes back, run the cleanup again": "Windows Update ne propose pas ce pilote d'extension pour le moment : s'il revient, relancez le nettoyage"
 }

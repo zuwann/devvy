@@ -510,19 +510,59 @@ function Get-BlockedList {
 # unknown to the file (data folder deleted, other tool) are listed too.
 function Get-BlockedListReal {
     $list = @(Get-BlockedList)
-    $sub = Join-Path $script:DenyKey 'DenyDeviceIDs'
     if ($IsWindows -eq $false) { return $list }
-    $have = $null
-    try { $have = Get-ItemProperty -Path $sub -ErrorAction Stop } catch { }
-    $reg = @{}
-    if ($have) { foreach ($p in @($have.PSObject.Properties | Where-Object { $_.Name -notmatch '^PS' })) { $reg["$($p.Value)".ToUpper()] = "$($p.Name)" } }
-    $out = @($list | Where-Object { $reg.ContainsKey("$($_.Id)".ToUpper()) })
+    $sub = Join-Path $script:DenyKey 'DenyDeviceIDs'
+    $read = {
+        $have = $null
+        try { $have = Get-ItemProperty -Path $sub -ErrorAction Stop } catch { }
+        $h = @{}
+        if ($have) { foreach ($p in @($have.PSObject.Properties | Where-Object { $_.Name -notmatch '^PS' })) { $h["$($p.Value)".ToUpper()] = "$($p.Name)" } }
+        return $h
+    }
+    $reg = & $read
+    # Ids Devvy blocked that Windows no longer has (policy refresh, other tool): they are applied again, so the block really works
+    $lost = @($list | Where-Object { "$($_.Id)" -notmatch '^WU:' -and -not $reg.ContainsKey("$($_.Id)".ToUpper()) })
+    if ($lost.Count -gt 0) {
+        try { foreach ($l in $lost) { $null = Add-BlockedId "$($l.Id)" "$($l.Driver)" "$($l.Inf)" "$($l.Provider)" } } catch { }
+        $reg = & $read
+        $list = @(Get-BlockedList)
+    }
+    $out = @($list | Where-Object { "$($_.Id)" -match '^WU:' -or $reg.ContainsKey("$($_.Id)".ToUpper()) })
     foreach ($k in $reg.Keys) {
         if (-not ($out | Where-Object { "$($_.Id)".ToUpper() -eq $k })) {
             $out += [pscustomobject]@{ Id = $k; Driver = (T 'Blocked earlier'); Inf = ''; Provider = ''; Date = ''; RegName = $reg[$k] }
         }
     }
     return $out
+}
+# Windows Update delivers removed extension drivers again. The supported way to stop it is to hide the driver update.
+# Hidden updates are kept in the same list as the blocked devices (id "WU:<update id>") so they can be undone in Device management.
+function Hide-WuDriverUpdates($Pkgs) {
+    $res = @()
+    $sess = New-Object -ComObject Microsoft.Update.Session
+    $srch = $sess.CreateUpdateSearcher()
+    $found = $srch.Search("IsInstalled=0 and IsHidden=0 and Type='Driver'")
+    foreach ($pk in $Pkgs) {
+        $hit = $null
+        foreach ($u in $found.Updates) {
+            $prov = "$($u.DriverProvider)"; $ver = "$($u.DriverVerVersion)"; $cls = "$($u.DriverClass)"
+            if ($prov -and "$($pk.Provider)" -and ($prov -ieq "$($pk.Provider)" -or $prov -like "*$($pk.Provider)*" -or "$($pk.Provider)" -like "*$prov*") -and $ver -eq "$($pk.Version)" -and ($cls -ieq "$($pk.Class)")) { $hit = $u; break }
+        }
+        if (-not $hit) { $res += [pscustomobject]@{ Pkg = $pk; Hidden = $false; Title = '' }; continue }
+        $hit.IsHidden = $true
+        $uid = "$($hit.Identity.UpdateID)"
+        $list = @(Get-BlockedList | Where-Object { $_.Id -ine "WU:$uid" })
+        $list += [pscustomobject]@{ Id = "WU:$uid"; Driver = "$($hit.Title)"; Inf = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = '' }
+        Save-BlockedList $list
+        $res += [pscustomobject]@{ Pkg = $pk; Hidden = $true; Title = "$($hit.Title)" }
+    }
+    return $res
+}
+function Show-WuDriverUpdate([string]$UpdateId) {
+    $sess = New-Object -ComObject Microsoft.Update.Session
+    $srch = $sess.CreateUpdateSearcher()
+    $found = $srch.Search("IsHidden=1 and Type='Driver'")
+    foreach ($u in $found.Updates) { if ("$($u.Identity.UpdateID)" -ieq $UpdateId) { $u.IsHidden = $false } }
 }
 function Save-BlockedList($List) {
     $f = Join-Path $script:DataRoot 'blocked-ids.json'
@@ -608,6 +648,7 @@ function Add-BlockedId {
     return 'added'
 }
 function Remove-BlockedId([string]$Id) {
+    if ($Id -match '^WU:(.+)$') { Show-WuDriverUpdate $Matches[1]; Save-BlockedList @(Get-BlockedList | Where-Object { $_.Id -ine $Id }); return }
     $sub = Join-Path $script:DenyKey 'DenyDeviceIDs'
     $have = Get-ItemProperty -Path $sub -ErrorAction SilentlyContinue
     if ($have) {

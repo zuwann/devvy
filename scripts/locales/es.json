@@ -1305,6 +1305,9 @@
  "Older than the last restart.": "Más antiguo que el último reinicio.",
  "Windows may have changed drivers since then: create the inventory again to see them.": "Desde entonces Windows puede haber cambiado controladores: crea el inventario de nuevo para verlos.",
  "Windows is stopped from installing this device again (undo it in Device management)": "Se impide que Windows vuelva a instalar este dispositivo (deshazlo en Gestión de dispositivos)",
- "Extension driver: it cannot be blocked by itself, Windows may bring it back with its base driver": "Controlador de extensión: no se puede bloquear por sí solo, Windows puede traerlo de vuelta con su controlador base",
- "Blocked earlier": "Bloqueado anteriormente"
+ "Blocked earlier": "Bloqueado anteriormente",
+ "Asking Windows Update to hide the removed extension drivers (it can take a minute)...": "Pido a Windows Update que oculte los controladores de extensión eliminados (puede tardar un minuto)...",
+ "Could not hide the Windows Update driver:": "No se pudo ocultar el controlador en Windows Update:",
+ "Windows Update will not offer this driver again (undo it in Device management)": "Windows Update no volverá a ofrecer este controlador (deshaz esto en Gestión de dispositivos)",
+ "Windows Update is not offering this extension driver now: if it comes back, run the cleanup again": "Windows Update no ofrece ahora este controlador de extensión: si vuelve, repite la limpieza"
 }
