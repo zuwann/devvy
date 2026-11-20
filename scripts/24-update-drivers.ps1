@@ -13,6 +13,8 @@ Write-Host ("`n[A] " + (T 'Drivers available on Windows Update...')) -Foreground
 $updates = @()
 $session = $null
 try {
+    # extension drivers removed earlier by Devvy: hide them now if Windows Update offers them again, so they are not installed back
+    try { foreach ($x in @(Invoke-PendingWuHide)) { if ($x.Hidden) { Write-Host ('  ' + (T 'Windows Update will not offer this driver again (undo it in Device management)') + ': ' + $x.Title) -ForegroundColor Green } } } catch { }
     $session = New-Object -ComObject Microsoft.Update.Session
     $searcher = $session.CreateUpdateSearcher()
     $result = $searcher.Search("IsInstalled=0 and Type='Driver' and IsHidden=0")

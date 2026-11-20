@@ -68,11 +68,12 @@ foreach ($r in $todo) {
 if ($toHide.Count -gt 0) {
     Write-Host (T 'Asking Windows Update to hide the removed extension drivers (it can take a minute)...') -ForegroundColor Green
     $hres = $null
+    try { Add-WuHidePending $toHide } catch { }
     try { $hres = @(Hide-WuDriverUpdates $toHide) } catch { foreach ($pk in $toHide) { Add-Outcome ('{0} | {1} | {2}' -f $pk.Driver, $pk.InfName, $pk.Provider) $pk.Driver ((T 'Could not hide the Windows Update driver:') + ' ' + $_.Exception.Message) 'err' } }
     foreach ($x in @($hres)) {
         $lb = '{0} | {1} | {2}' -f $x.Pkg.Driver, $x.Pkg.InfName, $x.Pkg.Provider
         if ($x.Hidden) { Add-Outcome $lb $x.Title (T 'Windows Update will not offer this driver again (undo it in Device management)') 'ok' }
-        else { Add-Outcome $lb $x.Pkg.Driver (T 'Windows Update is not offering this extension driver now: if it comes back, run the cleanup again') 'warn' }
+        else { Add-Outcome $lb $x.Pkg.Driver (T 'Windows Update is not offering this driver yet: Devvy remembers it and hides it at the next Windows Update check (Updates step)') 'warn' }
     }
 }
 Save-Outcomes 'drivers'

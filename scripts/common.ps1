@@ -537,26 +537,73 @@ function Get-BlockedListReal {
 }
 # Windows Update delivers removed extension drivers again. The supported way to stop it is to hide the driver update.
 # Hidden updates are kept in the same list as the blocked devices (id "WU:<update id>") so they can be undone in Device management.
-function Hide-WuDriverUpdates($Pkgs) {
-    $res = @()
-    $sess = New-Object -ComObject Microsoft.Update.Session
-    $srch = $sess.CreateUpdateSearcher()
-    $found = $srch.Search("IsInstalled=0 and IsHidden=0 and Type='Driver'")
+# Extension drivers removed by Devvy are remembered in data\wu-hide.json until a matching Windows Update driver has been hidden.
+function Get-WuHideList { $f = Join-Path $script:DataRoot 'wu-hide.json'; if (Test-Path $f) { try { return @(Get-Content $f -Raw | ConvertFrom-Json) } catch { } }; return @() }
+function Save-WuHideList($L) { $f = Join-Path $script:DataRoot 'wu-hide.json'; ConvertTo-Json -InputObject @($L) -Depth 3 | Set-Content -Path $f -Encoding UTF8 }
+function Add-WuHidePending($Pkgs) {
+    $l = @(Get-WuHideList)
     foreach ($pk in $Pkgs) {
-        $hit = $null
-        foreach ($u in $found.Updates) {
-            $prov = "$($u.DriverProvider)"; $ver = "$($u.DriverVerVersion)"; $cls = "$($u.DriverClass)"
-            if ($prov -and "$($pk.Provider)" -and ($prov -ieq "$($pk.Provider)" -or $prov -like "*$($pk.Provider)*" -or "$($pk.Provider)" -like "*$prov*") -and $ver -eq "$($pk.Version)" -and ($cls -ieq "$($pk.Class)")) { $hit = $u; break }
-        }
-        if (-not $hit) { $res += [pscustomobject]@{ Pkg = $pk; Hidden = $false; Title = '' }; continue }
-        $hit.IsHidden = $true
-        $uid = "$($hit.Identity.UpdateID)"
-        $list = @(Get-BlockedList | Where-Object { $_.Id -ine "WU:$uid" })
-        $list += [pscustomobject]@{ Id = "WU:$uid"; Driver = "$($hit.Title)"; Inf = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = '' }
-        Save-BlockedList $list
-        $res += [pscustomobject]@{ Pkg = $pk; Hidden = $true; Title = "$($hit.Title)" }
+        if ($l | Where-Object { "$($_.InfName)" -ieq "$($pk.InfName)" -and "$($_.Version)" -eq "$($pk.Version)" }) { continue }
+        $l += [pscustomobject]@{ InfName = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Class = "$($pk.Class)"; Version = "$($pk.Version)"; Date = "$($pk.Date)"; Removed = (Get-Date -Format 'yyyy-MM-dd') }
     }
-    return $res
+    Save-WuHideList $l
+}
+# Does a pending Windows Update driver correspond to a driver Devvy removed? Same provider and class, and the same version, or the same
+# date, or the inf name (without ext) inside the update text. Without a clear sign nothing is hidden (it could be a driver you need).
+function Test-WuMatch($u, $pk) {
+    $prov = "$($u.DriverProvider)"; $cls = "$($u.DriverClass)"
+    if (-not $prov -or -not "$($pk.Provider)") { return $false }
+    if (-not ($prov -ieq "$($pk.Provider)" -or $prov -like "*$($pk.Provider)*" -or "$($pk.Provider)" -like "*$prov*")) { return $false }
+    if ($cls -ine "$($pk.Class)") { return $false }
+    if ("$($u.DriverVerVersion)" -eq "$($pk.Version)") { return $true }
+    try { if ($pk.Date -and (Format-Date $u.DriverVerDate) -eq "$($pk.Date)") { return $true } } catch { }
+    $base = ("$($pk.InfName)" -replace '(?i)\.inf$', '' -replace '(?i)(extension|ext)$', '' -replace '[_\-]+$', '')
+    if ($base.Length -ge 5) {
+        $txt = "$($u.Title) $($u.DriverModel) $($u.DriverHardwareID)"
+        if ($txt -like "*$base*") { return $true }
+    }
+    return $false
+}
+# Searches the pending driver updates (online, a few tries: Windows Update needs a moment to notice a removed driver) and hides the matching ones.
+function Hide-WuDriverUpdates($Pkgs, [int]$Tries = 3, [int]$WaitSeconds = 20) {
+    $res = @{}
+    $sess = New-Object -ComObject Microsoft.Update.Session
+    $seen = @()
+    for ($t = 1; $t -le $Tries; $t++) {
+        $srch = $sess.CreateUpdateSearcher()
+        try { $srch.Online = $true } catch { }
+        $found = $srch.Search("IsInstalled=0 and IsHidden=0 and Type='Driver'")
+        $seen = @(); foreach ($u in $found.Updates) { $seen += $u }
+        foreach ($pk in $Pkgs) {
+            $key = "$($pk.InfName)|$($pk.Version)"
+            if ($res.ContainsKey($key) -and $res[$key].Hidden) { continue }
+            $hit = $null
+            foreach ($u in $seen) { if (Test-WuMatch $u $pk) { $hit = $u; break } }
+            if (-not $hit) { $res[$key] = [pscustomobject]@{ Pkg = $pk; Hidden = $false; Title = '' }; continue }
+            $hit.IsHidden = $true
+            $uid = "$($hit.Identity.UpdateID)"
+            $list = @(Get-BlockedList | Where-Object { $_.Id -ine "WU:$uid" })
+            $list += [pscustomobject]@{ Id = "WU:$uid"; Driver = "$($hit.Title)"; Inf = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = '' }
+            Save-BlockedList $list
+            $res[$key] = [pscustomobject]@{ Pkg = $pk; Hidden = $true; Title = "$($hit.Title)" }
+        }
+        if (@($res.Values | Where-Object { -not $_.Hidden }).Count -eq 0) { break }
+        if ($t -lt $Tries) { Start-Sleep -Seconds $WaitSeconds }
+    }
+    # what Windows Update is offering, for diagnosis (reports\wu-pending.csv)
+    try {
+        $dl = foreach ($u in $seen) { [pscustomobject][ordered]@{ Title = "$($u.Title)"; Provider = "$($u.DriverProvider)"; Class = "$($u.DriverClass)"; Model = "$($u.DriverModel)"; Version = "$($u.DriverVerVersion)"; Date = (Format-Date $u.DriverVerDate) } }
+        if (@($dl).Count -gt 0) { $null = Save-ReportCsv $dl 'wu-pending' }
+    } catch { }
+    # the ones hidden now are no longer pending; the others stay on the list for the next try
+    Save-WuHideList @(Get-WuHideList | Where-Object { $e = $_; -not (@($res.Values | Where-Object { $_.Hidden -and "$($_.Pkg.InfName)" -ieq "$($e.InfName)" -and "$($_.Pkg.Version)" -eq "$($e.Version)" }).Count) })
+    return @($res.Values)
+}
+# Tries again for the extension drivers removed earlier that Windows Update was not offering yet (called by the Windows Update step)
+function Invoke-PendingWuHide {
+    $l = @(Get-WuHideList)
+    if ($l.Count -eq 0) { return @() }
+    try { return @(Hide-WuDriverUpdates $l 1 0) } catch { return @() }
 }
 function Show-WuDriverUpdate([string]$UpdateId) {
     $sess = New-Object -ComObject Microsoft.Update.Session

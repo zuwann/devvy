@@ -1309,5 +1309,5 @@
  "Asking Windows Update to hide the removed extension drivers (it can take a minute)...": "Demande à Windows Update de masquer les pilotes d'extension supprimés (cela peut prendre une minute)...",
  "Could not hide the Windows Update driver:": "Impossible de masquer le pilote dans Windows Update :",
  "Windows Update will not offer this driver again (undo it in Device management)": "Windows Update ne proposera plus ce pilote (annulez dans Gestion des appareils)",
- "Windows Update is not offering this extension driver now: if it comes back, run the cleanup again": "Windows Update ne propose pas ce pilote d'extension pour le moment : s'il revient, relancez le nettoyage"
+ "Windows Update is not offering this driver yet: Devvy remembers it and hides it at the next Windows Update check (Updates step)": "Windows Update ne propose pas encore ce pilote : Devvy s'en souvient et le masque à la prochaine vérification de Windows Update (étape Mises à jour)"
 }
