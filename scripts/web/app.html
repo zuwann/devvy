@@ -147,7 +147,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.110</small></h1>
+  <h1>Devvy <small class="mut">0.10.111</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -553,16 +553,23 @@ function identTop(r){
   if(r.InfPath) o+='<div class="mut">'+esc(t('File:'))+' <code>'+esc(r.InfPath)+'</code></div>';
   return o;
 }
-function ident(r){
-  var q=((r.Provider||'')+' '+(r.InfDescription||r.FriendlyName||r.InfName||'')+' '+(r.HardwareIds?r.HardwareIds.split(' | ')[0]:'')).trim();
+// hardware id without the part that is unique to this very unit (serial / instance): USB\VID_04E8&PID_6860\R5CWC2QFATA -> USB\VID_04E8&PID_6860
+function hwNoSerial(r){
+  var h=(r.HardwareIds?String(r.HardwareIds).split(' | ')[0]:'');
+  if(!h){ var p=String(r.InstanceId||'').split('\\'); h=(p.length>2)?p.slice(0,2).join('\\'):p.join('\\'); }
+  return h;
+}
+function ident(r,dev){
+  var q=dev?[r.Class,r.FriendlyName,hwNoSerial(r)].filter(function(x){return x;}).join(' ').trim()
+           :((r.Provider||'')+' '+(r.InfDescription||r.FriendlyName||r.InfName||'')+' '+(r.HardwareIds?r.HardwareIds.split(' | ')[0]:'')+' driver').trim();
   if(!q) return '';
-  return '<div class="idq"><a href="https://www.google.com/search?q='+encodeURIComponent(q+' driver')+'" target="_blank" rel="noopener noreferrer"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'+esc(t('Search the web for this component'))+'</a></div>';
+  return '<div class="idq"><a href="https://www.google.com/search?q='+encodeURIComponent(q)+'" target="_blank" rel="noopener noreferrer"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'+esc(t('Search the web for this component'))+'</a></div>';
 }
 var TAB = {
   devices:{ title:'Devices', key:'InstanceId', values:['KEEP','REMOVE'], onlyLabel:'Show only ghosts (not connected)', onlyFn:function(r){return r.Present==='NO';},
     note:'A ghost device is the leftover entry of a device that is no longer connected. Removing it is safe: if you plug it in again Windows installs it again.',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Manufacturer)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Device',function(r){return '<b>'+esc(r.FriendlyName||r.Class)+'</b>';}],['Hardware ID',function(r){return '<code>'+esc(r.InstanceId)+'</code>';}],['Risk',function(r){return devRisk(r);}],['Action','act','rt']],
-    desc:function(r){ return identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r); } },
+    desc:function(r){ return identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r,true); } },
   drivers:{ title:'Drivers in the driver store', key:'Driver', values:['KEEP','REMOVE','REMOVE+UNINSTALL'], onlyLabel:'Show only third-party drivers', onlyFn:function(r){return r.Origin==='Third-party';},
     note:'REMOVE takes the package out of the driver store (Windows refuses if it is in use). REMOVE+UNINSTALL also takes it off the devices that use it: use it only for components you do not need (for example uninstalled programs).',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Provider)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Driver',function(r){return '<b>'+esc(r.InfName)+'</b><br><code>'+esc(r.Driver)+'</code>';}],['Version',function(r){return esc(r.Version)+'<br><span class="mut">'+esc(r.Date)+'</span>'+(r.Versions==='OldVersion'?'<br>'+bd('y',t('old')):'');}],['Used by',function(r){return esc(t('{0} devices', r.UsedByPresent));}],['Risk',function(r){return riskCell(r);}],['Action','act','rt']],
