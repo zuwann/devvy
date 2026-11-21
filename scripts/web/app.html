@@ -55,7 +55,7 @@ tr.del td{background:rgba(180,35,24,.08)}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--mut);vertical-align:middle}.dot.g{background:var(--ok)}.dot.y{background:var(--warn)}.dot.r{background:var(--err)}
 .grplab{font-size:.78rem;font-weight:700;color:var(--acc);text-transform:uppercase;letter-spacing:.03em;margin-bottom:2px}
 .bd{white-space:nowrap;display:inline-block;margin-top:4px}.bd.g b{color:var(--ok)}.bd.y b{color:var(--warn)}.bd.r b{color:var(--err)}
-.idbox{margin-top:10px;padding:10px 14px;border:1px solid var(--line);border-radius:8px;background:var(--card)}.idh{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:var(--acc);margin-bottom:6px}.idbox>div+div{margin-top:3px}.idq{margin-top:8px!important}.idq a{display:inline-flex;align-items:center;gap:6px}.idq .ico{flex:none}
+.idq{margin-top:6px}.idq a{display:inline-flex;align-items:center;gap:6px}.idq .ico{flex:none}
 th.rt,td.rt{text-align:right}td.rt select{display:block;margin-left:auto}
 tr.main td{border-bottom:0;padding-bottom:4px}tr.dsc td{padding-top:0;padding-bottom:12px;color:var(--fg);font-size:.92rem}tr.dsc td span.mut{display:inline-block;margin-top:2px}
 tr.dis td{opacity:.5}
@@ -147,7 +147,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.108</small></h1>
+  <h1>Devvy <small class="mut">0.10.110</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -547,24 +547,26 @@ function vStart(){
 }
 
 /* ---------- tables ---------- */
+function identTop(r){
+  var o='';
+  if(r.InfDescription) o+='<div>'+esc(r.InfDescription)+'</div>';
+  if(r.InfPath) o+='<div class="mut">'+esc(t('File:'))+' <code>'+esc(r.InfPath)+'</code></div>';
+  return o;
+}
 function ident(r){
-  var parts='';
-  if(r.InfDescription) parts+='<div>'+esc(r.InfDescription)+'</div>';
-  if(r.InfPath) parts+='<div class="mut">'+esc(t('File:'))+' <code>'+esc(r.InfPath)+'</code></div>';
-  if(r.HardwareIds) parts+='<div class="mut">'+esc(t('Hardware ID:'))+' <code>'+esc(r.HardwareIds.split(' | ').slice(0,3).join(' | '))+'</code></div>';
   var q=((r.Provider||'')+' '+(r.InfDescription||r.FriendlyName||r.InfName||'')+' '+(r.HardwareIds?r.HardwareIds.split(' | ')[0]:'')).trim();
-  if(q) parts+='<div class="idq"><a href="https://www.google.com/search?q='+encodeURIComponent(q+' driver')+'" target="_blank" rel="noopener noreferrer"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'+esc(t('Search the web for this component'))+'</a> <span class="mut">'+esc(t('(opens your browser: the text above is sent to the search engine only if you click)'))+'</span></div>';
-  return parts?('<div class="idbox"><div class="idh">'+esc(t('Identify'))+'</div>'+parts+'</div>'):'';
+  if(!q) return '';
+  return '<div class="idq"><a href="https://www.google.com/search?q='+encodeURIComponent(q+' driver')+'" target="_blank" rel="noopener noreferrer"><svg class="ico" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg>'+esc(t('Search the web for this component'))+'</a></div>';
 }
 var TAB = {
   devices:{ title:'Devices', key:'InstanceId', values:['KEEP','REMOVE'], onlyLabel:'Show only ghosts (not connected)', onlyFn:function(r){return r.Present==='NO';},
     note:'A ghost device is the leftover entry of a device that is no longer connected. Removing it is safe: if you plug it in again Windows installs it again.',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Manufacturer)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Device',function(r){return '<b>'+esc(r.FriendlyName||r.Class)+'</b>';}],['Hardware ID',function(r){return '<code>'+esc(r.InstanceId)+'</code>';}],['Risk',function(r){return devRisk(r);}],['Action','act','rt']],
-    desc:function(r){ return esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+ident(r); } },
+    desc:function(r){ return identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r); } },
   drivers:{ title:'Drivers in the driver store', key:'Driver', values:['KEEP','REMOVE','REMOVE+UNINSTALL'], onlyLabel:'Show only third-party drivers', onlyFn:function(r){return r.Origin==='Third-party';},
     note:'REMOVE takes the package out of the driver store (Windows refuses if it is in use). REMOVE+UNINSTALL also takes it off the devices that use it: use it only for components you do not need (for example uninstalled programs).',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Provider)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Driver',function(r){return '<b>'+esc(r.InfName)+'</b><br><code>'+esc(r.Driver)+'</code>';}],['Version',function(r){return esc(r.Version)+'<br><span class="mut">'+esc(r.Date)+'</span>'+(r.Versions==='OldVersion'?'<br>'+bd('y',t('old')):'');}],['Used by',function(r){return esc(t('{0} devices', r.UsedByPresent));}],['Risk',function(r){return riskCell(r);}],['Action','act','rt']],
-    desc:function(r){ return (r._grp?'<div class="grplab">'+esc(t('Similar extension driver'))+'</div>':'')+((r.What||r.KbId)?'<b>'+esc(r.What||r.Category)+'</b> ':bd('y',t('unknown'))+' ')+'<br>'+esc(r.Reason)+(r.Advice?'<br><span class="mut">'+esc(r.Advice)+'</span>':'')+ident(r); } },
+    desc:function(r){ return (r._grp?'<div class="grplab">'+esc(t('Similar extension driver'))+'</div>':'')+'<div>'+((r.What||r.KbId)?'<b>'+esc(r.What||r.Category)+'</b>':bd('y',t('unknown')))+'</div>'+identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r); } },
   bluetooth:{ title:'Bluetooth pairings', key:'MAC', values:['KEEP','REMOVE'], onlyLabel:'', onlyFn:function(){return true;},
     note:'REMOVE deletes the pairing: you will have to pair the device again. Pairings left only in the registry are deleted too.',
     cols:[['Device',function(r){return '<b>'+esc(r.Name||t('(no name)'))+'</b>';}],['State',function(r){return (r.Present==='YES'?esc(t('connected')):esc(t('not connected')))+(r.InRegistry==='YES'?' - '+esc(t('in the registry')):'');}],['Hardware ID',function(r){return '<code>'+esc(r.MAC)+'</code>';}],['Action','act','rt']],
@@ -637,7 +639,7 @@ function vTable(type){
       T.values.forEach(function(v){ sel+='<option value="'+v+'"'+(v===a?' selected':'')+'>'+esc(t(v))+'</option>'; });
       sel+='</select>'+(prot?'<br>'+bd('g',t('excluded')):'');
       var rc=(isDel(a)?'del':'')+(gk?' grpm':'')+(busy?' dis':'');
-      h+='<tr class="'+rc+' main">'; T.cols.forEach(function(c){ h+=(c[1]==='act')?'<td>'+sel+'</td>':'<td'+(c[2]?' class="'+c[2]+'"':'')+'>'+c[1](r)+'</td>'; }); h+='</tr>';
+      h+='<tr class="'+rc+' main">'; T.cols.forEach(function(c){ h+=(c[1]==='act')?'<td'+(c[2]?' class="'+c[2]+'"':'')+'>'+sel+'</td>':'<td'+(c[2]?' class="'+c[2]+'"':'')+'>'+c[1](r)+'</td>'; }); h+='</tr>';
       h+='<tr class="'+rc+' dsc"><td colspan="'+T.cols.length+'">'+T.desc(r)+'</td></tr>';
     });
     h+='</table></div>'+(vis.length>600?'<p class="mut">'+esc(t('Showing the first 600: use the search to narrow down.'))+'</p>':'');
