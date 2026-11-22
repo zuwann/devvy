@@ -1,5 +1,5 @@
 {
- "version": "0.10.132",
+ "version": "0.10.133",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "063db5a200b392b10811635c9a6ffb5163089a354aa17554aa9043989aecc39c",
+   "sha256": "15aa6ae6bf1fd7527481d4d5c46d59d87f4310d84e3e8dbb8ea1ca5455988f8d",
    "size": 12814
   },
   {
@@ -56,8 +56,8 @@
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
-   "sha256": "8d196d01cd3f2911043f3eeeab239bdd8de177967115c1b80df17dd9e808ae9c",
-   "size": 5602
+   "sha256": "a71bea630a96d4cf90976e92dc33dc0507a6b64835e81cf1bd81660f8a515fd7",
+   "size": 6908
   },
   {
    "path": "scripts/02-inventory-drivers.ps1",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "ed7ebdef4e1e318f21272e74c173d4ab04ce76aec6d57e7abe6babf529e1ac9d",
-   "size": 142412
+   "sha256": "609ca2111cbad222a46d4500f7d70a888f9c9601921b3733f5da5bf7f8dbf0f4",
+   "size": 142490
   }
  ]
 }

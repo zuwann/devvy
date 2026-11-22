@@ -53,6 +53,24 @@ $rows = foreach ($d in $devices) {
             if (-not $dd) { $dd = Format-Date $sg.DriverDate }
         }
     }
+    # still no driver data (typical of ghosts and of software devices): read it from the driver key that Windows keeps for the device
+    $infPath = ''
+    if (-not $inf -or -not $dd -or -not $ver) {
+        try {
+            $ek = Get-ItemProperty -LiteralPath ('Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\' + $id) -ErrorAction Stop
+            if ($ek.Driver) {
+                $ck = Get-ItemProperty -LiteralPath ('Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Class\' + $ek.Driver) -ErrorAction Stop
+                if (-not $inf -and $ck.InfPath) { $inf = "$($ck.InfPath)" }
+                if (-not $prov -and $ck.ProviderName) { $prov = "$($ck.ProviderName)" }
+                if (-not $ver -and $ck.DriverVersion) { $ver = "$($ck.DriverVersion)" }
+                if (-not $dd -and $ck.DriverDate) {
+                    $dt = [datetime]::MinValue
+                    if ([datetime]::TryParseExact("$($ck.DriverDate)", 'M-d-yyyy', [Globalization.CultureInfo]::InvariantCulture, 'None', [ref]$dt)) { $dd = Format-Date $dt }
+                }
+            }
+        } catch { }
+    }
+    if ($inf -and $inf -notmatch '^oem') { $ip = Join-Path (Join-Path $env:windir 'INF') $inf; if (Test-Path -LiteralPath $ip) { $infPath = $ip } }
     $text = '{0} {1} {2}' -f $d.FriendlyName, $d.Manufacturer, $id
     $excluded = Test-Excluded $text $d.Class
     $cat = Get-Category $id $d.Class $text
@@ -83,6 +101,7 @@ $rows = foreach ($d in $devices) {
         InstanceId         = $id
         Manufacturer       = "$($d.Manufacturer)"
         DriverInf          = $inf
+        InfPath            = $infPath
         DriverProvider     = $prov
         DriverVersion      = $ver
         DriverDate         = $dd
