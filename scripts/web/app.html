@@ -150,7 +150,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.122</small></h1>
+  <h1>Devvy <small class="mut">0.10.123</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -567,6 +567,13 @@ function devVerCell(r){
   var d=drvOf(r), v=r.DriverVersion||(d&&d.Version)||'', dt=r.DriverDate||(d&&d.Date)||'';
   return esc(v)+(dt?'<br><span class="mut">'+esc(dt)+'</span>':'');
 }
+// a device with a known driver shows the same facts as the Drivers table (what it is, description, file, advice): the missing ones are taken from the driver row
+function devMerge(r){
+  var d=drvOf(r); if(!d) return r;
+  var o={}; for(var k in r) o[k]=r[k];
+  ['What','KbId','InfDescription','InfPath','Advice','Category'].forEach(function(k){ if(!o[k]&&d[k]) o[k]=d[k]; });
+  return o;
+}
 function spin(){ return '<p class="mut spinrow" role="status"><span class="spinner" aria-hidden="true"></span>'+esc(t('Loading...'))+'</p>'; }
 function identTop(r){
   var o='';
@@ -590,7 +597,7 @@ var TAB = {
   devices:{ title:'Devices', key:'InstanceId', values:['KEEP','REMOVE'], onlyLabel:'Show only ghosts (not connected)', onlyFn:function(r){return r.Present==='NO';},
     note:'A ghost device is the leftover entry of a device that is no longer connected. Removing it is safe: if you plug it in again Windows installs it again.',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Manufacturer)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Driver',devDrvCell],['Version',devVerCell],['Risk',function(r){return devRisk(r);}],['Action','act','rt']],
-    desc:function(r){ return ((r.What||r.KbId)?'<div><b>'+esc(r.What)+'</b></div>':(r.Present==='NO'?'':'<div>'+bd('y',t('unknown'))+'</div>'))+(r._nodev?'':'<div class="mut">'+((r.DriverInf||drvOf(r))?esc(t('Device'))+': '+esc(r.FriendlyName||r.Class)+' - ':'')+'<code>'+esc(r.InstanceId)+'</code></div>')+identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r,true); } },
+    desc:function(r0){ var r=devMerge(r0); return ((r.What||r.KbId)?'<div><b>'+esc(r.What)+'</b></div>':(r.Present==='NO'?'':'<div>'+bd('y',t('unknown'))+'</div>'))+(r._nodev?'':'<div class="mut">'+((r.DriverInf||drvOf(r))?esc(t('Device'))+': '+esc(r.FriendlyName||r.Class)+' - ':'')+'<code>'+esc(r.InstanceId)+'</code></div>')+identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r,true); } },
   drivers:{ title:'Drivers in the driver store', key:'Driver', values:['KEEP','REMOVE','REMOVE+UNINSTALL'], onlyLabel:'Show only third-party drivers', onlyFn:function(r){return r.Origin==='Third-party';},
     note:'REMOVE takes the package out of the driver store (Windows refuses if it is in use). REMOVE+UNINSTALL also takes it off the devices that use it: use it only for components you do not need (for example uninstalled programs).',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Provider)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Driver',function(r){return '<b>'+esc(r.InfName)+'</b><br><code>'+esc(r.Driver)+'</code>';}],['Version',function(r){return esc(r.Version)+'<br><span class="mut">'+esc(r.Date)+'</span>'+(r.Versions==='OldVersion'?'<br>'+bd('y',t('old')):'');}],['Used by',function(r){return esc(t('{0} devices', r.UsedByPresent));}],['Risk',function(r){return riskCell(r);}],['Action','act','rt']],
@@ -899,9 +906,9 @@ function saveEx(l){ return api('/api/settings',{exclusions:l}).then(function(){ 
 function vManage(){
   var h='<h2>'+esc(t('Device management'))+'</h2>';
   h+='<div class="card"><h3>'+esc(t('Exclusions'))+'</h3><p class="mut">'+esc(t('Devices that Devvy never removes or replaces. To exclude one, use the Exclude button in the Updates tab: nothing is excluded by default.'))+'</p><div id="exlist"></div></div>';
-  h+='<div class="card"><h3>'+esc(t('Excluded from Windows Update'))+'</h3><p class="mut">'+esc(t('Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.'))+'</p><div id="wuhid"><p class="mut">'+esc(t('Loading...'))+'</p></div></div>';
-  h+='<div class="card"><h3>'+esc(t('Devices blocked from coming back'))+'</h3><p class="mut">'+esc(t('Windows is stopped from installing these devices again, with any driver. Unblock one to let Windows install it normally.'))+'</p><div id="blocked"><p class="mut">'+esc(t('Loading...'))+'</p></div></div>';
-  h+='<div class="card"><h3>'+esc(t('Drivers installed from the Microsoft catalog'))+'</h3><p class="mut">'+esc(t('Every package Devvy downloaded and installed, with the signature check and the SHA-256 fingerprint. To go back to the previous driver, use the Report tab.'))+'</p><div id="dllist"><p class="mut">'+esc(t('Loading...'))+'</p></div></div>';
+  h+='<div class="card"><h3>'+esc(t('Excluded from Windows Update'))+'</h3><p class="mut">'+esc(t('Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.'))+'</p><div id="wuhid">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Devices blocked from coming back'))+'</h3><p class="mut">'+esc(t('Windows is stopped from installing these devices again, with any driver. Unblock one to let Windows install it normally.'))+'</p><div id="blocked">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Drivers installed from the Microsoft catalog'))+'</h3><p class="mut">'+esc(t('Every package Devvy downloaded and installed, with the signature check and the SHA-256 fingerprint. To go back to the previous driver, use the Report tab.'))+'</p><div id="dllist">'+spin()+'</div></div>';
   $('#main').innerHTML=h; Promise.all([load('devices'),load('drivers').catch(function(){return [];})]).then(drawEx,drawEx);
   Promise.all([load('devices').catch(function(){return [];}),api('/api/about')]).then(function(R){
     var A=R[1], el=$('#dllist'); if(!el) return;
