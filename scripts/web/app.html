@@ -151,7 +151,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.131</small></h1>
+  <h1>Devvy <small class="mut">0.10.132</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -562,7 +562,7 @@ function drvOf(r){
 // the Driver and Version cells of a device: driver name (inf) bold + oemNN.inf under it, version with the date under it (like the Drivers table)
 function devDrvCell(r){
   var d=drvOf(r), nm=r.FriendlyName||r.Class||'';
-  if(!r.DriverInf&&!d) return '<b>'+esc(nm)+'</b>';
+  if(!r.DriverInf&&!d) return '<span class="mut">-</span>';
   return '<b>'+esc((d&&d.InfName)||r.DriverInf)+'</b><br><code>'+esc(r.DriverInf||(d&&d.Driver)||'')+'</code>';
 }
 function devVerCell(r){
@@ -576,7 +576,7 @@ function devMerge(r){
   ['What','KbId','InfDescription','InfPath','Advice','Category'].forEach(function(k){ if(!o[k]&&d[k]) o[k]=d[k]; });
   return o;
 }
-function spin(c){ return '<p class="mut spinrow'+(c?' c':'')+'" role="status"><span class="spinner" aria-hidden="true"></span>'+esc(t('Loading...'))+'</p>'; }
+function spin(c,txt){ return '<p class="mut spinrow'+(c?' c':'')+'" role="status"><span class="spinner" aria-hidden="true"></span>'+esc(t(txt||'Loading...'))+'</p>'; }
 // description of a blocked device: what it is, the driver it came from, when it was blocked; the reason, advice and web search under "Show details"
 function blkDesc(b,r){
   var rr=devMerge(r), what=b.What||rr.What||'', nm=what||r.FriendlyName||r.Class;
@@ -873,7 +873,7 @@ function profRow(){
 }
 function loadUpdate(){
   var el=$('#updbox'); if(!el) return;
-  el.innerHTML='<div class="card"><h3>'+esc(t('Program update'))+'</h3><p class="mut">'+esc(t('Searching for a new release on GitHub...'))+'</p></div>';
+  el.innerHTML='<div class="card"><h3>'+esc(t('Program update'))+'</h3>'+spin(0,'Searching for a new release on GitHub...')+'</div>';
   api('/api/update/check').then(function(r){
     S.upd=(r&&r.ok&&r.needed)?r:null; var el2=$('#updbox'); if(!el2) return; var h='<div class="card"><h3>'+esc(t('Program update'))+'</h3>';
     if(!r.ok){ h+='<p class="mut">'+esc(r.ready===false?t('The GitHub address of the project is not set yet: nothing to download.'):(r.error||t('Cannot check now.')))+'</p><div class="row"><button class="b sec" id="updrecheck">'+esc(t('Check again'))+'</button></div>'; }
@@ -895,8 +895,9 @@ function askRestartAfterUpdate(){
   });
 }
 function loadKb(){
+  var kb0=$('#kbbox'); if(kb0&&!kb0.innerHTML) kb0.innerHTML='<div class="card">'+spin()+'</div>';
   api('/api/kb').then(function(k){ var el=$('#kbbox'); if(!el) return; var cur=Math.max(k.shipped||0,k.downloaded||0);
-    el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p><div class="row"><button class="b sec" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'</div>'; }).catch(function(){});
+    el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p><div class="row"><button class="b sec" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'</div>'; }).catch(function(){ var e=$('#kbbox'); if(e&&/spinrow/.test(e.innerHTML)) e.innerHTML=''; });
 }
 function exShow(p){ return /^(?:[^\\.*+?^${}()|[\]]|\\.)*$/.test(p)?p.replace(/\\(.)/g,'$1'):p; }
 function drawEx(){
