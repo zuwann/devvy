@@ -738,6 +738,29 @@ function Remove-RelatedGhosts([string]$InfName) {
 function Test-BlockableId([string]$Id) {
     return [bool]($Id -match '^(SWC\\[A-Za-z0-9_.&-]+$|USB\\VID_[0-9A-F]{4}&PID_[0-9A-F]{4}|PCI\\VEN_[0-9A-F]{4}&DEV_[0-9A-F]{4}|BTHENUM\\|BTH\\|HID\\VID_|ROOT\\|SWD\\|ACPI\\)')
 }
+# Completes an old blocked entry (made before the data was kept with it) for the page: class from the id / the Windows Update title,
+# version from the title, and what it is + advice from the knowledge base (same texts as the Drivers table)
+function Get-BlockedForPage {
+    $out = @()
+    foreach ($b in @(Get-BlockedListReal)) {
+        $h = [ordered]@{}
+        foreach ($pp in $b.PSObject.Properties) { $h[$pp.Name] = $pp.Value }
+        $id = "$($b.Id)"
+        if (-not "$($h['Class'])") {
+            if ($id -match '^SWC\\') { $h['Class'] = 'SoftwareComponent' }
+            elseif ($id -match '^WU:' -and "$($b.Driver)" -match '^.+? - (\w+) - ') { $h['Class'] = $Matches[1] }
+        }
+        if ($id -match '^WU:' -and -not "$($h['Version'])" -and "$($b.Driver)" -match ' - ([0-9][0-9.]+)\s*$') { $h['Version'] = $Matches[1] }
+        if (-not "$($h['What']) $($h['Advice'])".Trim()) {
+            try {
+                $adv = Get-Advice ('{0} {1} {2}' -f $b.Inf, $b.Provider, $h['Class'])
+                if ($adv) { $h['What'] = "$($adv.Name)"; $h['Advice'] = (Get-AdviceText $adv); $h['KbId'] = "$($adv.Id)" }
+            } catch { }
+        }
+        $out += [pscustomobject]$h
+    }
+    return @($out)
+}
 # Data of the device/driver kept with a blocked entry, so Device management can show the same summary as the Devices/Drivers tables
 function Get-BlockExtraNames { return @('Class', 'Version', 'Manufacturer', 'FriendlyName', 'What', 'InfDescription', 'InfPath', 'Reason', 'Advice', 'HardwareIds', 'InstanceId') }
 function Get-BlockExtra($R) {

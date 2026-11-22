@@ -563,7 +563,7 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         Save-Pins @(Get-Pins | Where-Object { "$($_.InstanceId)" -ne "$($pb.forget)" })
         Send-Json $ctx @{ ok = $true }; return
     }
-    if ($Path -eq '/api/blocked' -and $Method -eq 'GET') { Send-Json $ctx @{ list = @(Get-BlockedListReal) }; return }
+    if ($Path -eq '/api/blocked' -and $Method -eq 'GET') { Send-Json $ctx @{ list = @(Get-BlockedForPage) }; return }
     if ($Path -eq '/api/unblock' -and $Method -eq 'POST') {
         $id = "$($body.id)"
         $known = @(Get-BlockedListReal | Where-Object { $_.Id -ieq $id })

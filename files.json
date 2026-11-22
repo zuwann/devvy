@@ -1,5 +1,5 @@
 {
- "version": "0.10.116",
+ "version": "0.10.117",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "0a55ea568b80a33dfa3e716b8516c780f2b9390087c377751b8072ef584777ae",
+   "sha256": "c50c830ebc932342ee3281a48d15500faeb6e37d2fbb5f8fb5c3200c9faf8b8a",
    "size": 12814
   },
   {
@@ -51,8 +51,8 @@
   },
   {
    "path": "scripts/00-server.ps1",
-   "sha256": "6f22226a8b29c751565c9cf85c3ac70c0a3b66708f0b9560c8ef9e698df6bb62",
-   "size": 56607
+   "sha256": "80ba2f5dd8cd0e369cce4e660cc07e2e8e84f69ed3d4e575a7f9ee8bbe231e4a",
+   "size": 56606
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
@@ -171,8 +171,8 @@
   },
   {
    "path": "scripts/common.ps1",
-   "sha256": "bba366f38a86cf3d8b86f40a3adc0ac6a5907eed8d2ef2f63b042344bcc70b94",
-   "size": 82498
+   "sha256": "ed6a6d44ffa7bc5facd23db347e372e21c078fa21f76af4b9685666041d67c7b",
+   "size": 83718
   },
   {
    "path": "scripts/devvy-cli.ps1",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "a002bb8dbb7f8415bff14c805594e9327651c41acc77487b73f88bba6bc0a79f",
-   "size": 137434
+   "sha256": "9aa28a7d6c4b698c1703e27d5d3babb4282f1ec3b7d98d4d4a040497203144c1",
+   "size": 138874
   }
  ]
 }
