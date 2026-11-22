@@ -50,6 +50,9 @@ textarea{width:100%;min-height:90px;font-family:ui-monospace,Consolas,monospace;
 table{border-collapse:collapse;width:100%;margin:6px 0}
 th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--mut);font-size:.82rem;font-weight:600;position:sticky;top:0;background:var(--bg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:8px}
+@media (prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}}
 tr.del td{background:rgba(180,35,24,.20)}
 
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:var(--mut);vertical-align:middle}.dot.g{background:var(--ok)}.dot.y{background:var(--warn)}.dot.r{background:var(--err)}
@@ -147,7 +150,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.121</small></h1>
+  <h1>Devvy <small class="mut">0.10.122</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -310,7 +313,7 @@ function go(tab){
   S.tab=tab; drawTabs(); if(tab!=='start') refreshBell(); var gr=$('#gear'); if(gr) gr.classList.toggle('on',tab==='settings'); if($('#exit')) $('#gear').title=t('Settings');
   if(isLocked(tab)){ loadState().then(function(){ drawTabs(); if(!isLocked(tab)){ go(tab); return; } $('#main').innerHTML='<h2>'+esc(tabName(tab))+'</h2><div class="card warn"><h3>'+esc(t('Create the PC inventory first'))+'</h3><p>'+esc(t('This page needs the inventory of devices, drivers and Bluetooth. Create it from the Start tab (it changes nothing and takes about a minute).'))+'</p><div class="row"><button class="b" data-run="inventory">'+esc(t('Create the full inventory'))+'</button></div></div>'; }); return; }
   var f = { start:vStart, devices:function(){return vTable('devices');}, drivers:function(){return vTable('drivers');}, bluetooth:function(){return vTable('bluetooth');}, updates:vUpdates, run:vRun, report:vReport, support:vSupport, manage:vManage, settings:vSettings }[tab];
-  $('#main').innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>';
+  $('#main').innerHTML=spin();
   Promise.resolve().then(function(){ return f(); }).then(function(){ var P=S.prop; S.prop=null; if(P&&P.search){ var cd=(S.data.catalog||[]).filter(function(c){ return c.UpdateId&&c.NewerThanCurrent!=='NO'&&!isExcl(c.Device); }); if(!cd.length){ P.text=t('Search finished: the Microsoft catalog has nothing to install.'); P.next='run'; } } if(!(P&&P.from===tab)) autoAdvance(tab); if(P&&P.from===tab&&!S.cf&&!busy()){ ask({title:t('Done.'),text:P.text,ok:P.next?t('Next step: {0}', tabName(P.next)):t('OK'),cancel:t('Not now'),single:!P.next}).then(function(y){ if(y&&P.next) go(P.next); }); } }).catch(function(e){ $('#main').innerHTML='<div class="card err">'+esc(e.message)+'</div>'; });
 }
 
@@ -489,14 +492,14 @@ function openPop(kind){
   S.pop=kind; var pop=$('#pop'), body=$('#popbody');
   var g=$('#gear'); if(g) g.classList.toggle('on',kind==='settings');
   ['bug','help','upd'].forEach(function(id){ var e=$('#'+id); if(e) e.classList.toggle('on',(id==='bug'&&kind==='problem')||(id==='help'&&kind==='help')||(id==='upd'&&kind==='update')); });
-  if(kind==='help'){ $('#poptitle').textContent=t('What this program does'); body.innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>'; vAbout(body); }
-  else if(kind==='problem'){ $('#poptitle').textContent=t('Report a problem'); body.innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>'; api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){ S.prob=null; }).then(function(){ body.innerHTML=problemCard(); }); }
+  if(kind==='help'){ $('#poptitle').textContent=t('What this program does'); body.innerHTML=spin(); vAbout(body); }
+  else if(kind==='problem'){ $('#poptitle').textContent=t('Report a problem'); body.innerHTML=spin(); api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){ S.prob=null; }).then(function(){ body.innerHTML=problemCard(); }); }
   else if(kind==='update'){ $('#poptitle').textContent=t('Updates'); body.innerHTML='<div id="updbox"></div><div id="kbbox"></div>'; loadUpdate(); loadKb(); }
   else if(kind==='settings'){
     $('#poptitle').textContent=t('Settings');
     loadState().then(function(){ body.innerHTML=settingsForm(false)+profRow(); });
   } else {
-    $('#poptitle').textContent=t('Notifications'); body.innerHTML='<p class="mut">'+esc(t('Loading...'))+'</p>';
+    $('#poptitle').textContent=t('Notifications'); body.innerHTML=spin();
     glanceData().then(function(gd){ S.glance=gd; setBell(gd); body.innerHTML=notifHtml(gd); });
   }
   pop.style.display='flex';
@@ -535,7 +538,7 @@ function vStart(){
       var h='<h2>'+esc(t('What do you want to do?'))+'</h2>'+flowCards();
       if(hasInv()&&gd.health) h+=healthCard(gd.health);
       h+='<div class="card"><h3>'+esc(t('Your PC at a glance'))+'</h3><p class="mut">'+esc(t('Always start with the preview, which changes nothing. No data leaves the PC, except the driver search on the Microsoft catalog, which only starts when you ask.'))+'</p><div class="wrap"><table><tr><th>'+esc(t('Status'))+'</th><th>'+esc(t('Check'))+'</th></tr>';
-      h+='<tr><td><span class="st OK">'+esc(t('OK'))+'</span></td><td><b>'+esc(t('Hardware'))+'</b>: <span id="hwsum" class="mut">'+esc(t('Loading...'))+'</span><details><summary>'+esc(t('Show hardware'))+'</summary><div id="hwlist"></div></details></td></tr>';
+      h+='<tr><td><span class="st OK">'+esc(t('OK'))+'</span></td><td><b>'+esc(t('Hardware'))+'</b>: <span id="hwsum" class="mut"><span class="spinner" aria-hidden="true"></span>'+esc(t('Loading...'))+'</span><details><summary>'+esc(t('Show hardware'))+'</summary><div id="hwlist"></div></details></td></tr>';
       var okDone=false; function okRow(){ okDone=true; if(okRows.length){ h+='<tr><td><span class="st OK">'+esc(t('OK'))+'</span></td><td><b>'+esc(t('System check'))+'</b>: '+esc(t('{0} checks passed', okRows.length))+'<details><summary>'+esc(t('Show the checks'))+'</summary><table>'; okRows.forEach(function(x){ h+='<tr><td><span class="st OK">'+esc(t('OK'))+'</span></td><td>'+esc(x.Check)+'</td><td class="mut">'+esc(x.Detail)+'</td></tr>'; }); h+='</table></details></td></tr>'; } }
       G.forEach(function(g){ if(!okDone&&g.sec>=2) okRow();
         h+='<tr><td><span class="st '+g.st+'">'+esc(LAB[g.st])+'</span></td><td><b>'+esc(g.name)+'</b>'+(g.detail?': '+esc(g.detail):'')+(g.todo?'<br><span class="mut">'+esc(g.todo)+'</span>':'')+g.extra+(g.btns?'<div class="row">'+g.btns+'</div>':'')+'</td></tr>'; });
@@ -549,18 +552,22 @@ function vStart(){
 /* ---------- tables ---------- */
 function drvOf(r){
   var l=S.data.drivers||[]; if(S._dmSrc!==l){ S._dmSrc=l; S._dm={}; l.forEach(function(x){ S._dm[String(x.Driver||'').toLowerCase()]=x; }); }
-  return (r&&r.DriverInf&&S._dm[String(r.DriverInf).toLowerCase()])||null;
+  if(!r) return null;
+  if(r.DriverInf&&S._dm[String(r.DriverInf).toLowerCase()]) return S._dm[String(r.DriverInf).toLowerCase()];
+  if(r.DriverVersion&&r.Present!=='NO'){ for(var i=0;i<l.length;i++){ var x=l[i]; if(x.Version===r.DriverVersion&&x.Class===r.Class&&(!r.DriverDate||x.Date===r.DriverDate||!x.Date)) return x; } }
+  return null;
 }
 // the Driver and Version cells of a device: driver name (inf) bold + oemNN.inf under it, version with the date under it (like the Drivers table)
 function devDrvCell(r){
   var d=drvOf(r), nm=r.FriendlyName||r.Class||'';
-  if(!r.DriverInf) return '<b>'+esc(nm)+'</b>';
-  return '<b>'+esc((d&&d.InfName)||r.DriverInf)+'</b><br><code>'+esc(r.DriverInf)+'</code>';
+  if(!r.DriverInf&&!d) return '<b>'+esc(nm)+'</b>';
+  return '<b>'+esc((d&&d.InfName)||r.DriverInf)+'</b><br><code>'+esc(r.DriverInf||(d&&d.Driver)||'')+'</code>';
 }
 function devVerCell(r){
   var d=drvOf(r), v=r.DriverVersion||(d&&d.Version)||'', dt=r.DriverDate||(d&&d.Date)||'';
   return esc(v)+(dt?'<br><span class="mut">'+esc(dt)+'</span>':'');
 }
+function spin(){ return '<p class="mut spinrow" role="status"><span class="spinner" aria-hidden="true"></span>'+esc(t('Loading...'))+'</p>'; }
 function identTop(r){
   var o='';
   if(r.InfDescription) o+='<div>'+esc(r.InfDescription)+'</div>';
@@ -583,7 +590,7 @@ var TAB = {
   devices:{ title:'Devices', key:'InstanceId', values:['KEEP','REMOVE'], onlyLabel:'Show only ghosts (not connected)', onlyFn:function(r){return r.Present==='NO';},
     note:'A ghost device is the leftover entry of a device that is no longer connected. Removing it is safe: if you plug it in again Windows installs it again.',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Manufacturer)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Driver',devDrvCell],['Version',devVerCell],['Risk',function(r){return devRisk(r);}],['Action','act','rt']],
-    desc:function(r){ return ((r.What||r.KbId)?'<div><b>'+esc(r.What)+'</b></div>':(r.Present==='NO'?'':'<div>'+bd('y',t('unknown'))+'</div>'))+(r._nodev?'':'<div class="mut">'+(r.DriverInf?esc(t('Device'))+': '+esc(r.FriendlyName||r.Class)+' - ':'')+'<code>'+esc(r.InstanceId)+'</code></div>')+identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r,true); } },
+    desc:function(r){ return ((r.What||r.KbId)?'<div><b>'+esc(r.What)+'</b></div>':(r.Present==='NO'?'':'<div>'+bd('y',t('unknown'))+'</div>'))+(r._nodev?'':'<div class="mut">'+((r.DriverInf||drvOf(r))?esc(t('Device'))+': '+esc(r.FriendlyName||r.Class)+' - ':'')+'<code>'+esc(r.InstanceId)+'</code></div>')+identTop(r)+'<div>'+esc(r.Reason)+'</div>'+(r.Advice?'<div class="mut">'+esc(r.Advice)+'</div>':'')+ident(r,true); } },
   drivers:{ title:'Drivers in the driver store', key:'Driver', values:['KEEP','REMOVE','REMOVE+UNINSTALL'], onlyLabel:'Show only third-party drivers', onlyFn:function(r){return r.Origin==='Third-party';},
     note:'REMOVE takes the package out of the driver store (Windows refuses if it is in use). REMOVE+UNINSTALL also takes it off the devices that use it: use it only for components you do not need (for example uninstalled programs).',
     cols:[['Manufacturer',function(r){return '<b>'+esc(r.Provider)+'</b>';}],['Class',function(r){return '<b>'+esc(r.Class)+'</b>';}],['Driver',function(r){return '<b>'+esc(r.InfName)+'</b><br><code>'+esc(r.Driver)+'</code>';}],['Version',function(r){return esc(r.Version)+'<br><span class="mut">'+esc(r.Date)+'</span>'+(r.Versions==='OldVersion'?'<br>'+bd('y',t('old')):'');}],['Used by',function(r){return esc(t('{0} devices', r.UsedByPresent));}],['Risk',function(r){return riskCell(r);}],['Action','act','rt']],
@@ -700,6 +707,7 @@ function cmpBlock(f,c,chkRow){
 }
 function bestFor(g){ var l=g.filter(function(c){ return c.UpdateId&&c.NewerThanCurrent==='YES'&&(c.Note||'').indexOf('Different architecture')!==0; }); l.sort(function(x,y){ return String(y.Date).localeCompare(String(x.Date)); }); return l[0]||null; }
 function vUpdates(){
+  $('#main').innerHTML=spin();
   return Promise.all([load('check'),load('catalog'),loadState(),(S.pc?Promise.resolve(S.pc):api('/api/pc').then(function(x){ S.pc=x; }).catch(function(){}))]).then(function(){
     var chk=S.data.check||[], cat=S.data.catalog||[], consent=S.state.settings.catalogConsent; cat=cat.filter(function(c){ return !isExcl(c.Device); });
     var h='<h2>'+esc(t('Updates from the Microsoft catalog'))+'</h2><p class="mut">'+esc(t('One step: the tool finds which drivers are generic, old or missing and looks in the Microsoft catalog (it includes the Windows Update drivers) for packages that fit your PC. Then you choose what to install.'))+'</p>'+
@@ -877,16 +885,15 @@ function drawEx(){
   var l=(S.state.settings.exclusions||[]).filter(function(x){ return x; }), el=$('#exlist'); if(!el) return;
   if(!l.length){ el.innerHTML='<p class="mut">'+esc(t('Nothing is excluded.'))+'</p>'; return; }
   var devs=S.data.devices||[];
-  var h='<div class="wrap"><table class="sortable" data-tid="ex"><tr><th>'+esc(t('Manufacturer'))+'</th><th>'+esc(t('Class'))+'</th><th>'+esc(t('Driver'))+'</th><th>'+esc(t('Version'))+'</th><th data-ns class="rt nsh">'+esc(t('Action'))+'</th></tr>';
-  l.forEach(function(x,i){
+  var items=l.map(function(x,i){
     var re=null; try{ re=new RegExp(x,'i'); }catch(e){}
     var m=re?devs.filter(function(r){ return re.test(r.FriendlyName||'')||re.test(r.Manufacturer||'')||re.test(r.DriverInf||'')||re.test(r.DriverProvider||''); }):[], r0=m[0];
     var more=m.length>1?'<br><span class="mut">'+esc(t('and {0} more matching device(s)',m.length-1))+'</span>':'';
-    if(r0) h+='<tr><td><b>'+esc(r0.Manufacturer)+'</b></td><td><b>'+esc(r0.Class)+'</b></td><td>'+devDrvCell(r0)+(r0.DriverInf?'<br><span class="mut">'+esc(r0.FriendlyName||exShow(x))+'</span>':'')+more+'</td><td>'+devVerCell(r0)+'</td>';
-    else h+='<tr><td></td><td></td><td><b>'+esc(exShow(x))+'</b></td><td class="mut">'+esc(t('Not found in the inventory.'))+'</td>';
-    h+='<td class="rt"><button class="b small sec" data-exrm="'+i+'" type="button">'+esc(rmL())+'</button></td></tr>';
+    var btn='<button class="b small sec" data-exrm="'+i+'" type="button">'+esc(rmL())+'</button>';
+    if(!r0) return { cells:['','','<b>'+esc(exShow(x))+'</b>','<span class="mut">'+esc(t('Not found in the inventory.'))+'</span>',btn], desc:'' };
+    return { cells:['<b>'+esc(r0.Manufacturer)+'</b>','<b>'+esc(r0.Class)+'</b>',devDrvCell(r0)+more,devVerCell(r0),btn], desc:TAB.devices.desc(r0) };
   });
-  el.innerHTML=h+'</table></div>';
+  el.innerHTML=blkTable('ex',['Manufacturer','Class','Driver','Version','~Action'],items);
 }
 function saveEx(l){ return api('/api/settings',{exclusions:l}).then(function(){ return loadState(); }).then(function(){ drawEx(); }).catch(function(x){ notice(x.message,true); }); }
 function vManage(){
@@ -932,7 +939,7 @@ function blkTable(tid,heads,items,keep){
   h+='</tr>';
   list.forEach(function(it){
     h+='<tr class="main">'; it.cells.forEach(function(c,i){ h+='<td'+(i===it.cells.length-1?' class="rt"':'')+'>'+c+'</td>'; }); h+='</tr>';
-    h+='<tr class="dsc"><td colspan="'+heads.length+'">'+it.desc+'</td></tr>';
+    if(it.desc) h+='<tr class="dsc"><td colspan="'+heads.length+'">'+it.desc+'</td></tr>';
   });
   return h+'</table></div>';
 }

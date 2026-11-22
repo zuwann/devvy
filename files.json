@@ -1,5 +1,5 @@
 {
- "version": "0.10.121",
+ "version": "0.10.122",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "c474d5292752fba91d302fd51b1e2d897ed0b09cc01fa5f1b81cc7d28aae82a1",
+   "sha256": "719b19b8e89e9dacf0f6931f292d8876f2c7ba109fe4b0c425453967065ada30",
    "size": 12814
   },
   {
@@ -56,8 +56,8 @@
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
-   "sha256": "59f6b7ae6d7a0733d3d56c01419b71090c9a40584c337c5d876ebcf45a268005",
-   "size": 4870
+   "sha256": "8d196d01cd3f2911043f3eeeab239bdd8de177967115c1b80df17dd9e808ae9c",
+   "size": 5602
   },
   {
    "path": "scripts/02-inventory-drivers.ps1",
@@ -201,13 +201,13 @@
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "d3411237da31e72f9efb82db3776312824c12e0444c36f63ce7747f381f8ee8b",
-   "size": 152995
+   "sha256": "70bd58ce305ae68ea39c11da1a6158199fd0fa5990d8e5cd7a362e625da4db0d",
+   "size": 153004
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "9167ec3c4e7774317881c64b59e934e279d1022b07ca9511356f8ea7e2ebdc7f",
-   "size": 144600
+   "sha256": "822b90182acfc26b621993d2b7556fdff3c6e819a83445f6d9f96703ed1c6e33",
+   "size": 144614
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "7f5f439d696c8d1db27432bf99c9473c348fd3a83476773054e6281d00989e1f",
-   "size": 140017
+   "sha256": "c8090ff2b6e2e428aec5809c6b7c0826dee0c4707873d9aa6f8f71cb2098ba36",
+   "size": 140435
   }
  ]
 }

@@ -26,6 +26,7 @@ Write-Info ('  ' + (T 'Found: {0}' $devices.Count))
 Write-Ok (T 'Reading the associated drivers (this can take a minute)...')
 $map = Get-DeviceDriverMap
 
+$sigMap = $null
 $rows = foreach ($d in $devices) {
     $id = $d.InstanceId
     $m = $map[$id]
@@ -37,6 +38,20 @@ $rows = foreach ($d in $devices) {
         $dd   = Format-Date $m['DEVPKEY_Device_DriverDate']
         $last = Format-Date $m['DEVPKEY_Device_LastArrivalDate']
         if (-not $last) { $last = Format-Date $m['DEVPKEY_Device_InstallDate'] }
+    }
+    # a connected device with the driver name or date missing: ask Windows (Win32_PnPSignedDriver, read once)
+    if ($d.Present -and (-not $inf -or -not $dd -or -not $prov)) {
+        if ($null -eq $sigMap) {
+            $sigMap = @{}
+            try { foreach ($x in @(Get-CimInstance Win32_PnPSignedDriver -ErrorAction Stop)) { if ($x.DeviceID) { $sigMap["$($x.DeviceID)"] = $x } } } catch { }
+        }
+        $sg = $sigMap[$id]
+        if ($sg) {
+            if (-not $inf) { $inf = "$($sg.InfName)" }
+            if (-not $prov) { $prov = "$($sg.DriverProviderName)" }
+            if (-not $ver) { $ver = "$($sg.DriverVersion)" }
+            if (-not $dd) { $dd = Format-Date $sg.DriverDate }
+        }
     }
     $text = '{0} {1} {2}' -f $d.FriendlyName, $d.Manufacturer, $id
     $excluded = Test-Excluded $text $d.Class
