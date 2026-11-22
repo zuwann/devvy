@@ -1,5 +1,5 @@
 {
- "version": "0.10.129",
+ "version": "0.10.130",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "a08250d1b1919b9bf85386e341cd8570d7200b3c3d64c24c3eea895abfca9500",
+   "sha256": "704880d4f7694e0a7c866c2676ec012890033bddffd7d9cf30822960c1dc002e",
    "size": 12814
   },
   {
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "451ac4e3185c4db7e4ce77178d987c3f44984f52e8dbc99dbbb0c9f2d66afa52",
-   "size": 142125
+   "sha256": "464e13d6a46462e720b4a2ba366d065389a22d900f00122205fe01df4f470bc1",
+   "size": 142298
   }
  ]
 }
