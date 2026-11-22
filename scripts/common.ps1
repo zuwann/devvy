@@ -611,7 +611,9 @@ function Hide-WuDriverUpdates($Pkgs, [int]$Tries = 3, [int]$WaitSeconds = 20) {
             $list = @(Get-BlockedList | Where-Object { $_.Id -ine "WU:$uid" })
             $ent = [ordered]@{ Id = "WU:$uid"; Driver = "$($hit.Title)"; Inf = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = '' }
             foreach ($n in (Get-BlockExtraNames)) { if ($pk.PSObject.Properties[$n] -and "$($pk.$n)" -and -not $ent.Contains($n) -and $n -notin @('InfName', 'Provider', 'Driver', 'Date')) { $ent[$n] = "$($pk.$n)" } }
-            if ($pk.PSObject.Properties['InfName'] -and "$($pk.Date)") { $ent['DriverDate'] = "$($pk.Date)" }
+            $vd = ''; try { $vd = Format-Date $hit.DriverVerDate } catch { }
+            if ($vd) { $ent['DriverDate'] = $vd } elseif ($pk.PSObject.Properties['InfName'] -and "$($pk.Date)") { $ent['DriverDate'] = "$($pk.Date)" }
+            if (-not "$($ent['Version'])") { try { if ("$($hit.DriverVerVersion)") { $ent['Version'] = "$($hit.DriverVerVersion)" } } catch { } }
             $list += [pscustomobject]$ent
             Save-BlockedList $list
             $res[$key] = [pscustomobject]@{ Pkg = $pk; Hidden = $true; Title = "$($hit.Title)" }
@@ -741,8 +743,23 @@ function Test-BlockableId([string]$Id) {
 }
 # Completes an old blocked entry (made before the data was kept with it) for the page: class from the id / the Windows Update title,
 # version from the title, and what it is + advice from the knowledge base (same texts as the Drivers table)
+$script:WuInfoTried = $false
+$script:WuInfo = @{}
+# Date and version of the hidden Windows Update drivers (asked once to Windows Update, then kept in blocked-ids.json)
+function Get-WuHiddenInfo {
+    if ($script:WuInfoTried) { return $script:WuInfo }
+    $script:WuInfoTried = $true
+    try {
+        $sess = New-Object -ComObject Microsoft.Update.Session
+        $found = $sess.CreateUpdateSearcher().Search("IsHidden=1 and Type='Driver'")
+        foreach ($u in $found.Updates) { $script:WuInfo["$($u.Identity.UpdateID)".ToLower()] = @{ Date = (Format-Date $u.DriverVerDate); Version = "$($u.DriverVerVersion)" } }
+    } catch { }
+    return $script:WuInfo
+}
 function Get-BlockedForPage {
     $out = @()
+    $save = $false
+    $stored = @(Get-BlockedList)
     foreach ($b in @(Get-BlockedListReal)) {
         $h = [ordered]@{}
         foreach ($pp in $b.PSObject.Properties) { $h[$pp.Name] = $pp.Value }
@@ -752,6 +769,18 @@ function Get-BlockedForPage {
             elseif ($id -match '^WU:' -and "$($b.Driver)" -match '^.+? - (\w+) - ') { $h['Class'] = $Matches[1] }
         }
         if ($id -match '^WU:' -and -not "$($h['Version'])" -and "$($b.Driver)" -match ' - ([0-9][0-9.]+)\s*$') { $h['Version'] = $Matches[1] }
+        if ($id -match '^WU:(.+)$') {
+            $uid = $Matches[1].ToLower()
+            if (-not "$($h['DriverDate'])" -and "$($b.Driver)" -match '\b(\d{1,2})/(\d{1,2})/(\d{4})\b') { $h['DriverDate'] = ('{0}-{1:00}-{2:00}' -f $Matches[3], [int]$Matches[1], [int]$Matches[2]) }
+            if (-not "$($h['DriverDate'])") {
+                $wi = (Get-WuHiddenInfo)[$uid]
+                if ($wi) { $h['DriverDate'] = "$($wi.Date)"; if (-not "$($h['Version'])") { $h['Version'] = "$($wi.Version)" } }
+            }
+            if ("$($h['DriverDate'])") {
+                $e = @($stored | Where-Object { $_.Id -ieq $id })[0]
+                if ($e -and -not $e.PSObject.Properties['DriverDate']) { $e | Add-Member -NotePropertyName DriverDate -NotePropertyValue "$($h['DriverDate'])" -Force; if ("$($h['Version'])" -and -not $e.PSObject.Properties['Version']) { $e | Add-Member -NotePropertyName Version -NotePropertyValue "$($h['Version'])" -Force }; $save = $true }
+            }
+        }
         if (-not "$($h['What']) $($h['Advice'])".Trim()) {
             try {
                 $adv = Get-Advice ('{0} {1} {2}' -f $b.Inf, $b.Provider, $h['Class'])
@@ -760,6 +789,7 @@ function Get-BlockedForPage {
         }
         $out += [pscustomobject]$h
     }
+    if ($save) { try { Save-BlockedList $stored } catch { } }
     return @($out)
 }
 # Data of the device/driver kept with a blocked entry, so Device management can show the same summary as the Devices/Drivers tables
