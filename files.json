@@ -1,5 +1,5 @@
 {
- "version": "0.10.115",
+ "version": "0.10.116",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "be95026ebe6c88af111d919986b41170eceea4ebf0b9436eae60a168eb8b4e5b",
+   "sha256": "0a55ea568b80a33dfa3e716b8516c780f2b9390087c377751b8072ef584777ae",
    "size": 12814
   },
   {
@@ -116,13 +116,13 @@
   },
   {
    "path": "scripts/22-remove-devices.ps1",
-   "sha256": "cf9f8e333a07a91b20494a3af8f1ed813bc461e57b218364dc565f86c13dd098",
-   "size": 3177
+   "sha256": "44f1fce9d0392d0de472383a626db44d753a1d3eccaa912f1983ceb14dfea2e8",
+   "size": 3180
   },
   {
    "path": "scripts/23-remove-drivers.ps1",
-   "sha256": "8f094515cf33620418155022b45e6b81e566608a30d07097cb270a32c1e4a340",
-   "size": 5429
+   "sha256": "cc50816d2efe8f2b32e31c6a6392eb9feb705da5934f5c2cf9650cfd2d79b3a8",
+   "size": 5432
   },
   {
    "path": "scripts/24-update-drivers.ps1",
@@ -171,8 +171,8 @@
   },
   {
    "path": "scripts/common.ps1",
-   "sha256": "8ea70d17433bdaa33bd4e438203a4629658afe6390b88d43cc046ccb6b8a5292",
-   "size": 81295
+   "sha256": "bba366f38a86cf3d8b86f40a3adc0ac6a5907eed8d2ef2f63b042344bcc70b94",
+   "size": 82498
   },
   {
    "path": "scripts/devvy-cli.ps1",
@@ -191,23 +191,23 @@
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "7165cd5040f2a031525eaa7addd63aba91d60c685382e3c2d0dd7d960e5098b2",
-   "size": 150264
+   "sha256": "3ab7d4cfbb7591939ca08e9587b8bd23469382062efc25c195be142e5f3cf092",
+   "size": 150880
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "e09824845ef71fa32049e310f089eaa80b78c1bd0ff033624c2cbdf3d4c3809d",
-   "size": 149076
+   "sha256": "9cf7564325599ddc6590f4bfd182ad8c2a352e528eb5b74869cdc750a4cb8b6f",
+   "size": 149696
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "586b851ba26ea97ea36bf6114d48db8d8321ad065bab13a749d84b4a30dcfee9",
-   "size": 152392
+   "sha256": "d3411237da31e72f9efb82db3776312824c12e0444c36f63ce7747f381f8ee8b",
+   "size": 152995
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "9c8e77a13f1f7aca1b554e42ba806975ea3386823b78ce4b3195b48bcb10d2a7",
-   "size": 144002
+   "sha256": "9167ec3c4e7774317881c64b59e934e279d1022b07ca9511356f8ea7e2ebdc7f",
+   "size": 144600
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "ba3e4672f72a170c73e0695253fdd3cd9bf8437e05678df6fae563aab4d75336",
-   "size": 133723
+   "sha256": "a002bb8dbb7f8415bff14c805594e9327651c41acc77487b73f88bba6bc0a79f",
+   "size": 137434
   }
  ]
 }

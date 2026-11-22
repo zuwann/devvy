@@ -523,7 +523,7 @@ function Get-BlockedListReal {
     # Ids Devvy blocked that Windows no longer has (policy refresh, other tool): they are applied again, so the block really works
     $lost = @($list | Where-Object { "$($_.Id)" -notmatch '^WU:' -and -not $reg.ContainsKey("$($_.Id)".ToUpper()) })
     if ($lost.Count -gt 0) {
-        try { foreach ($l in $lost) { $null = Add-BlockedId "$($l.Id)" "$($l.Driver)" "$($l.Inf)" "$($l.Provider)" } } catch { }
+        try { foreach ($l in $lost) { $null = Add-BlockedId "$($l.Id)" "$($l.Driver)" "$($l.Inf)" "$($l.Provider)" $l } } catch { }
         $reg = & $read
         $list = @(Get-BlockedList)
     }
@@ -540,12 +540,18 @@ function Get-BlockedListReal {
 # Extension drivers removed by Devvy are remembered in data\wu-hide.json until a matching Windows Update driver has been hidden.
 # Pending list of Windows Update hides. PowerShell 5.1 quirk: ConvertFrom-Json returns a JSON array as ONE object, and writing it back nests it
 # ("value"/"Count"): so the list is always rebuilt from plain objects with an InfName, and a nested/corrupted file is flattened (0.10.115).
+$script:WuKeep = @('InfName', 'Provider', 'Class', 'Version', 'Date', 'Removed', 'Driver', 'What', 'Category', 'KbId', 'InfDescription', 'InfPath', 'Reason', 'Advice', 'HardwareIds')
+function ConvertTo-WuEntry($i) {
+    $h = [ordered]@{}
+    foreach ($n in $script:WuKeep) { $v = ''; if ($i.PSObject.Properties[$n]) { $v = "$($i.$n)" }; $h[$n] = $v }
+    return [pscustomobject]$h
+}
 function ConvertTo-WuFlat($X) {
     $o = @()
     foreach ($i in @($X)) {
         if ($null -eq $i) { continue }
         if ($i -is [string]) { continue }
-        if ($i.PSObject.Properties['InfName'] -and "$($i.InfName)") { $o += [pscustomobject]@{ InfName = "$($i.InfName)"; Provider = "$($i.Provider)"; Class = "$($i.Class)"; Version = "$($i.Version)"; Date = "$($i.Date)"; Removed = "$($i.Removed)" } }
+        if ($i.PSObject.Properties['InfName'] -and "$($i.InfName)") { $o += ConvertTo-WuEntry $i }
         elseif ($i.PSObject.Properties['value']) { $o += @(ConvertTo-WuFlat $i.value) }
         elseif ($i -is [System.Collections.IEnumerable]) { foreach ($j in $i) { $o += @(ConvertTo-WuFlat $j) } }
     }
@@ -562,7 +568,9 @@ function Add-WuHidePending($Pkgs) {
     $l = @(Get-WuHideList)
     foreach ($pk in $Pkgs) {
         if ($l | Where-Object { "$($_.InfName)" -ieq "$($pk.InfName)" -and "$($_.Version)" -eq "$($pk.Version)" }) { continue }
-        $l += [pscustomobject]@{ InfName = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Class = "$($pk.Class)"; Version = "$($pk.Version)"; Date = "$($pk.Date)"; Removed = (Get-Date -Format 'yyyy-MM-dd') }
+        $e = ConvertTo-WuEntry $pk
+        $e.Removed = (Get-Date -Format 'yyyy-MM-dd')
+        $l += $e
     }
     Save-WuHideList $l
 }
@@ -601,7 +609,9 @@ function Hide-WuDriverUpdates($Pkgs, [int]$Tries = 3, [int]$WaitSeconds = 20) {
             $hit.IsHidden = $true
             $uid = "$($hit.Identity.UpdateID)"
             $list = @(Get-BlockedList | Where-Object { $_.Id -ine "WU:$uid" })
-            $list += [pscustomobject]@{ Id = "WU:$uid"; Driver = "$($hit.Title)"; Inf = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = '' }
+            $ent = [ordered]@{ Id = "WU:$uid"; Driver = "$($hit.Title)"; Inf = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = '' }
+            foreach ($n in (Get-BlockExtraNames)) { if ($pk.PSObject.Properties[$n] -and "$($pk.$n)" -and -not $ent.Contains($n) -and $n -notin @('InfName', 'Provider', 'Driver', 'Date')) { $ent[$n] = "$($pk.$n)" } }
+            $list += [pscustomobject]$ent
             Save-BlockedList $list
             $res[$key] = [pscustomobject]@{ Pkg = $pk; Hidden = $true; Title = "$($hit.Title)" }
         }
@@ -728,8 +738,15 @@ function Remove-RelatedGhosts([string]$InfName) {
 function Test-BlockableId([string]$Id) {
     return [bool]($Id -match '^(SWC\\[A-Za-z0-9_.&-]+$|USB\\VID_[0-9A-F]{4}&PID_[0-9A-F]{4}|PCI\\VEN_[0-9A-F]{4}&DEV_[0-9A-F]{4}|BTHENUM\\|BTH\\|HID\\VID_|ROOT\\|SWD\\|ACPI\\)')
 }
+# Data of the device/driver kept with a blocked entry, so Device management can show the same summary as the Devices/Drivers tables
+function Get-BlockExtraNames { return @('Class', 'Version', 'Manufacturer', 'FriendlyName', 'What', 'InfDescription', 'InfPath', 'Reason', 'Advice', 'HardwareIds', 'InstanceId') }
+function Get-BlockExtra($R) {
+    $h = @{}
+    if ($R) { foreach ($n in (Get-BlockExtraNames)) { if ($R.PSObject.Properties[$n] -and "$($R.$n)") { $h[$n] = "$($R.$n)" } } }
+    return $h
+}
 function Add-BlockedId {
-    param([string]$Id, [string]$Driver, [string]$Inf, [string]$Provider)
+    param([string]$Id, [string]$Driver, [string]$Inf, [string]$Provider, $Row = $null)
     $sub = Join-Path $script:DenyKey 'DenyDeviceIDs'
     if (-not (Test-Path $sub)) { New-Item -Path $sub -Force | Out-Null }
     $have = Get-ItemProperty -Path $sub -ErrorAction SilentlyContinue
@@ -743,8 +760,12 @@ function Add-BlockedId {
         Set-ItemProperty -Path $script:DenyKey -Name 'DenyDeviceIDsRetroactive' -Value 0 -Type DWord
     }
     # the list file is always brought up to date, also when Windows already had the id (file lost or older version)
+    $oldE = @(Get-BlockedList | Where-Object { $_.Id -ieq $Id })[0]
     $list = @(Get-BlockedList | Where-Object { $_.Id -ine $Id })
-    $list += [pscustomobject]@{ Id = $Id; Driver = $Driver; Inf = $Inf; Provider = $Provider; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = $(if ($null -ne $already) { "$already" } else { "$i" }) }
+    $ent = [ordered]@{ Id = $Id; Driver = $Driver; Inf = $Inf; Provider = $Provider; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = $(if ($null -ne $already) { "$already" } else { "$i" }) }
+    foreach ($n in (Get-BlockExtraNames)) { if ($oldE -and $oldE.PSObject.Properties[$n] -and "$($oldE.$n)") { $ent[$n] = "$($oldE.$n)" } }
+    $x = Get-BlockExtra $Row; foreach ($k in $x.Keys) { $ent[$k] = $x[$k] }
+    $list += [pscustomobject]$ent
     Save-BlockedList $list
     if ($null -ne $already) { return 'exists' }
     return 'added'

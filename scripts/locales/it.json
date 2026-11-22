@@ -1316,5 +1316,10 @@
   "Waiting to be hidden: {0}": "In attesa di essere nascosti: {0}",
   "Windows Update is not offering them now: Devvy tries again next time.": "Windows Update non li offre adesso: Devvy riprova la prossima volta.",
   "Saving the data about returning drivers...": "Salvo i dati sui driver che tornano...",
-  "Saved: {0}": "Salvato: {0}"
+  "Saved: {0}": "Salvato: {0}",
+  "Excluded from Windows Update": "Esclusi da Windows Update",
+  "Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.": "Aggiornamenti driver nascosti in Windows Update, cosi Windows non li reinstalla. Rimuovine uno per far offrire di nuovo l'aggiornamento a Windows Update.",
+  "No driver is excluded from Windows Update.": "Nessun driver e escluso da Windows Update.",
+  "Remove exclusion": "Rimuovi esclusione",
+  "Let Windows Update offer this driver again?": "Far offrire di nuovo questo driver a Windows Update?"
 }

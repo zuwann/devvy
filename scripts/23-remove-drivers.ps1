@@ -56,7 +56,7 @@ foreach ($r in $todo) {
                 $ids = @(@("$($r.HardwareIds)" -split '\s*\|\s*') + $swcIds | Where-Object { $_ -and (Test-BlockableId $_) } | Select-Object -Unique)
                 if ($ids.Count -eq 0) { if ("$($r.Class)" -eq 'Extension') { $toHide += $r } else { Add-Outcome $label $drv (T 'No device ID to block: Windows may install it again') 'warn' } }
                 foreach ($id in $ids) {
-                    try { $res = Add-BlockedId $id $drv $r.InfName $r.Provider; Add-Outcome $label $id (T 'Windows is stopped from installing this device again (undo it in Device management)') 'ok' }
+                    try { $res = Add-BlockedId $id $drv $r.InfName $r.Provider $r; Add-Outcome $label $id (T 'Windows is stopped from installing this device again (undo it in Device management)') 'ok' }
                     catch { Add-Outcome $label $id ((T 'Could not block:') + ' ' + $_.Exception.Message) 'err' }
                 }
             }
