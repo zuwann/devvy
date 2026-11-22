@@ -611,6 +611,7 @@ function Hide-WuDriverUpdates($Pkgs, [int]$Tries = 3, [int]$WaitSeconds = 20) {
             $list = @(Get-BlockedList | Where-Object { $_.Id -ine "WU:$uid" })
             $ent = [ordered]@{ Id = "WU:$uid"; Driver = "$($hit.Title)"; Inf = "$($pk.InfName)"; Provider = "$($pk.Provider)"; Date = (Get-Date -Format 'yyyy-MM-dd'); RegName = '' }
             foreach ($n in (Get-BlockExtraNames)) { if ($pk.PSObject.Properties[$n] -and "$($pk.$n)" -and -not $ent.Contains($n) -and $n -notin @('InfName', 'Provider', 'Driver', 'Date')) { $ent[$n] = "$($pk.$n)" } }
+            if ($pk.PSObject.Properties['InfName'] -and "$($pk.Date)") { $ent['DriverDate'] = "$($pk.Date)" }
             $list += [pscustomobject]$ent
             Save-BlockedList $list
             $res[$key] = [pscustomobject]@{ Pkg = $pk; Hidden = $true; Title = "$($hit.Title)" }
@@ -762,10 +763,12 @@ function Get-BlockedForPage {
     return @($out)
 }
 # Data of the device/driver kept with a blocked entry, so Device management can show the same summary as the Devices/Drivers tables
-function Get-BlockExtraNames { return @('Class', 'Version', 'Manufacturer', 'FriendlyName', 'What', 'InfDescription', 'InfPath', 'Reason', 'Advice', 'HardwareIds', 'InstanceId') }
+function Get-BlockExtraNames { return @('Class', 'Version', 'Manufacturer', 'FriendlyName', 'What', 'InfDescription', 'InfPath', 'Reason', 'Advice', 'HardwareIds', 'InstanceId', 'DriverDate') }
 function Get-BlockExtra($R) {
     $h = @{}
     if ($R) { foreach ($n in (Get-BlockExtraNames)) { if ($R.PSObject.Properties[$n] -and "$($R.$n)") { $h[$n] = "$($R.$n)" } } }
+    # a driver row of the inventory: its Date is the date of the driver (a blocked entry has Inf, not InfName, and its Date is the day of the block)
+    if ($R -and $R.PSObject.Properties['InfName'] -and $R.PSObject.Properties['Date'] -and "$($R.Date)") { $h['DriverDate'] = "$($R.Date)" }
     return $h
 }
 function Add-BlockedId {
