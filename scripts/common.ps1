@@ -538,8 +538,26 @@ function Get-BlockedListReal {
 # Windows Update delivers removed extension drivers again. The supported way to stop it is to hide the driver update.
 # Hidden updates are kept in the same list as the blocked devices (id "WU:<update id>") so they can be undone in Device management.
 # Extension drivers removed by Devvy are remembered in data\wu-hide.json until a matching Windows Update driver has been hidden.
-function Get-WuHideList { $f = Join-Path $script:DataRoot 'wu-hide.json'; if (Test-Path $f) { try { return @(Get-Content $f -Raw | ConvertFrom-Json) } catch { } }; return @() }
-function Save-WuHideList($L) { $f = Join-Path $script:DataRoot 'wu-hide.json'; ConvertTo-Json -InputObject @($L) -Depth 3 | Set-Content -Path $f -Encoding UTF8 }
+# Pending list of Windows Update hides. PowerShell 5.1 quirk: ConvertFrom-Json returns a JSON array as ONE object, and writing it back nests it
+# ("value"/"Count"): so the list is always rebuilt from plain objects with an InfName, and a nested/corrupted file is flattened (0.10.115).
+function ConvertTo-WuFlat($X) {
+    $o = @()
+    foreach ($i in @($X)) {
+        if ($null -eq $i) { continue }
+        if ($i -is [string]) { continue }
+        if ($i.PSObject.Properties['InfName'] -and "$($i.InfName)") { $o += [pscustomobject]@{ InfName = "$($i.InfName)"; Provider = "$($i.Provider)"; Class = "$($i.Class)"; Version = "$($i.Version)"; Date = "$($i.Date)"; Removed = "$($i.Removed)" } }
+        elseif ($i.PSObject.Properties['value']) { $o += @(ConvertTo-WuFlat $i.value) }
+        elseif ($i -is [System.Collections.IEnumerable]) { foreach ($j in $i) { $o += @(ConvertTo-WuFlat $j) } }
+    }
+    return @($o)
+}
+function Get-WuHideList { $f = Join-Path $script:DataRoot 'wu-hide.json'; if (Test-Path $f) { try { $j = Get-Content $f -Raw | ConvertFrom-Json; return @(ConvertTo-WuFlat $j) } catch { } }; return @() }
+function Save-WuHideList($L) {
+    $f = Join-Path $script:DataRoot 'wu-hide.json'
+    $parts = @(ConvertTo-WuFlat $L | ForEach-Object { ConvertTo-Json -InputObject $_ -Depth 3 })
+    $txt = '[' + ($parts -join ',') + ']'
+    Set-Content -Path $f -Value $txt -Encoding UTF8
+}
 function Add-WuHidePending($Pkgs) {
     $l = @(Get-WuHideList)
     foreach ($pk in $Pkgs) {
@@ -635,7 +653,9 @@ function Save-ReturnDiag {
             [pscustomobject][ordered]@{ Inf = $f.Name; Provider = $prov; Class = $cls; DriverVer = $ver; Installed = (Format-Date $f.CreationTime); PendingHide = [bool]($pend | Where-Object { "$($_.InfName)" -ieq $f.Name }) }
         }
         if (@($rows).Count -gt 0) { $null = Save-ReportCsv @($rows | Sort-Object Installed -Descending) 'oem-inf'; $out += 'oem-inf' }
-        $tr = foreach ($e in $pend) { foreach ($l in @(Get-SetupApiTrail "$($e.InfName)" 6)) { [pscustomobject][ordered]@{ Inf = "$($e.InfName)"; Removed = "$($e.Removed)"; Trail = "$l" } } }
+        $names = @($pend | ForEach-Object { "$($_.InfName)" })
+        foreach ($f in @(Get-ChildItem -Path $inf -Filter 'oem*.inf' -ErrorAction SilentlyContinue | Where-Object { $_.CreationTime -gt (Get-Date).AddDays(-14) })) { if ($names -notcontains $f.Name) { $names += $f.Name } }
+        $tr = foreach ($nm in $names) { foreach ($l in @(Get-SetupApiTrail $nm 6)) { [pscustomobject][ordered]@{ Inf = $nm; Trail = "$l" } } }
         if (@($tr).Count -gt 0) { $null = Save-ReportCsv @($tr) 'setupapi-trail'; $out += 'setupapi-trail' }
     } catch { }
     return @($out)
