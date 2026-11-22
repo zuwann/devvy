@@ -1321,5 +1321,6 @@
   "Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.": "Mises a jour de pilotes masquees dans Windows Update, pour que Windows ne les reinstalle pas. Retirez-en une pour que Windows Update la propose de nouveau.",
   "No driver is excluded from Windows Update.": "Aucun pilote n'est exclu de Windows Update.",
   "Remove exclusion": "Retirer l'exclusion",
-  "Let Windows Update offer this driver again?": "Laisser Windows Update proposer de nouveau ce pilote ?"
+  "Let Windows Update offer this driver again?": "Laisser Windows Update proposer de nouveau ce pilote ?",
+  "Show details": "Afficher les details"
 }

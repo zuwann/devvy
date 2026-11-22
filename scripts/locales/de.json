@@ -1321,5 +1321,6 @@
   "Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.": "In Windows Update ausgeblendete Treiberupdates, damit Windows sie nicht erneut installiert. Entfernen Sie eines, damit Windows Update es wieder anbietet.",
   "No driver is excluded from Windows Update.": "Kein Treiber ist von Windows Update ausgeschlossen.",
   "Remove exclusion": "Ausschluss entfernen",
-  "Let Windows Update offer this driver again?": "Soll Windows Update diesen Treiber wieder anbieten?"
+  "Let Windows Update offer this driver again?": "Soll Windows Update diesen Treiber wieder anbieten?",
+  "Show details": "Details anzeigen"
 }
