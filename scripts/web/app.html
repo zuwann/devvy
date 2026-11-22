@@ -147,13 +147,13 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.118</small></h1>
+  <h1>Devvy <small class="mut">0.10.119</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
+  <button class="b gear" id="bug" data-pop="problem" type="button" title="Report a problem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7V6a3 3 0 0 1 6 0v1"/><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v5M3 12h4M17 12h4M4 6l3 2M20 6l-3 2M4 19l3-2M20 19l-3-2"/></svg></button>
   <button class="b gear" id="upd" data-pop="update" type="button" title="Updates"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 0 1-15.5 6.2"/><path d="M3 12a9 9 0 0 1 15.5-6.2"/><path d="M19 2v4h-4"/><path d="M5 22v-4h4"/></svg><span id="updbadge" class="belln" style="display:none"></span></button>
   <button class="b gear" id="gear" data-pop="settings" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
-  <button class="b gear" id="bug" data-pop="problem" type="button" title="Report a problem"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7V6a3 3 0 0 1 6 0v1"/><rect x="7" y="7" width="10" height="13" rx="5"/><path d="M12 11v5M3 12h4M17 12h4M4 6l3 2M20 6l-3 2M4 19l3-2M20 19l-3-2"/></svg></button>
   <button class="b gear" id="help" data-pop="help" type="button" title="Help"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.6 2.2c-.7.4-1.1 1-1.1 1.8M12 17h.01"/></svg></button>
   <button class="b red" id="exit"></button>
 </header>
@@ -855,7 +855,7 @@ function askRestartAfterUpdate(){
 }
 function loadKb(){
   api('/api/kb').then(function(k){ var el=$('#kbbox'); if(!el) return; var cur=Math.max(k.shipped||0,k.downloaded||0);
-    el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p><div class="row"><button class="b sec" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'<hr style="border:0;border-top:1px solid var(--bd,#8884);margin:14px 0">'+kbShareInner('update')+'</div>'; }).catch(function(){});
+    el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p><div class="row"><button class="b sec" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'</div>'; }).catch(function(){});
 }
 function exShow(p){ return /^(?:[^\\.*+?^${}()|[\]]|\\.)*$/.test(p)?p.replace(/\\(.)/g,'$1'):p; }
 function drawEx(){
@@ -869,7 +869,7 @@ function drawEx(){
     var more=m.length>1?'<br><span class="mut">'+esc(t('and {0} more matching device(s)',m.length-1))+'</span>':'';
     if(r0) h+='<tr><td><b>'+esc(r0.Manufacturer)+'</b></td><td><b>'+esc(r0.Class)+'</b></td><td><b>'+esc(r0.DriverInf)+'</b><br><span class="mut">'+esc(r0.FriendlyName||exShow(x))+'</span>'+more+'<br><code>'+esc(r0.InstanceId)+'</code></td><td>'+esc(r0.DriverVersion)+'<br><span class="mut">'+esc(r0.DriverDate)+'</span></td>';
     else h+='<tr><td></td><td></td><td><b>'+esc(exShow(x))+'</b></td><td class="mut">'+esc(t('Not found in the inventory.'))+'</td>';
-    h+='<td class="rt"><button class="b small sec" data-exrm="'+i+'" type="button">'+esc(t('Remove from the list'))+'</button></td></tr>';
+    h+='<td class="rt"><button class="b small sec" data-exrm="'+i+'" type="button">'+esc(rmL())+'</button></td></tr>';
   });
   el.innerHTML=h+'</table></div>';
 }
