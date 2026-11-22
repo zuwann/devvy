@@ -53,6 +53,7 @@ function Show-Help {
     & $c 'Blocked List|Remove <id>' (T 'Device IDs Windows is stopped from reinstalling; Remove undoes the block.')
     & $c 'Settings Show|Set <name>=<value>' (T 'Shows or changes the settings (language, defender, backup, catalogConsent, ...).')
     & $c 'KbUpdate' (T 'Updates the knowledge base from GitHub.')
+    & $c 'WuHide' (T 'Hides in Windows Update the drivers removed by Devvy (tries again the ones not offered yet) and saves the data about returning drivers.')
     & $c 'PostCheck' (T 'Checks the PC after a restart (network, screen, devices with errors).')
     & $c 'Update' (T 'Checks for a newer Devvy. Add -Apply to install it.')
     & $c 'Profile -Export|-Import <file.json>' (T 'Saves or adds your exclusions, options and own table rows.')
@@ -536,6 +537,10 @@ switch -Regex ($Action) {
     }
     '^(?i)kbupdate$' {
         $null = Invoke-Step (T 'Knowledge base update') '28-update-knowledge.ps1' -Show
+        Write-Result $base $(if ($script:Errors.Count -gt 0) { 2 } else { 0 })
+    }
+    '^(?i)wuhide$' {
+        $null = Invoke-Step (T 'Windows Update: hide removed drivers') '31-wu-hide.ps1' -Show
         Write-Result $base $(if ($script:Errors.Count -gt 0) { 2 } else { 0 })
     }
     '^(?i)postcheck$' {

@@ -605,6 +605,41 @@ function Invoke-PendingWuHide {
     if ($l.Count -eq 0) { return @() }
     try { return @(Hide-WuDriverUpdates $l 1 0) } catch { return @() }
 }
+# Data to understand why drivers/devices come back: what Windows Update installed (history), the third-party driver packages now present, and the setupapi trail of the ones Devvy removed
+function Save-ReturnDiag {
+    $out = @()
+    try {
+        $sess = New-Object -ComObject Microsoft.Update.Session
+        $s = $sess.CreateUpdateSearcher()
+        $n = $s.GetTotalHistoryCount()
+        if ($n -gt 0) {
+            $take = [Math]::Min($n, 300)
+            $h = foreach ($e in $s.QueryHistory(0, $take)) {
+                $cat = ''; try { $cat = (@($e.Categories | ForEach-Object { $_.Name }) -join ';') } catch { }
+                if ($cat -match 'Driver' -or "$($e.Title)" -match 'Driver|driver') {
+                    [pscustomobject][ordered]@{ Date = (Format-Date $e.Date); Result = "$($e.ResultCode)"; Title = "$($e.Title)"; Categories = $cat }
+                }
+            }
+            if (@($h).Count -gt 0) { $null = Save-ReportCsv @($h) 'wu-history'; $out += 'wu-history' }
+        }
+    } catch { }
+    try {
+        $inf = Join-Path $env:windir 'INF'
+        $pend = @(Get-WuHideList)
+        $rows = foreach ($f in @(Get-ChildItem -Path $inf -Filter 'oem*.inf' -ErrorAction SilentlyContinue)) {
+            $t = Read-InfText $f.FullName
+            $prov = ''; $cls = ''; $ver = ''
+            if ($t -match '(?im)^\s*Provider\s*=\s*(.+)$') { $prov = $Matches[1].Trim() }
+            if ($t -match '(?im)^\s*Class\s*=\s*(\S+)') { $cls = $Matches[1].Trim() }
+            if ($t -match '(?im)^\s*DriverVer\s*=\s*(.+)$') { $ver = $Matches[1].Trim() }
+            [pscustomobject][ordered]@{ Inf = $f.Name; Provider = $prov; Class = $cls; DriverVer = $ver; Installed = (Format-Date $f.CreationTime); PendingHide = [bool]($pend | Where-Object { "$($_.InfName)" -ieq $f.Name }) }
+        }
+        if (@($rows).Count -gt 0) { $null = Save-ReportCsv @($rows | Sort-Object Installed -Descending) 'oem-inf'; $out += 'oem-inf' }
+        $tr = foreach ($e in $pend) { foreach ($l in @(Get-SetupApiTrail "$($e.InfName)" 6)) { [pscustomobject][ordered]@{ Inf = "$($e.InfName)"; Removed = "$($e.Removed)"; Trail = "$l" } } }
+        if (@($tr).Count -gt 0) { $null = Save-ReportCsv @($tr) 'setupapi-trail'; $out += 'setupapi-trail' }
+    } catch { }
+    return @($out)
+}
 function Show-WuDriverUpdate([string]$UpdateId) {
     $sess = New-Object -ComObject Microsoft.Update.Session
     $srch = $sess.CreateUpdateSearcher()

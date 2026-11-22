@@ -35,6 +35,7 @@ Everything the web page does can be done from a terminal, without opening the br
 | `Blocked List` / `Remove <id>` | IDs Windows is stopped from reinstalling; Remove undoes the block | Remove yes |
 | `Settings Show` / `Set <name>=<value>` | Shows or changes the settings: language, defender (ask/always/never), backup (ask/full/drivers/none), catalogConsent, postRebootCheck, updateCheck, inventoryAtStart, blockReinstall | Set yes |
 | `KbUpdate` | Updates the knowledge base from GitHub | Writes in data\kb |
+| `WuHide` | Hides in Windows Update the drivers removed by Devvy (retries the ones not offered yet) and saves `reports\wu-history.csv`, `oem-inf.csv`, `setupapi-trail.csv` | Yes (Windows Update) |
 | `PostCheck` | Check after a restart (network, screen, devices with errors) | No |
 | `Update` / `Update -Apply` | Checks for a newer Devvy; with -Apply it downloads it, checks the SHA-256 and installs it | -Apply yes |
 | `Profile -Export file.json` / `-Import file.json` | Saves or adds the profile (exclusions, options, own rows). Import only adds | Import yes |

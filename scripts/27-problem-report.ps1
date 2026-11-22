@@ -39,7 +39,9 @@ Write-Ok (T 'Copying the latest logs and results (with private data hidden)...')
 Write-Prog 2 5
 @(Get-ChildItem -Path $script:OutcomesDir -Filter '*.csv' -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 6) | ForEach-Object { Copy-Hidden $_.FullName (Join-Path $tmp 'results') }
 Write-Prog 3 5
-foreach ($n in @('selftest', 'devices', 'drivers', 'bluetooth', 'unknown', 'drivers-to-check', 'catalog', 'rollback', 'downloads')) { Copy-Hidden (Join-Path $script:ReportDir ($n + '.csv')) (Join-Path $tmp 'reports') }
+try { $null = Save-ReturnDiag } catch { }
+try { Copy-Hidden (Join-Path $script:DataRoot 'wu-hide.json') (Join-Path $tmp 'reports') } catch { }
+foreach ($n in @('selftest', 'devices', 'drivers', 'bluetooth', 'unknown', 'drivers-to-check', 'catalog', 'rollback', 'downloads', 'wu-history', 'oem-inf', 'setupapi-trail', 'wu-pending')) { Copy-Hidden (Join-Path $script:ReportDir ($n + '.csv')) (Join-Path $tmp 'reports') }
 
 $zip = Join-Path $script:ReportDir ('problem-report-' + (Get-Date -Format 'yyyyMMdd-HHmmss') + '.zip')
 try { Compress-Archive -Path (Join-Path $tmp '*') -DestinationPath $zip -Force -ErrorAction Stop }

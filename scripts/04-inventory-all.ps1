@@ -43,6 +43,7 @@ Write-Prog 2 3
 Show-Part $p2
 Show-Part $bt
 Write-Prog 3 3
+try { if (@(Get-WuHideList).Count -gt 0) { foreach ($x in @(Invoke-PendingWuHide)) { if ($x.Hidden) { Write-Ok ((T 'Windows Update will not offer this driver again (undo it in Device management)') + ': ' + $x.Title) } } } } catch { }
 try { Remove-Item -Path $tmp -Recurse -Force -ErrorAction SilentlyContinue } catch { }
 if ($fail -gt 0) { Write-Err (T 'Some parts of the inventory ended with an error: see the messages above.'); exit 1 }
 exit 0
