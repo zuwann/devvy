@@ -1322,5 +1322,6 @@
   "No driver is excluded from Windows Update.": "Kein Treiber ist von Windows Update ausgeschlossen.",
   "Remove exclusion": "Ausschluss entfernen",
   "Let Windows Update offer this driver again?": "Soll Windows Update diesen Treiber wieder anbieten?",
-  "Show details": "Details anzeigen"
+  "Show details": "Details anzeigen",
+  "Blocked on": "Gesperrt am"
 }
