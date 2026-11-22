@@ -71,6 +71,10 @@ $rows = foreach ($d in $devices) {
         } catch { }
     }
     if ($inf -and $inf -notmatch '^oem') { $ip = Join-Path (Join-Path $env:windir 'INF') $inf; if (Test-Path -LiteralPath $ip) { $infPath = $ip } }
+    # driver date still missing but the inf is known: it is the DriverVer line of the inf
+    if (-not $dd -and $infPath) {
+        try { if ((Get-Content -LiteralPath $infPath -TotalCount 400 -ErrorAction Stop | Out-String) -match '(?im)^\s*DriverVer\s*=\s*(\d{1,2})/(\d{1,2})/(\d{4})') { $dd = ('{0}-{1:00}-{2:00}' -f $Matches[3], [int]$Matches[1], [int]$Matches[2]) } } catch { }
+    }
     $text = '{0} {1} {2}' -f $d.FriendlyName, $d.Manufacturer, $id
     $excluded = Test-Excluded $text $d.Class
     $cat = Get-Category $id $d.Class $text
