@@ -613,6 +613,7 @@ function Hide-WuDriverUpdates($Pkgs, [int]$Tries = 3, [int]$WaitSeconds = 20) {
             foreach ($n in (Get-BlockExtraNames)) { if ($pk.PSObject.Properties[$n] -and "$($pk.$n)" -and -not $ent.Contains($n) -and $n -notin @('InfName', 'Provider', 'Driver', 'Date')) { $ent[$n] = "$($pk.$n)" } }
             $vd = ''; try { $vd = Format-Date $hit.DriverVerDate } catch { }
             if ($vd) { $ent['DriverDate'] = $vd } elseif ($pk.PSObject.Properties['InfName'] -and "$($pk.Date)") { $ent['DriverDate'] = "$($pk.Date)" }
+            try { if ("$($hit.DriverHardwareID)" -and -not $ent.Contains('HardwareIds')) { $ent['HardwareIds'] = "$($hit.DriverHardwareID)" } } catch { }
             if (-not "$($ent['Version'])") { try { if ("$($hit.DriverVerVersion)") { $ent['Version'] = "$($hit.DriverVerVersion)" } } catch { } }
             $list += [pscustomobject]$ent
             Save-BlockedList $list
@@ -752,7 +753,7 @@ function Get-WuHiddenInfo {
     try {
         $sess = New-Object -ComObject Microsoft.Update.Session
         $found = $sess.CreateUpdateSearcher().Search("IsHidden=1 and Type='Driver'")
-        foreach ($u in $found.Updates) { $script:WuInfo["$($u.Identity.UpdateID)".ToLower()] = @{ Date = (Format-Date $u.DriverVerDate); Version = "$($u.DriverVerVersion)" } }
+        foreach ($u in $found.Updates) { $script:WuInfo["$($u.Identity.UpdateID)".ToLower()] = @{ Date = (Format-Date $u.DriverVerDate); Version = "$($u.DriverVerVersion)"; Hw = "$($u.DriverHardwareID)" } }
     } catch { }
     return $script:WuInfo
 }
@@ -772,13 +773,19 @@ function Get-BlockedForPage {
         if ($id -match '^WU:(.+)$') {
             $uid = $Matches[1].ToLower()
             if (-not "$($h['DriverDate'])" -and "$($b.Driver)" -match '\b(\d{1,2})/(\d{1,2})/(\d{4})\b') { $h['DriverDate'] = ('{0}-{1:00}-{2:00}' -f $Matches[3], [int]$Matches[1], [int]$Matches[2]) }
-            if (-not "$($h['DriverDate'])") {
+            if (-not "$($h['DriverDate'])" -or -not "$($h['HardwareIds'])") {
                 $wi = (Get-WuHiddenInfo)[$uid]
-                if ($wi) { $h['DriverDate'] = "$($wi.Date)"; if (-not "$($h['Version'])") { $h['Version'] = "$($wi.Version)" } }
+                if ($wi) {
+                    if (-not "$($h['DriverDate'])") { $h['DriverDate'] = "$($wi.Date)" }
+                    if (-not "$($h['Version'])") { $h['Version'] = "$($wi.Version)" }
+                    if (-not "$($h['HardwareIds'])" -and "$($wi.Hw)") { $h['HardwareIds'] = "$($wi.Hw)" }
+                }
             }
-            if ("$($h['DriverDate'])") {
-                $e = @($stored | Where-Object { $_.Id -ieq $id })[0]
-                if ($e -and -not $e.PSObject.Properties['DriverDate']) { $e | Add-Member -NotePropertyName DriverDate -NotePropertyValue "$($h['DriverDate'])" -Force; if ("$($h['Version'])" -and -not $e.PSObject.Properties['Version']) { $e | Add-Member -NotePropertyName Version -NotePropertyValue "$($h['Version'])" -Force }; $save = $true }
+            $e = @($stored | Where-Object { $_.Id -ieq $id })[0]
+            if ($e) {
+                foreach ($k in @('DriverDate', 'Version', 'HardwareIds')) {
+                    if ("$($h[$k])" -and -not $e.PSObject.Properties[$k]) { $e | Add-Member -NotePropertyName $k -NotePropertyValue "$($h[$k])" -Force; $save = $true }
+                }
             }
         }
         if (-not "$($h['What']) $($h['Advice'])".Trim()) {

@@ -51,6 +51,7 @@ table{border-collapse:collapse;width:100%;margin:6px 0}
 th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
 th{color:var(--mut);font-size:.82rem;font-weight:600;position:sticky;top:0;background:var(--bg)}
 @keyframes spin{to{transform:rotate(360deg)}}
+.spinrow.c{display:flex;justify-content:center;align-items:center;padding:48px 0}
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--line);border-top-color:var(--acc);border-radius:50%;animation:spin .8s linear infinite;vertical-align:-3px;margin-right:8px}
 @media (prefers-reduced-motion:reduce){.spinner{animation-duration:2.4s}}
 tr.del td{background:rgba(180,35,24,.20)}
@@ -150,7 +151,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.128</small></h1>
+  <h1>Devvy <small class="mut">0.10.129</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -492,14 +493,15 @@ function openPop(kind){
   S.pop=kind; var pop=$('#pop'), body=$('#popbody');
   var g=$('#gear'); if(g) g.classList.toggle('on',kind==='settings');
   ['bug','help','upd'].forEach(function(id){ var e=$('#'+id); if(e) e.classList.toggle('on',(id==='bug'&&kind==='problem')||(id==='help'&&kind==='help')||(id==='upd'&&kind==='update')); });
-  if(kind==='help'){ $('#poptitle').textContent=t('What this program does'); body.innerHTML=spin(); vAbout(body); }
-  else if(kind==='problem'){ $('#poptitle').textContent=t('Report a problem'); body.innerHTML=spin(); api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){ S.prob=null; }).then(function(){ body.innerHTML=problemCard(); }); }
-  else if(kind==='update'){ $('#poptitle').textContent=t('Updates'); body.innerHTML='<div id="updbox"></div><div id="kbbox"></div>'; loadUpdate(); loadKb(); }
+  if(kind==='help'){ $('#poptitle').textContent=t('What this program does'); body.innerHTML=spin(1); vAbout(body); }
+  else if(kind==='problem'){ $('#poptitle').textContent=t('Report a problem'); body.innerHTML=spin(1); api('/api/problem').then(function(p){ S.prob=p; }).catch(function(){ S.prob=null; }).then(function(){ body.innerHTML=problemCard(); }); }
+  else if(kind==='update'){ $('#poptitle').textContent=t('Updates'); body.innerHTML='<div id="updbox">'+spin(1)+'</div><div id="kbbox"></div>'; loadUpdate(); loadKb(); }
   else if(kind==='settings'){
     $('#poptitle').textContent=t('Settings');
+    body.innerHTML=spin(1);
     loadState().then(function(){ body.innerHTML=settingsForm(false)+profRow(); });
   } else {
-    $('#poptitle').textContent=t('Notifications'); body.innerHTML=spin();
+    $('#poptitle').textContent=t('Notifications'); body.innerHTML=spin(1);
     glanceData().then(function(gd){ S.glance=gd; setBell(gd); body.innerHTML=notifHtml(gd); });
   }
   pop.style.display='flex';
@@ -574,11 +576,11 @@ function devMerge(r){
   ['What','KbId','InfDescription','InfPath','Advice','Category'].forEach(function(k){ if(!o[k]&&d[k]) o[k]=d[k]; });
   return o;
 }
-function spin(){ return '<p class="mut spinrow" role="status"><span class="spinner" aria-hidden="true"></span>'+esc(t('Loading...'))+'</p>'; }
+function spin(c){ return '<p class="mut spinrow'+(c?' c':'')+'" role="status"><span class="spinner" aria-hidden="true"></span>'+esc(t('Loading...'))+'</p>'; }
 // description of a blocked device: what it is, the driver it came from, when it was blocked; the reason, advice and web search under "Show details"
 function blkDesc(b,r){
   var rr=devMerge(r), what=b.What||rr.What||'', nm=what||r.FriendlyName||r.Class;
-  var meta=[]; if(b.Inf) meta.push(esc(t('Driver'))+': <code>'+esc(b.Inf)+'</code>'); if(b.Date) meta.push(esc(t('Blocked on'))+' '+esc(b.Date));
+  var meta=[];
   var rs=(b.Reason||rr.Reason||''), ad=(b.Advice||rr.Advice||'');
   return '<div><b>'+esc(nm)+'</b></div>'+(meta.length?'<div class="mut">'+meta.join(' &middot; ')+'</div>':'')+infFile(rr)+moreBox((what?'':'<div>'+bd('y',t('unknown'))+'</div>')+(rs?'<div>'+esc(rs)+'</div>':'')+(ad?'<div class="mut">'+esc(ad)+'</div>':'')+ident(r,true));
 }
@@ -972,10 +974,10 @@ function loadBlocked(){
     if(el){
       var dv=l.filter(function(b){ return !isWu(b); });
       if(!dv.length){ el.innerHTML='<p class="mut">'+esc(t('No device is blocked.'))+'</p>'; }
-      else el.innerHTML=blkTable('blk',['Manufacturer','Class','Device','Hardware ID','~Action'],dv.map(function(b){
+      else el.innerHTML=blkTable('blk',['Manufacturer','Class','Driver','Hardware ID','~Action'],dv.map(function(b){
         var id=String(b.Id).toUpperCase(), inv=blkFind(S.data.devices,function(r){ return String(r.HardwareIds||'').toUpperCase().indexOf(id)>=0||String(r.InstanceId||'').toUpperCase().indexOf(id)>=0; })||{};
         var r={Manufacturer:b.Manufacturer||b.Provider||inv.Manufacturer||'',Class:b.Class||inv.Class||'',FriendlyName:b.FriendlyName||inv.FriendlyName||(/^oem\d+\.inf$/i.test(String(b.Driver||''))?(b.What||b.Inf||b.Driver):b.Driver)||'',InstanceId:b.Id,HardwareIds:b.HardwareIds||b.Id,InfDescription:b.InfDescription||inv.InfDescription||'',InfPath:b.InfPath||inv.InfPath||'',Reason:b.Reason||inv.Reason||'',Advice:b.Advice||inv.Advice||'',_nodev:1};
-        return { cells:['<b>'+esc(r.Manufacturer)+'</b>','<b>'+esc(r.Class)+'</b>','<b>'+esc(r.FriendlyName||r.Class)+'</b>','<code>'+esc(b.Id)+'</code>','<button class="b sec small" data-unblock="'+esc(b.Id)+'" type="button">'+esc(t('Unblock'))+'</button>'], desc:blkDesc(b,r) };
+        return { cells:['<b>'+esc(r.Manufacturer)+'</b>','<b>'+esc(r.Class)+'</b>','<b>'+esc(b.Inf||(drvOf({DriverInf:b.Driver})&&drvOf({DriverInf:b.Driver}).InfName)||'')+'</b>','<code>'+esc(b.Id)+'</code>','<button class="b sec small" data-unblock="'+esc(b.Id)+'" type="button">'+esc(t('Unblock'))+'</button>'], desc:blkDesc(b,r) };
       }));
     }
     if(wu){
