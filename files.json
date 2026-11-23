@@ -1,13 +1,13 @@
 {
- "version": "0.10.138",
+ "version": "0.10.139",
  "deferred": [
   "devvy.bat"
  ],
  "files": [
   {
    "path": "COMMANDS.md",
-   "sha256": "4113b47ea6c13b1faae0edd5a4f5e2e52d85754d6744c01b6d91a198873f7094",
-   "size": 7732
+   "sha256": "08c481df266906cf0a85c233bd2e5b62a767c0322a887151d52130a1edebf705",
+   "size": 7827
   },
   {
    "path": "DISCLAIMER.txt",
@@ -21,8 +21,8 @@
   },
   {
    "path": "README.md",
-   "sha256": "fbf0ef0ebf1f431fef60f51685b6691d78dfae01be0b17dbf8fa42c81ae522ac",
-   "size": 13832
+   "sha256": "cd86cb5aeb1cbe18fbf4aa19c7f08034d626e9a8085da5891a68e5f3f57a1188",
+   "size": 14100
   },
   {
    "path": "devvy.bat",
@@ -51,8 +51,8 @@
   },
   {
    "path": "scripts/00-server.ps1",
-   "sha256": "08144fbb249f5a8c9ac56c155ac051bb55753b3f53edbaee572ec58c06ca236b",
-   "size": 56868
+   "sha256": "e98cc09efc9d727353bc72ce3ea8895ca48ab28754738369080642bb1064d73f",
+   "size": 56983
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
@@ -96,13 +96,13 @@
   },
   {
    "path": "scripts/08-catalog-search.ps1",
-   "sha256": "c0af66e95ae088f3f94145b47f49802f601a3d1ab367d1eb0039f453cf74deb7",
-   "size": 16366
+   "sha256": "76da57494c925fc1351cfdb9e8261c9b4462e3541f4dd19d16ac743f39651cfc",
+   "size": 16578
   },
   {
    "path": "scripts/10-install-from-catalog.ps1",
-   "sha256": "b86c6418baaff6350d3e8ff31f6c70c0adeea8342288943808ae6d41384bd5ba",
-   "size": 27000
+   "sha256": "ee29e39080d58658da8ae4e84f3169cb5fa016e54ff879fe9e52ebd407a3eb3c",
+   "size": 27228
   },
   {
    "path": "scripts/21-remove-bluetooth.ps1",
@@ -146,8 +146,8 @@
   },
   {
    "path": "scripts/28-update-knowledge.ps1",
-   "sha256": "ecdc7fb0b73df52ec1625225a5c7998e1d4de23c1152a6bf2e2bcac8afc76301",
-   "size": 4128
+   "sha256": "9dd2a7e1f50339bafcdaeabe62c702f9cc1801a5ac49adf1b00ff0470fddd654",
+   "size": 4340
   },
   {
    "path": "scripts/29-self-update.ps1",
@@ -171,8 +171,8 @@
   },
   {
    "path": "scripts/common.ps1",
-   "sha256": "dbf05c7418f1adf44448e0df94c210be581daf10a3f0ea154a31f08b07a504fb",
-   "size": 87537
+   "sha256": "0fa1bd02634ae19ad2bf02dae55178b63a2d65856093c8c8e7e85e98d113d693",
+   "size": 88370
   },
   {
    "path": "scripts/devvy-cli.ps1",
@@ -181,53 +181,53 @@
   },
   {
    "path": "scripts/kb-version.txt",
-   "sha256": "61ca14cd05d684197f202b6ef7f63537856e6a052250363a65d71d672b4ab688",
+   "sha256": "5f21c2ddfd1f341d92ec3783a72157c2d4c7adecdb75ba6ee9fa07f4cc67bf3d",
    "size": 11
   },
   {
    "path": "scripts/knowledge.csv",
-   "sha256": "a72efe0584510f7f0c7afb2fac4197898cd050c0542ba78a0d17a43c1ed0526c",
-   "size": 42071
+   "sha256": "2f6f6adaefbcbff674e86a0802de32f52c01e672e9b2fac18ec2bd4dd8287dd6",
+   "size": 49196
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "17234099020104af93ad02bca650a87dab6c8ba5b335f75ca426027d12c5774e",
-   "size": 155914
+   "sha256": "b130689596bf63f46d0a7a894af3a68fc7c61492dc01ae7a80ba622648ae2d83",
+   "size": 156654
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "b4daaa7a5037f700b82fd2839761d02319c3c624f7ab9f824e29d91c9d64124c",
-   "size": 154710
+   "sha256": "48168d5f9ded9321aa36b60348b514436de82f4ee2239d143cdab52f52a6b622",
+   "size": 155404
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "b77e358591e8a21c2254cba0359885c7ed8a50dedd2568370fe38f33d291918b",
-   "size": 158244
+   "sha256": "e60bae8b0e31203496118ae3754215a301e2326e5b343819cbb02e9e509d71bd",
+   "size": 158932
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "6f94ee0991ba00b266c48a07b4fd48b772afdc8bd9dc1e05ba43406813cb3234",
-   "size": 149548
+   "sha256": "ea6638b43a08838e23c6f8019c7f746d886f266ba410804691f18fdc3e1e0bdf",
+   "size": 150240
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
-   "sha256": "49b4d126ead44324750e8c3348808a9ce478ecaae47c3377264232d3785a7bd8",
-   "size": 35337
+   "sha256": "e6dc044571038541660a6cbc0edb191099adf3cac31801e12815a652042c7e2a",
+   "size": 40065
   },
   {
    "path": "scripts/locales/knowledge.es.csv",
-   "sha256": "4e2f4aca804b3b7355f9ccb681141a8dcde308a815fb418cb9f1875b757e96bb",
-   "size": 35521
+   "sha256": "cc6f70dcf38c6cacfe04dda69be98ad8ef3e78891e428d255aa958fed3a5a0d6",
+   "size": 40275
   },
   {
    "path": "scripts/locales/knowledge.fr.csv",
-   "sha256": "cdbda62ed1da1ae14f43184e5407f4345bf0761606f1793ef005393d508fdd3d",
-   "size": 37364
+   "sha256": "286264ef36b6c0df273c34cdc1871a8f9a8e59df92fc428695ef1216caeceeb2",
+   "size": 42337
   },
   {
    "path": "scripts/locales/knowledge.it.csv",
-   "sha256": "f77176bdbe6b4da556ffeef0522b126f3ec98850804c23edfcc8153195c9e602",
-   "size": 32736
+   "sha256": "e262b597971e82fbd7b034b367dd9530603cb31e2a0a1a7a1d8a8d8f7a871958",
+   "size": 37141
   },
   {
    "path": "scripts/restart.ps1",
@@ -236,8 +236,8 @@
   },
   {
    "path": "scripts/support-links.csv",
-   "sha256": "316fdadabcb6e33a45478d6aacd88a34c7216a1f0ce3d64ecca0d77998bf206b",
-   "size": 1753
+   "sha256": "3b51c099945fd40713ba40605591f44ac90c9cab9ccdff2e7410981aedfea521",
+   "size": 1911
   },
   {
    "path": "scripts/support-models.csv",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "7d7cfbfa9128eccca0a76d6d49ac94c71201b04a58bc2dc18dcea8af0cd023a1",
-   "size": 151562
+   "sha256": "098191cc0a13ffd601cd8479756232de6972324345a3d7f5a486a0cb17a86dc6",
+   "size": 153416
   }
  ]
 }

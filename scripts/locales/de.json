@@ -1347,5 +1347,9 @@
   "Knowledge base updated": "Wissensbasis aktualisiert",
   "Knowledge base not updated": "Wissensbasis nicht aktualisiert",
   "It is used from the next operation.": "Sie wird ab dem nächsten Vorgang verwendet.",
-  "Nothing was installed: the current knowledge base is unchanged. The details are in the log of the operation.": "Es wurde nichts installiert: Die aktuelle Wissensbasis ist unverändert. Details stehen im Protokoll des Vorgangs."
+  "Nothing was installed: the current knowledge base is unchanged. The details are in the log of the operation.": "Es wurde nichts installiert: Die aktuelle Wissensbasis ist unverändert. Details stehen im Protokoll des Vorgangs.",
+  "No internet connection": "Keine Internetverbindung",
+  "Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.": "Verbinden Sie den PC mit dem Netzwerk (WLAN oder Kabel), prüfen Sie, dass sich eine Webseite öffnet, und versuchen Sie es erneut.",
+  "This operation needs an internet connection and the PC does not seem to be connected. Nothing was changed.": "Dieser Vorgang braucht eine Internetverbindung, und der PC scheint nicht verbunden zu sein. Es wurde nichts verändert.",
+  "Web pages can only be opened with an internet connection, and the PC does not seem to be connected.": "Webseiten lassen sich nur mit einer Internetverbindung öffnen, und der PC scheint nicht verbunden zu sein."
 }

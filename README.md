@@ -10,7 +10,7 @@
 
 Devvy is a light and transparent tool to maintain, update and clean up drivers and devices on Windows. Unlike commercial "driver booster" tools it installs no service, bundles nothing and never forces updates you do not need. It starts a small local web server (only `127.0.0.1`) and runs plain PowerShell scripts (`.ps1`) that you can read, with a web page as the interface. When you close it, nothing stays running.
 
-> **Status: experimental beta (0.10.138).** Written and tested mostly on Linux with simulated Windows functions, then used on real PCs by the author. Use it at your own risk and read the [DISCLAIMER](DISCLAIMER.txt) and the Safety section.
+> **Status: experimental beta (0.10.139).** Written and tested mostly on Linux with simulated Windows functions, then used on real PCs by the author. Use it at your own risk and read the [DISCLAIMER](DISCLAIMER.txt) and the Safety section.
 
 ### Why it is different
 
@@ -46,7 +46,7 @@ Devvy is a light and transparent tool to maintain, update and clean up drivers a
 
    **Device management** has four tables, each with a `?` help icon: *Protected from Devvy* (devices Devvy never touches), *Updates hidden in Windows Update* (single driver updates Windows may not install; the device stays free), *Devices blocked from reinstalling* (Windows may not install the device with any driver) and *Drivers installed from the Microsoft catalog* (what Devvy installed, with signature and SHA-256). The Help window has a command list shown as a terminal.
 
-Requirements: Windows 10 2004 (build 19041) or later, Windows PowerShell 5.1 (included), administrator rights, internet for the driver search.
+Requirements: Windows 10 2004 (build 19041) or later, Windows PowerShell 5.1 (included), administrator rights, internet for the driver search, the catalog downloads, the knowledge-base update and the web pages of the makers (Devvy tells you if the PC is not connected).
 Languages: English, Italian, Spanish, German and French (`scripts/locales/*.json`). To add a language copy `it.json` and translate the values; the English text is the key.
 Settings, reports, logs and backups live in the `data` folder (or the folder you choose in Settings).
 
@@ -81,7 +81,7 @@ License: MIT. Author: zuwann.
 
 Devvy è uno strumento leggero e trasparente per la manutenzione, l'aggiornamento e la pulizia di driver e dispositivi su Windows. A differenza dei software commerciali tipo "driver booster" non installa servizi, non contiene software aggiuntivo e non forza aggiornamenti inutili. Avvia un piccolo server web locale (solo `127.0.0.1`) ed esegue semplici script PowerShell (`.ps1`) che puoi leggere, con una pagina web come interfaccia. Quando lo chiudi, non resta in esecuzione nulla.
 
-> **Stato: beta sperimentale (0.10.138).** Scritto e provato soprattutto su Linux con funzioni Windows simulate, poi usato su PC reali dall'autore. Usalo a tuo rischio e leggi il [DISCLAIMER](DISCLAIMER.txt) e la sezione Sicurezza.
+> **Stato: beta sperimentale (0.10.139).** Scritto e provato soprattutto su Linux con funzioni Windows simulate, poi usato su PC reali dall'autore. Usalo a tuo rischio e leggi il [DISCLAIMER](DISCLAIMER.txt) e la sezione Sicurezza.
 
 ### Perché è diverso
 
@@ -117,7 +117,7 @@ Devvy è uno strumento leggero e trasparente per la manutenzione, l'aggiornament
 
    **Gestione dispositivi** ha quattro tabelle, ognuna con l'icona di aiuto `?`: *Protetti da Devvy* (dispositivi che Devvy non tocca), *Aggiornamenti nascosti in Windows Update* (singoli aggiornamenti di driver che Windows non installa; il dispositivo resta libero), *Dispositivi bloccati dalla reinstallazione* (Windows non può installare il dispositivo con nessun driver) e *Driver installati dal catalogo Microsoft* (cosa ha installato Devvy, con firma e SHA-256). La finestra Aiuto mostra l'elenco dei comandi come in un terminale.
 
-Requisiti: Windows 10 2004 (build 19041) o successivo, Windows PowerShell 5.1 (incluso), diritti di amministratore, internet per la ricerca dei driver.
+Requisiti: Windows 10 2004 (build 19041) o successivo, Windows PowerShell 5.1 (incluso), diritti di amministratore, internet per la ricerca dei driver, i download dal catalogo, l'aggiornamento della base di conoscenza e le pagine web dei produttori (Devvy ti avvisa se il PC non è connesso).
 Lingue: inglese, italiano, spagnolo, tedesco e francese (`scripts/locales/*.json`). Per aggiungere una lingua copia `it.json` e traduci i valori; il testo inglese è la chiave.
 Impostazioni, report, log e backup stanno nella cartella `data` (o nella cartella scelta nelle Impostazioni).
 

@@ -465,6 +465,10 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         Send-Json $ctx @{ ok = $true }
         return
     }
+    if ($Path -eq '/api/online') {
+        Send-Json $ctx @{ online = [bool](Test-Internet) }
+        return
+    }
     if ($Path -eq '/api/kb/check') {
         $ki = Get-KbRemoteInfo
         Send-Json $ctx @{ ok = [bool]$ki.ok; error = "$($ki.error)"; current = "$($ki.current)"; latest = "$($ki.latest)"; needed = [bool]$ki.needed; date = "$($ki.date)" }

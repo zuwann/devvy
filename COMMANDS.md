@@ -69,7 +69,7 @@ Everything the web page does can be done from a terminal, without opening the br
 |---|---|
 | 0 | All fine / done |
 | 1 | Something found (Audit, Clean preview, Search with newer drivers, Install without -Apply, update available) |
-| 2 | Error (see the log) |
+| 2 | Error (see the log), also when Search, Install -Apply or KbUpdate find no internet connection (nothing is changed) |
 | 3 | Restart needed |
 | 4 | Not allowed (catalog switched off in the settings) |
 | 5 | Not administrator |

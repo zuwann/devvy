@@ -398,6 +398,18 @@ function Get-KbDownloadedVersion {
     if (-not (Test-Path -LiteralPath $f)) { return [int64]0 }
     try { return [int64]((Get-Content -LiteralPath $f -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json).version) } catch { return [int64]0 }
 }
+# True when the PC can reach the Internet (a tiny request to the Windows connectivity test page, 4 seconds at most).
+# Nothing personal is sent. Used before the operations that need the network, so the person is told instead of seeing errors.
+function Test-Internet {
+    try { if (-not [System.Net.NetworkInformation.NetworkInterface]::GetIsNetworkAvailable()) { return $false } } catch { }
+    foreach ($u in @('http://www.msftconnecttest.com/connecttest.txt', 'https://catalog.update.microsoft.com/')) {
+        try {
+            $rq = [System.Net.WebRequest]::Create($u); $rq.Timeout = 4000; $rq.Method = 'GET'; $rq.UserAgent = 'Devvy-net'
+            $rs = $rq.GetResponse(); $rs.Close(); return $true
+        } catch [System.Net.WebException] { if ($_.Exception.Response) { return $true } } catch { }
+    }
+    return $false
+}
 # Looks (read only, nothing is sent) at kb/manifest.json on GitHub and says if it is newer than the knowledge base in use.
 function Get-KbRemoteInfo {
     $r = @{ ok = $false; error = ''; current = 0; latest = 0; needed = $false; date = '' }

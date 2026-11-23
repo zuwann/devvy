@@ -1347,5 +1347,9 @@
   "Knowledge base updated": "Base de conocimiento actualizada",
   "Knowledge base not updated": "Base de conocimiento no actualizada",
   "It is used from the next operation.": "Se usa a partir de la próxima operación.",
-  "Nothing was installed: the current knowledge base is unchanged. The details are in the log of the operation.": "No se instaló nada: la base de conocimiento actual no ha cambiado. Los detalles están en el registro de la operación."
+  "Nothing was installed: the current knowledge base is unchanged. The details are in the log of the operation.": "No se instaló nada: la base de conocimiento actual no ha cambiado. Los detalles están en el registro de la operación.",
+  "No internet connection": "Sin conexión a Internet",
+  "Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.": "Conecta el PC a la red (Wi-Fi o cable), comprueba que se abre una página web y vuelve a intentarlo.",
+  "This operation needs an internet connection and the PC does not seem to be connected. Nothing was changed.": "Esta operación necesita una conexión a Internet y el PC no parece estar conectado. No se ha modificado nada.",
+  "Web pages can only be opened with an internet connection, and the PC does not seem to be connected.": "Las páginas web solo se pueden abrir con una conexión a Internet y el PC no parece estar conectado."
 }

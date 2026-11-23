@@ -7,6 +7,12 @@ param([int]$Max = 12, [switch]$SkipConfirm)
 Assert-Admin
 Start-Log 'catalog-search'
 Write-ReadOnlyBanner
+if (-not (Test-Internet)) {
+    Write-Err (T 'No internet connection')
+    Write-Todo @(T 'Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.')
+    Stop-Log
+    exit 2
+}
 
 $rows = @(Read-ReportCsv 'drivers-to-check')
 if ((Test-Path (Join-Path $script:ReportDir 'drivers-to-check.csv')) -and $rows.Count -eq 0) {

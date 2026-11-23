@@ -21,6 +21,14 @@ $sel = @()
 # In PowerShell 5.1 ConvertFrom-Json returns an array as ONE object: the pipeline splits it into the single items
 try { $sel = @((Get-Content -Path $selPath -Raw | ConvertFrom-Json) | ForEach-Object { $_ }) } catch { }
 if ($sel.Count -eq 0) { Write-Warn (T 'The selection is empty: nothing was downloaded or installed.'); Stop-Log; exit 0 }
+if ($Apply) {
+if (-not (Test-Internet)) {
+    Write-Err (T 'No internet connection')
+    Write-Todo @(T 'Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.')
+    Stop-Log
+    exit 2
+}
+}
 
 # Classes where a wrong driver can stop the PC from starting or turn the screen off: they need the explicit OK chosen in the page
 $riskClasses = @('Display', 'System', 'Firmware', 'SCSIAdapter', 'HDC', 'Processor', 'USB', 'Net')

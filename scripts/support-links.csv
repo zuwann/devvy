@@ -2,7 +2,7 @@ Match;Name;Url;Note;DeepUrl;Finder
 HP|Hewlett;HP Support Assistant (drivers and firmware of HP PCs);https://support.hp.com/us-en/help/hp-support-assistant;Official HP page;;https://support.hp.com/drivers/products
 Lenovo;Lenovo Vantage / Lenovo System Update;https://support.lenovo.com/solutions/ht003029;Official Lenovo page;https://pcsupport.lenovo.com/search?query={serial};
 Dell|Alienware;Dell SupportAssist / Dell Command Update;https://www.dell.com/support/home/;Official Dell page;https://www.dell.com/support/home/product-support/servicetag/{serial}/drivers;
-ASUSTeK|ASUS;MyASUS (drivers and updates of ASUS PCs);https://www.asus.com/support/;Official ASUS support page;;
+ASUSTeK|ASUS;MyASUS and ASUS Download Center (drivers and updates of ASUS PCs);https://www.asus.com/support/download-center/;Official ASUS page: choose to search by serial number, send the request and the product page opens;;https://www.asus.com/support/download-center/
 Micro-Star|MSI;MSI Center (drivers and updates of MSI PCs);https://www.msi.com/Landing/MSI-Center;Official MSI page;;
 Acer|Packard;Acer Care Center (drivers and updates of Acer PCs);https://www.acer.com/us-en/support/drivers-and-manuals;Official Acer page;;
 Gigabyte|AORUS;Gigabyte support and drivers;https://www.gigabyte.com/Support;Official Gigabyte page;;

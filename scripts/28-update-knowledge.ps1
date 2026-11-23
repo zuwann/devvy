@@ -4,6 +4,12 @@
 # Nothing is executed from the downloaded files: they are plain CSV data. The shipped files are never overwritten.
 . "$PSScriptRoot\common.ps1"
 Start-Log 'kb-update'
+if (-not (Test-Internet)) {
+    Write-Err (T 'No internet connection')
+    Write-Todo @(T 'Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.')
+    Stop-Log
+    exit 2
+}
 Write-Title (T 'UPDATING THE KNOWLEDGE BASE')
 Write-Prog 1 5
 $base = $script:KbUpdateBaseUrl

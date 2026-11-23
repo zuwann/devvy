@@ -1,5 +1,5 @@
 {
- "version": 2026112302,
+ "version": 2026112303,
  "date": "2026-11-23",
  "files": [
   {
@@ -24,7 +24,7 @@
   },
   {
    "name": "support-links.csv",
-   "sha256": "f9551c69109edc25500276b6df0aa0e39a3785ca85ccb5f49a9c522a89c38ae3"
+   "sha256": "3b51c099945fd40713ba40605591f44ac90c9cab9ccdff2e7410981aedfea521"
   },
   {
    "name": "support-models.csv",
