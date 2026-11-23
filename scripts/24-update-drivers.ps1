@@ -6,6 +6,12 @@ param([switch]$Apply)
 . "$PSScriptRoot\common.ps1"
 Assert-Admin
 Start-Log 'update-drivers'
+if (-not (Test-Internet)) {
+    Write-Err (T 'No internet connection')
+    Write-Todo @(T 'Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.')
+    Stop-Log
+    exit 2
+}
 Write-ModeBanner $Apply
 
 # ---------- A) Windows Update ----------

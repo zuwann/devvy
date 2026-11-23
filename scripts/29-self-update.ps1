@@ -4,6 +4,12 @@
 . "$PSScriptRoot\common.ps1"
 Assert-Admin
 Start-Log 'self-update'
+if (-not (Test-Internet)) {
+    Write-Err (T 'No internet connection')
+    Write-Todo @(T 'Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.')
+    Stop-Log
+    exit 2
+}
 Write-Title (T 'Updating Devvy')
 $root = Split-Path $PSScriptRoot
 Write-Prog 1 6

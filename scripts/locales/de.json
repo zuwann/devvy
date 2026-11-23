@@ -1351,5 +1351,6 @@
   "No internet connection": "Keine Internetverbindung",
   "Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.": "Verbinden Sie den PC mit dem Netzwerk (WLAN oder Kabel), prüfen Sie, dass sich eine Webseite öffnet, und versuchen Sie es erneut.",
   "This operation needs an internet connection and the PC does not seem to be connected. Nothing was changed.": "Dieser Vorgang braucht eine Internetverbindung, und der PC scheint nicht verbunden zu sein. Es wurde nichts verändert.",
-  "Web pages can only be opened with an internet connection, and the PC does not seem to be connected.": "Webseiten lassen sich nur mit einer Internetverbindung öffnen, und der PC scheint nicht verbunden zu sein."
+  "Web pages can only be opened with an internet connection, and the PC does not seem to be connected.": "Webseiten lassen sich nur mit einer Internetverbindung öffnen, und der PC scheint nicht verbunden zu sein.",
+  "Devvy needs an internet connection to look for updates and the PC does not seem to be connected.": "Devvy braucht eine Internetverbindung, um nach Updates zu suchen, und der PC scheint nicht verbunden zu sein."
 }

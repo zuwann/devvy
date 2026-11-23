@@ -23,6 +23,11 @@ Write-Host ('  ' + (T 'Present devices: {0}' $devs.Count))
 
 # ---------- Windows Update (read only) ----------
 $wu = @{}
+if (-not $SkipWindowsUpdate -and -not (Test-Internet)) {
+    Write-Warn (T 'No internet connection')
+    Write-Todo @(T 'Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.')
+    $SkipWindowsUpdate = $true
+}
 if (-not $SkipWindowsUpdate) {
     Write-Info (T 'Querying Windows Update (search only, it can take a minute)...')
     try {
