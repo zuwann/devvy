@@ -125,7 +125,18 @@ nav button.lock{opacity:.45}
 @keyframes cshrink{from{width:100%}to{width:0}}
 #cf{z-index:300}
 .cfd{width:min(520px,100%)}
-.cbody{padding:16px 18px;line-height:1.5}
+.cbody{padding:16px 18px;line-height:1.5;white-space:pre-line}
+.cbody .spinrow{white-space:normal}
+.hlp{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-left:8px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mut);font-size:.8rem;font-weight:700;cursor:pointer;vertical-align:middle;padding:0}
+.hlp:hover,.hlp:focus-visible{color:var(--fg);border-color:var(--fg)}
+.term{margin:12px 0 0;border-radius:8px;overflow:hidden;border:1px solid #3a3a3a;background:#0c0c0c;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.termbar{display:flex;align-items:center;gap:7px;padding:7px 10px;background:#2b2b2b;color:#d0d0d0;font:12px/1 'Segoe UI',system-ui,sans-serif}
+.termbar i{width:11px;height:11px;border-radius:50%;display:inline-block}
+.termbar span{margin-left:6px}
+.termbody{margin:0;padding:12px 14px;color:#cccccc;background:#0c0c0c;font:13px/1.45 Consolas,'Cascadia Mono','Courier New',monospace;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto}
+.termbody .pr{color:#e5e5e5}.termbody .cm{color:#f9f1a5}
+.termbody .cur{display:inline-block;width:8px;height:1em;background:#ccc;vertical-align:text-bottom;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
 .cfoot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding:12px 18px}
 #cfopts{flex-direction:column;flex-wrap:nowrap!important;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
 #cfopts .b{width:100%;white-space:normal;text-align:left;line-height:1.35;min-height:40px}
@@ -151,7 +162,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.135</small></h1>
+  <h1>Devvy <small class="mut">0.10.136</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -862,7 +873,7 @@ function vAbout(target){
     h+=card('What it reads (it changes nothing)',['The list of devices, including the ones not connected.','The drivers in the Windows driver store and which device uses each one.','The Bluetooth pairings.','The state of Microsoft Defender, and basic data of the PC (Windows, processor, memory, disk, graphics card).']);
     h+=card('What it changes (only when you press Apply and confirm)',['It removes the devices, Bluetooth pairings and drivers you chose in the tabs.','It installs the drivers you chose from the Microsoft catalog.','If you ask for it, before changing it makes a restore point and a copy of the drivers.','If you turn the option on, it tells Windows not to install again the drivers you removed (a Windows policy that you can undo in Settings).','It adds temporary exceptions to Microsoft Defender, which it removes when you exit.','If you restart Windows from the program, it creates a one-time scheduled task that starts the program at the next sign-in to check the PC, and deletes itself (you can turn it off in Settings).']);
     h+=card('From the command line',['Everything the page does can also be done from a terminal. Start it from an administrator prompt: devvy.bat /cli followed by the action (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). The questions of the page ([F]/[S]/[M], confirmations, backup) appear in the terminal.','Without -Apply nothing is changed: you only get a preview. For scheduled tasks and scripts there is -Output json and a clear exit code (0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator).','devvy.bat /gui opens this page, devvy.bat -h lists the commands.']);
-    h+='<div class="card"><details id="cmdbox"><summary>'+esc(t('Show the list of commands'))+'</summary><pre id="cmdtxt" class="mut" style="white-space:pre-wrap;margin:10px 0 0">'+esc(t('Loading...'))+'</pre></details>'+(A.guideUrl?'<p style="margin:12px 0 0"><a href="'+esc(A.guideUrl)+'" target="_blank" rel="noopener">'+esc(t('Open the full guide of the commands (GitHub)'))+'</a></p>':'')+'</div>';
+    h+='<div class="card"><h3>'+esc(t('Commands from the terminal'))+'</h3><details id="cmdbox"><summary>'+esc(t('Show the list of commands'))+'</summary><div class="term" aria-label="'+esc(t('Commands from the terminal'))+'"><div class="termbar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span>'+esc(t('Administrator: Command Prompt'))+'</span></div><pre class="termbody" id="cmdtxt"></pre></div></details>'+(A.guideUrl?'<p style="margin:12px 0 0"><a href="'+esc(A.guideUrl)+'" target="_blank" rel="noopener">'+esc(t('Open the full guide of the commands (GitHub)'))+'</a></p>':'')+'</div>';
     h+=card('What goes online',['Only when you press Search: the hardware codes of the devices (like VEN_xxxx&DEV_xxxx[&SUBSYS_xxxxxxxx]) go to catalog.update.microsoft.com, never names, serial numbers or PC data.','The drivers you choose are downloaded from Microsoft sites only.','Nothing else: no statistics, no telemetry, no accounts. Reports stay on this PC. If you share a report, you send it yourself.']);
     h+='<div class="card"><h3>'+esc(t('How the downloaded drivers are checked'))+'</h3><ul><li>'+esc(t('The SHA-256 fingerprint of each downloaded package is shown while it is installed and saved in the list below.'))+'</li><li>'+esc(t('The signature of the driver is checked: if it is missing or does not match, the package is refused and nothing is installed.'))+'</li><li>'+esc(t('A driver signed by Microsoft Windows Hardware Compatibility Publisher has passed the Microsoft certification (WHQL). Windows checks the signature again when it installs the driver.'))+'</li></ul>';
     h+='<p class="mut">'+esc(t('The list of the packages installed so far is in the Device management tab.'))+'</p>';
@@ -871,7 +882,8 @@ function vAbout(target){
     A.files.forEach(function(f){ h+='<tr><td>'+esc(f.file)+'</td><td><code>'+esc(f.sha256)+'</code></td></tr>'; });
     h+='</table></div></details></div>';
     if(target){ target.innerHTML=h.replace(/^<h2>.*?<\/h2>/,''); } else { $('#main').innerHTML=h; }
-    var cb=$('#cmdbox'); if(cb){ cb.addEventListener('toggle',function(){ if(!cb.open||cb.dataset.done) return; cb.dataset.done='1'; api('/api/commands').then(function(c){ $('#cmdtxt').textContent=(c.text||'').replace(/\r/g,'').trim()||t('Cannot check now.'); }).catch(function(x){ $('#cmdtxt').textContent=x.message; cb.dataset.done=''; }); }); }
+    var cb=$('#cmdbox'); if(cb){ var PR='C:\\Devvy&gt;', term=function(body){ $('#cmdtxt').innerHTML='<span class="pr">'+PR+'</span><span class="cm">devvy.bat -h</span>\n'+body+'\n\n<span class="pr">'+PR+'</span><span class="cur"></span>'; }; term(esc(t('Loading...')));
+      cb.addEventListener('toggle',function(){ if(!cb.open||cb.dataset.done) return; cb.dataset.done='1'; api('/api/commands').then(function(c){ term(esc((c.text||'').replace(/\r/g,'').trim()||t('Cannot check now.'))); }).catch(function(x){ term(esc(x.message)); cb.dataset.done=''; }); }); }
   });
 }
 function vSettings(){
@@ -926,12 +938,19 @@ function drawEx(){
   el.innerHTML=blkTable('ex',['Manufacturer','Class','Driver','Version','~Action'],items);
 }
 function saveEx(l){ return api('/api/settings',{exclusions:l}).then(function(){ return loadState(); }).then(function(){ drawEx(); }).catch(function(x){ notice(x.message,true); }); }
+var MHELP={
+  ex:['Protected from Devvy','These are the devices you told Devvy to leave alone. Devvy never removes them and never replaces their driver, whatever the check says.\n\nYou add one with the Exclude button in the Updates tab. Remove one here to let Devvy handle it again like the others.\n\nIt only concerns Devvy: nothing is changed in Windows.'],
+  wu:['Updates hidden in Windows Update','Driver updates that Devvy hid in Windows Update, so Windows does not install them again by itself (the same as "Hide update").\n\nOnly that single update is stopped: the device and the other drivers stay free, and Windows can still install a different driver.\n\nRemove one here and Windows Update can offer it again.'],
+  bl:['Devices blocked from reinstalling','Devices you removed and that Windows is forbidden to install again, with any driver and from any source (a Windows policy based on the hardware ID). It is meant for ghost devices that keep coming back.\n\nUnblock one here to let Windows install it normally.\n\nCareful: a blocked device that you still need stays without a driver until you unblock it.'],
+  dl:['Drivers installed from the Microsoft catalog','The driver packages that Devvy downloaded from the Microsoft catalog and installed, with the date, the signature check and the SHA-256 fingerprint.\n\nNothing is changed from here: to go back to a previous driver use the Report tab.']
+};
+function helpBtn(k){ return '<button class="hlp" type="button" data-mhelp="'+k+'" title="'+esc(t('Help'))+'" aria-label="'+esc(t('Help'))+'">?</button>'; }
 function vManage(){
   var h='<h2>'+esc(t('Device management'))+'</h2>';
-  h+='<div class="card"><h3>'+esc(t('Protected from Devvy'))+'</h3><p class="mut">'+esc(t('Devices that Devvy never removes or replaces. To exclude one, use the Exclude button in the Updates tab: nothing is excluded by default.'))+'</p><div id="exlist">'+spin()+'</div></div>';
-  h+='<div class="card"><h3>'+esc(t('Updates hidden in Windows Update'))+'</h3><p class="mut">'+esc(t('Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.'))+'</p><div id="wuhid">'+spin()+'</div></div>';
-  h+='<div class="card"><h3>'+esc(t('Devices blocked from reinstalling'))+'</h3><p class="mut">'+esc(t('Windows is stopped from installing these devices again, with any driver. Unblock one to let Windows install it normally.'))+'</p><div id="blocked">'+spin()+'</div></div>';
-  h+='<div class="card"><h3>'+esc(t('Drivers installed from the Microsoft catalog'))+'</h3><p class="mut">'+esc(t('Every package Devvy downloaded and installed, with the signature check and the SHA-256 fingerprint. To go back to the previous driver, use the Report tab.'))+'</p><div id="dllist">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Protected from Devvy'))+helpBtn('ex')+'</h3><p class="mut">'+esc(t('Devices that Devvy never removes or replaces. To exclude one, use the Exclude button in the Updates tab: nothing is excluded by default.'))+'</p><div id="exlist">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Updates hidden in Windows Update'))+helpBtn('wu')+'</h3><p class="mut">'+esc(t('Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.'))+'</p><div id="wuhid">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Devices blocked from reinstalling'))+helpBtn('bl')+'</h3><p class="mut">'+esc(t('Windows is stopped from installing these devices again, with any driver. Unblock one to let Windows install it normally.'))+'</p><div id="blocked">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Drivers installed from the Microsoft catalog'))+helpBtn('dl')+'</h3><p class="mut">'+esc(t('Every package Devvy downloaded and installed, with the signature check and the SHA-256 fingerprint. To go back to the previous driver, use the Report tab.'))+'</p><div id="dllist">'+spin()+'</div></div>';
   $('#main').innerHTML=h; Promise.all([load('devices'),load('drivers').catch(function(){return [];})]).then(drawEx,drawEx);
   Promise.all([load('devices').catch(function(){return [];}),api('/api/about')]).then(function(R){
     var A=R[1], el=$('#dllist'); if(!el) return;
@@ -1135,6 +1154,7 @@ document.addEventListener('click',function(e){
   if(t0.id==='firstsave'){ saveSettings(true).then(function(){ return loadI18n(); }).then(function(){ go('start'); var st=S.state.settings, q=[]; if(st.defender==='always' && !S.state.defender) q.push('def-prepare'); q.push('selftest'); q.push('inventory'); S.queue=q.slice(1); return launch({action:q[0]},6); }).catch(function(x){ notice(x.message,true); }); return; }
   if(t0.dataset&&t0.dataset.bs){ blkSort(t0.dataset.bs,parseInt(t0.dataset.col,10)); return; }
   if(t0.dataset&&t0.dataset.ts){ var tb0=t0.closest('table'), st0=S.tsort[t0.dataset.ts], c0=parseInt(t0.dataset.col,10); if(st0.i===c0) st0.d=-st0.d; else { st0.i=c0; st0.d=1; } applySort(tb0); return; }
+  if(d.mhelp){ var mh=MHELP[d.mhelp]; if(mh) ask({title:t(mh[0]),text:t(mh[1]),ok:t('OK'),single:true}); return; }
   if(d.exrm!==undefined){ var cur2=(S.state.settings.exclusions||[]).filter(function(x){ return x; }); cur2.splice(parseInt(d.exrm,10),1); confirmDo({title:t('Remove protection'),text:t('Let Devvy handle this device again, like the others?'),ok:rmL()},'Removing the protection, please wait...',function(){ return api('/api/settings',{exclusions:cur2}).then(function(){ return loadState(); }).then(function(){ drawEx(); }); },t('Removed from exclusions.')); return; }
   if(t0.id==='savesettings'){ saveSettings(false).then(function(r){ try{ sessionStorage.setItem('dp_saved',t('Settings saved.')+' '+(r.notes||[]).join(' ')); }catch(x){} location.reload(); }).catch(function(x){ notice(x.message,true); }); return; }
   if(d.ans){ var qid=(S.job&&S.job.question&&S.job.question.id)||$('#ask').dataset.qid||''; document.querySelectorAll('#askb button').forEach(function(b){ b.disabled=true; }); api('/api/answer',{answer:d.ans}).then(function(){ S.ansId=qid; $('#ask').style.display='none'; $('#ask').dataset.k=''; pollJob(); }).catch(function(x){ notice(x.message,true); document.querySelectorAll('#askb button').forEach(function(b){ b.disabled=false; }); }); return; }
