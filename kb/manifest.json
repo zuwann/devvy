@@ -1,26 +1,26 @@
 {
- "version": 2026111901,
- "date": "2026-11-19",
+ "version": 2026112301,
+ "date": "2026-11-23",
  "files": [
   {
    "name": "knowledge.csv",
-   "sha256": "97499a07750ddc4d47b58cbb7be34f4ff10844f91ae295211ff81e2ae9748a22"
+   "sha256": "a72efe0584510f7f0c7afb2fac4197898cd050c0542ba78a0d17a43c1ed0526c"
   },
   {
    "name": "knowledge.it.csv",
-   "sha256": "16668a81985b828ca40558f5353caa2e36004d29c67facaf39945bcc73bcf79c"
+   "sha256": "f77176bdbe6b4da556ffeef0522b126f3ec98850804c23edfcc8153195c9e602"
   },
   {
    "name": "knowledge.es.csv",
-   "sha256": "7b085e861d621606944dff5ac8fb8414912a837c12936dc8e055a331727c773a"
+   "sha256": "4e2f4aca804b3b7355f9ccb681141a8dcde308a815fb418cb9f1875b757e96bb"
   },
   {
    "name": "knowledge.de.csv",
-   "sha256": "5b01a4fb9343fa93cf3a358c7511af4a69bfc453331ebf879772b04f6fec240a"
+   "sha256": "49b4d126ead44324750e8c3348808a9ce478ecaae47c3377264232d3785a7bd8"
   },
   {
    "name": "knowledge.fr.csv",
-   "sha256": "1d7efdd51010bd3e932d858177be12310f97edfd59a57978d978bf744e27f2f7"
+   "sha256": "cdbda62ed1da1ae14f43184e5407f4345bf0761606f1793ef005393d508fdd3d"
   },
   {
    "name": "support-links.csv",
