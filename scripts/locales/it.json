@@ -1343,5 +1343,9 @@
   "They stay suggested in the Devices and Drivers tabs: leave them or choose Keep.": "Restano proposti nelle schede Dispositivi e Driver: lasciali così o scegli Mantieni.",
   "Nothing else is left to remove.": "Non resta altro da rimuovere.",
   "Cleanup complete": "Pulizia completata",
-  "Why some items are still suggested": "Perché alcuni elementi sono ancora proposti"
+  "Why some items are still suggested": "Perché alcuni elementi sono ancora proposti",
+  "Knowledge base updated": "Base di conoscenza aggiornata",
+  "Knowledge base not updated": "Base di conoscenza non aggiornata",
+  "It is used from the next operation.": "Viene usata dalla prossima operazione.",
+  "Nothing was installed: the current knowledge base is unchanged. The details are in the log of the operation.": "Non è stato installato nulla: la base di conoscenza attuale è invariata. I dettagli sono nel log dell'operazione."
 }

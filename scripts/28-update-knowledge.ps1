@@ -11,7 +11,7 @@ if ($base -match 'OWNER') { Write-Warn (T 'The GitHub address of the project is 
 try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
 $ProgressPreference = 'SilentlyContinue'
 $allowed = @('knowledge.csv', 'knowledge.it.csv', 'knowledge.es.csv', 'knowledge.de.csv', 'knowledge.fr.csv', 'support-links.csv', 'support-models.csv', 'board-links.csv')
-$cols = @{ 'knowledge.csv' = 'Id;Match'; 'knowledge.it.csv' = 'Id;Name'; 'knowledge.es.csv' = 'Id;Name'; 'knowledge.de.csv' = 'Id;Name'; 'knowledge.fr.csv' = 'Id;Name'; 'support-links.csv' = 'Match;Name;Url'; 'support-models.csv' = 'Match;Name;Url'; 'board-links.csv' = 'Match;Name;Url' }
+$cols = @{ 'knowledge.csv' = 'Id;Match'; 'knowledge.it.csv' = 'Id;Name'; 'knowledge.es.csv' = 'Id;Name'; 'knowledge.de.csv' = 'Id;Name'; 'knowledge.fr.csv' = 'Id;Name'; 'support-links.csv' = 'Match;Name;Url'; 'support-models.csv' = 'Sku;Url'; 'board-links.csv' = 'Match;Name;Url' }
 $maxBytes = 5MB
 
 $man = $null
