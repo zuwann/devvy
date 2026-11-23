@@ -398,6 +398,21 @@ function Get-KbDownloadedVersion {
     if (-not (Test-Path -LiteralPath $f)) { return [int64]0 }
     try { return [int64]((Get-Content -LiteralPath $f -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json).version) } catch { return [int64]0 }
 }
+# Looks (read only, nothing is sent) at kb/manifest.json on GitHub and says if it is newer than the knowledge base in use.
+function Get-KbRemoteInfo {
+    $r = @{ ok = $false; error = ''; current = 0; latest = 0; needed = $false; date = '' }
+    if ($script:KbUpdateBaseUrl -match 'OWNER') { $r.error = 'not set'; return $r }
+    try { [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12 } catch { }
+    try {
+        $raw = (Invoke-WebRequest -Uri ($script:KbUpdateBaseUrl + 'manifest.json') -UseBasicParsing -TimeoutSec 15 -Headers @{ 'User-Agent' = 'Devvy-kb' }).Content
+        if ($raw -is [byte[]]) { $raw = [Text.Encoding]::UTF8.GetString($raw) }
+        $m = $raw | ConvertFrom-Json
+        $r.latest = [int64]$m.version; $r.date = "$($m.date)"
+        $r.current = [math]::Max((Get-KbShippedVersion), (Get-KbDownloadedVersion))
+        $r.needed = ($r.latest -gt $r.current); $r.ok = $true
+    } catch { $r.error = ($_.Exception.Message -replace '\s+', ' ') }
+    return $r
+}
 # Path of a knowledge file: the downloaded one when it is newer than the shipped one, otherwise the shipped one.
 function Get-KbFile([string]$Name, [string]$Dir) {
     $dl = Join-Path $script:KbDir $Name

@@ -465,6 +465,11 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         Send-Json $ctx @{ ok = $true }
         return
     }
+    if ($Path -eq '/api/kb/check') {
+        $ki = Get-KbRemoteInfo
+        Send-Json $ctx @{ ok = [bool]$ki.ok; error = "$($ki.error)"; current = "$($ki.current)"; latest = "$($ki.latest)"; needed = [bool]$ki.needed; date = "$($ki.date)" }
+        return
+    }
     if ($Path -eq '/api/kb') {
         $inst = ''; $mf = Join-Path $script:KbDir 'manifest.json'; if (Test-Path -LiteralPath $mf) { try { $inst = "$((Get-Content -LiteralPath $mf -Raw -Encoding UTF8 -ErrorAction Stop | ConvertFrom-Json).installed)" } catch { } }
         Send-Json $ctx @{ shipped = (Get-KbShippedVersion); downloaded = (Get-KbDownloadedVersion); installed = $inst; ready = ($script:KbUpdateBaseUrl -notmatch 'OWNER') }

@@ -151,7 +151,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.134</small></h1>
+  <h1>Devvy <small class="mut">0.10.135</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -216,6 +216,16 @@ function ask(o){ return new Promise(function(res){
   else { S.cfOpts=false; ft.style.display=''; op.style.display='none'; ok.focus(); }
   S.cf=function(v){ c.style.display='none'; S.cf=null; if(S.cfOpts){ S.cfOpts=false; ft.style.display=''; op.style.display='none'; } res(v); };
 }); }
+// Confirm, then keep the SAME window open with a spinner while the work runs, and show the result in it.
+function confirmDo(o,busy,work,doneText){
+  return ask(o).then(function(y){
+    if(!y) return false;
+    var ft=document.querySelector('#cf .cfoot');
+    $('#cftitle').textContent=o.title; $('#cfbody').innerHTML=spin(1,busy); if(ft) ft.style.display='none'; $('#cf').style.display='flex';
+    return work().then(function(){ if(ft) ft.style.display=''; return ask({title:o.title,text:doneText,ok:t('OK'),single:true}).then(function(){ return true; }); },
+      function(x){ if(ft) ft.style.display=''; return ask({title:t('Attention'),text:(x&&x.message)||String(x),ok:t('OK'),single:true}).then(function(){ return false; }); });
+  });
+}
 function showRebooting(){
   $('#cftitle').textContent=t('Restarting'); $('#cfbody').textContent=t('Windows is restarting.')+' '+t('You can close this window.');
   var ft=document.querySelector('#cf .cfoot'); if(ft) ft.style.display='none'; $('#cf').style.display='flex';
@@ -437,6 +447,7 @@ function glanceData(){
       function btn(label,attrs,cls){ return '<button class="b small '+(cls||'')+'" '+attrs+'>'+esc(t(label))+'</button>'; }
       SEC=1; // 1. system check
       if(S.upd&&S.upd.needed){ add('WARN',t('Devvy update available'),t('Installed version:')+' '+S.upd.current+' \u2192 '+t('Available:')+' '+S.upd.latest,t('Open the Updates window to install it.'),btn('Open updates','data-pop="update"')); }
+      if(S.kb&&S.kb.needed){ add('WARN',t('Knowledge base update available'),t('Installed version:')+' '+S.kb.current+' \u2192 '+t('Available:')+' '+S.kb.latest,t('Open the Updates window to install it.'),btn('Open updates','data-pop="update"')); }
       var okRows=rows.filter(function(x){return x.Status==='OK';});
       if(!rows.length){ add('INFO',t('System check'),t('Not run yet.'),t('Run the check to see if the PC meets the requirements.'),btn('Check again','data-run="selftest"')); }
       rows.filter(function(x){return x.Status!=='OK'&&x.Check!==t('Tamper protection');}).forEach(function(x){ add(x.Status,x.Check,x.Detail,x.WhatToDo,x.FixId?btn('Fix it for me','data-fix="'+esc(x.FixId)+'"'):''); });
@@ -896,8 +907,8 @@ function askRestartAfterUpdate(){
 }
 function loadKb(){
   var kb0=$('#kbbox'); if(kb0&&!kb0.innerHTML) kb0.innerHTML='<div class="card">'+spin()+'</div>';
-  api('/api/kb').then(function(k){ var el=$('#kbbox'); if(!el) return; var cur=Math.max(k.shipped||0,k.downloaded||0);
-    el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p><div class="row"><button class="b sec" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'</div>'; }).catch(function(){ var e=$('#kbbox'); if(e&&/spinrow/.test(e.innerHTML)) e.innerHTML=''; });
+  api('/api/kb').then(function(k){ return api('/api/kb/check').catch(function(){ return null; }).then(function(c){ k.chk=c; S.kb=(c&&c.ok&&c.needed)?c:null; refreshBell(); return k; }); }).then(function(k){ var el=$('#kbbox'); if(!el) return; var cur=Math.max(k.shipped||0,k.downloaded||0), nw=!!S.kb;
+    el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p>'+(nw?'<p><span class="st WARN">'+esc(t('Knowledge base update available'))+'</span> '+esc(t('Available:'))+' <b>'+esc(S.kb.latest)+'</b></p>':'')+'<div class="row"><button class="b '+(nw?'ok':'sec')+'" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(nw?t('Update knowledge base'):t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'</div>'; }).catch(function(){ var e=$('#kbbox'); if(e&&/spinrow/.test(e.innerHTML)) e.innerHTML=''; });
 }
 function exShow(p){ return /^(?:[^\\.*+?^${}()|[\]]|\\.)*$/.test(p)?p.replace(/\\(.)/g,'$1'):p; }
 function drawEx(){
@@ -917,9 +928,9 @@ function drawEx(){
 function saveEx(l){ return api('/api/settings',{exclusions:l}).then(function(){ return loadState(); }).then(function(){ drawEx(); }).catch(function(x){ notice(x.message,true); }); }
 function vManage(){
   var h='<h2>'+esc(t('Device management'))+'</h2>';
-  h+='<div class="card"><h3>'+esc(t('Exclusions'))+'</h3><p class="mut">'+esc(t('Devices that Devvy never removes or replaces. To exclude one, use the Exclude button in the Updates tab: nothing is excluded by default.'))+'</p><div id="exlist">'+spin()+'</div></div>';
-  h+='<div class="card"><h3>'+esc(t('Excluded from Windows Update'))+'</h3><p class="mut">'+esc(t('Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.'))+'</p><div id="wuhid">'+spin()+'</div></div>';
-  h+='<div class="card"><h3>'+esc(t('Devices blocked from coming back'))+'</h3><p class="mut">'+esc(t('Windows is stopped from installing these devices again, with any driver. Unblock one to let Windows install it normally.'))+'</p><div id="blocked">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Protected from Devvy'))+'</h3><p class="mut">'+esc(t('Devices that Devvy never removes or replaces. To exclude one, use the Exclude button in the Updates tab: nothing is excluded by default.'))+'</p><div id="exlist">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Updates hidden in Windows Update'))+'</h3><p class="mut">'+esc(t('Driver updates hidden in Windows Update, so Windows does not install them again. Remove one to let Windows Update offer it again.'))+'</p><div id="wuhid">'+spin()+'</div></div>';
+  h+='<div class="card"><h3>'+esc(t('Devices blocked from reinstalling'))+'</h3><p class="mut">'+esc(t('Windows is stopped from installing these devices again, with any driver. Unblock one to let Windows install it normally.'))+'</p><div id="blocked">'+spin()+'</div></div>';
   h+='<div class="card"><h3>'+esc(t('Drivers installed from the Microsoft catalog'))+'</h3><p class="mut">'+esc(t('Every package Devvy downloaded and installed, with the signature check and the SHA-256 fingerprint. To go back to the previous driver, use the Report tab.'))+'</p><div id="dllist">'+spin()+'</div></div>';
   $('#main').innerHTML=h; Promise.all([load('devices'),load('drivers').catch(function(){return [];})]).then(drawEx,drawEx);
   Promise.all([load('devices').catch(function(){return [];}),api('/api/about')]).then(function(R){
@@ -1108,7 +1119,7 @@ document.addEventListener('click',function(e){
   if(d.newest!==undefined){ var gg={}; (S.data.catalog||[]).forEach(function(c){ var k=c.ShortId+'|'+c.Device; (gg[k]=gg[k]||[]).push(c); }); Object.keys(gg).forEach(function(k){ var f0=gg[k][0]; if(HIGH.indexOf(f0.Class)>=0||isExcl(f0.Device)) return; var b0=bestFor(gg[k]); if(b0) S.cat[k]={updateId:b0.UpdateId,risk:false}; }); vUpdates(); return; }
   if(d.clearcat!==undefined){ S.cat={}; vUpdates(); return; }
   if(d.excl!==undefined||d.exclname!==undefined){ var ek=d.excl, g0=(d.exclname!==undefined)?{Device:d.exclname}:(S.data.catalog||[]).filter(function(c){ return (c.ShortId+'|'+c.Device)===ek; })[0]; if(g0){ var ex=(S.state.settings.exclusions||[]).slice(); ex.push(reEsc(g0.Device)); if(ek) delete S.cat[ek]; api('/api/settings',{exclusions:ex}).then(function(){ return loadState(); }).then(function(){ notice(t('Excluded: it will be skipped.')); vUpdates(); }).catch(function(x){ notice(x.message,true); }); } return; }
-  if(d.unblock){ var isw=/^WU:/i.test(d.unblock); ask({title:isw?t('Remove exclusion'):t('Unblock device'),text:isw?t('Let Windows Update offer this driver again?'):t('Let Windows install this device again?'),ok:isw?rmL():t('Unblock')}).then(function(y){ if(y){ api('/api/unblock',{id:d.unblock}).then(function(){ notice(t('Unblocked.')); loadBlocked(); refreshBell(); }).catch(function(x){ notice(x.message,true); }); } }); return; }
+  if(d.unblock){ var isw=/^WU:/i.test(d.unblock); confirmDo({title:isw?t('Remove exclusion'):t('Unblock device'),text:isw?t('Let Windows Update offer this driver again?'):t('Let Windows install this device again?'),ok:isw?rmL():t('Unblock')},isw?'Removing the exclusion, please wait...':'Unblocking, please wait...',function(){ return api('/api/unblock',{id:d.unblock}); },isw?t('Removed from exclusions.'):t('Unblocked.')).then(function(done){ if(done){ loadBlocked(); refreshBell(); } }); return; }
   if(d.run==='def-restore'){ ask({title:t('Remove the Defender exceptions?'),text:t('Without the exceptions Defender may block or slow down Devvy, and some operations may fail or work only in part. You can add them again at any time.'),ok:t('Remove exceptions'),cancel:t('Cancel'),cls:'warn'}).then(function(y){ if(y) launch({action:'def-restore'}); }); return; }
   if(d.kbsend){ S.kbFrom=d.kbsend; launch({action:'anonymize'}); return; }
   if(d.run){ launch({action:d.run}); return; }
@@ -1124,7 +1135,7 @@ document.addEventListener('click',function(e){
   if(t0.id==='firstsave'){ saveSettings(true).then(function(){ return loadI18n(); }).then(function(){ go('start'); var st=S.state.settings, q=[]; if(st.defender==='always' && !S.state.defender) q.push('def-prepare'); q.push('selftest'); q.push('inventory'); S.queue=q.slice(1); return launch({action:q[0]},6); }).catch(function(x){ notice(x.message,true); }); return; }
   if(t0.dataset&&t0.dataset.bs){ blkSort(t0.dataset.bs,parseInt(t0.dataset.col,10)); return; }
   if(t0.dataset&&t0.dataset.ts){ var tb0=t0.closest('table'), st0=S.tsort[t0.dataset.ts], c0=parseInt(t0.dataset.col,10); if(st0.i===c0) st0.d=-st0.d; else { st0.i=c0; st0.d=1; } applySort(tb0); return; }
-  if(d.exrm!==undefined){ var cur2=(S.state.settings.exclusions||[]).filter(function(x){ return x; }); cur2.splice(parseInt(d.exrm,10),1); saveEx(cur2); return; }
+  if(d.exrm!==undefined){ var cur2=(S.state.settings.exclusions||[]).filter(function(x){ return x; }); cur2.splice(parseInt(d.exrm,10),1); confirmDo({title:t('Remove protection'),text:t('Let Devvy handle this device again, like the others?'),ok:rmL()},'Removing the protection, please wait...',function(){ return api('/api/settings',{exclusions:cur2}).then(function(){ return loadState(); }).then(function(){ drawEx(); }); },t('Removed from exclusions.')); return; }
   if(t0.id==='savesettings'){ saveSettings(false).then(function(r){ try{ sessionStorage.setItem('dp_saved',t('Settings saved.')+' '+(r.notes||[]).join(' ')); }catch(x){} location.reload(); }).catch(function(x){ notice(x.message,true); }); return; }
   if(d.ans){ var qid=(S.job&&S.job.question&&S.job.question.id)||$('#ask').dataset.qid||''; document.querySelectorAll('#askb button').forEach(function(b){ b.disabled=true; }); api('/api/answer',{answer:d.ans}).then(function(){ S.ansId=qid; $('#ask').style.display='none'; $('#ask').dataset.k=''; pollJob(); }).catch(function(x){ notice(x.message,true); document.querySelectorAll('#askb button').forEach(function(b){ b.disabled=false; }); }); return; }
   if(t0.id==='cancel'){ ask({title:t('Stop the job'),text:t('Stop the running job? The operations already done stay.'),ok:t('Stop the job'),cls:'red',cancel:t('Keep going')}).then(function(y){ if(y){ api('/api/cancel',{}).then(function(){ pollJob(); }).catch(function(x){ notice(x.message,true); }); } }); return; }
@@ -1180,6 +1191,18 @@ function startUpdateCheck(){
       if(y){ launch({action:'selfupdate'}); return true; }
       return false;
     });
+  }).catch(function(){ return false; }).then(function(started){ return started?true:startKbCheck(); });
+}
+// A newer knowledge base (kb/manifest.json on GitHub) is offered like a program update, even when Devvy itself has no new version.
+function startKbCheck(){
+  var kc=api('/api/kb/check'), to2=new Promise(function(res){ setTimeout(function(){ res(null); },20000); });
+  return Promise.race([kc,to2]).then(function(r){
+    if(!r||!r.ok||!r.needed) return false;
+    S.kb=r; var ub=$('#updbadge'); if(ub){ ub.style.display=''; ub.textContent='!'; } refreshBell();
+    return ask({title:t('Knowledge base update available'),text:t('A newer knowledge base is available (version {0}, you have {1}). It only updates the list that explains the components: Devvy itself is not changed and does not restart. Update it now?',r.latest,r.current),ok:t('Update knowledge base'),cancel:t('Not now')}).then(function(y){
+      if(y){ S.kbNow=true; S.kb=null; refreshBell(); }
+      return false;
+    });
   }).catch(function(){ return false; });
 }
 Promise.all([loadI18n(),loadState()]).then(function(){
@@ -1193,7 +1216,7 @@ Promise.all([loadI18n(),loadState()]).then(function(){
   if(started) return;
   var st=S.state.settings;
   if(!S.autoDone && st.firstRunDone){
-    var q=[]; q.push('selftest'); S.cont=(S.state.postReboot&&S.state.cont&&S.state.cont.parts&&S.state.cont.parts.length)?S.state.cont:null; if(st.inventoryAtStart||!hasInv()||S.cont) q.push('inventory'); if(S.state.postReboot) q.push('postcheck');
+    var q=[]; if(S.kbNow){ S.kbNow=false; q.push('kbupdate'); } q.push('selftest'); S.cont=(S.state.postReboot&&S.state.cont&&S.state.cont.parts&&S.state.cont.parts.length)?S.state.cont:null; if(st.inventoryAtStart||!hasInv()||S.cont) q.push('inventory'); if(S.state.postReboot) q.push('postcheck');
     if(q.length){ S.autoDone=true; S.queue=q.slice(1); launch({action:q[0]},6); }
   }
   });
