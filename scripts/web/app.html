@@ -129,13 +129,17 @@ nav button.lock{opacity:.45}
 .cbody .spinrow{white-space:normal}
 .hlp{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;margin-left:8px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--mut);font-size:.8rem;font-weight:700;cursor:pointer;vertical-align:middle;padding:0}
 .hlp:hover,.hlp:focus-visible{color:var(--fg);border-color:var(--fg)}
-.term{margin:12px 0 0;border-radius:8px;overflow:hidden;border:1px solid #3a3a3a;background:#0c0c0c;box-shadow:0 4px 14px rgba(0,0,0,.35)}
-.termbar{display:flex;align-items:center;gap:7px;padding:7px 10px;background:#2b2b2b;color:#d0d0d0;font:12px/1 'Segoe UI',system-ui,sans-serif}
-.termbar i{width:11px;height:11px;border-radius:50%;display:inline-block}
-.termbar span{margin-left:6px}
-.termbody{margin:0;padding:12px 14px;color:#cccccc;background:#0c0c0c;font:13px/1.45 Consolas,'Cascadia Mono','Courier New',monospace;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto}
+.term{margin:12px 0 0;border:1px solid #6b6b6b;background:#0c0c0c;box-shadow:0 6px 18px rgba(0,0,0,.4);border-radius:0}
+.termbar{display:flex;align-items:stretch;justify-content:space-between;height:31px;background:#fff;color:#000;font:12px/31px 'Segoe UI',system-ui,sans-serif;user-select:none}
+.termbar .ti{display:flex;align-items:center;gap:8px;padding-left:8px;min-width:0}
+.termbar .ti b{font-weight:400;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.termbar .ico{width:16px;height:16px;background:#0c0c0c;border:1px solid #777;box-sizing:border-box;color:#ddd;font:700 8px/14px Consolas,monospace;text-align:center}
+.termbar .wc{display:flex}
+.termbar .wc span{width:46px;text-align:center;font:400 13px/31px 'Segoe MDL2 Assets','Segoe UI Symbol','Segoe UI',sans-serif}
+.termbar .wc span.x:hover{background:#e81123;color:#fff}
+.termbody{margin:0;padding:6px 8px;color:#cccccc;background:#0c0c0c;font:13px/1.45 Consolas,'Cascadia Mono','Courier New',monospace;white-space:pre-wrap;word-break:break-word;max-height:420px;overflow:auto}
 .termbody .pr{color:#e5e5e5}.termbody .cm{color:#f9f1a5}
-.termbody .cur{display:inline-block;width:8px;height:1em;background:#ccc;vertical-align:text-bottom;animation:blink 1s steps(1) infinite}
+.termbody .cur{display:inline-block;width:.6em;height:2px;background:#ccc;vertical-align:baseline;animation:blink 1s steps(1) infinite}
 @keyframes blink{50%{opacity:0}}
 .cfoot{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding:12px 18px}
 #cfopts{flex-direction:column;flex-wrap:nowrap!important;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
@@ -162,7 +166,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.140</small></h1>
+  <h1>Devvy <small class="mut">0.10.141</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -874,7 +878,7 @@ function vAbout(target){
     h+=card('What it reads (it changes nothing)',['The list of devices, including the ones not connected.','The drivers in the Windows driver store and which device uses each one.','The Bluetooth pairings.','The state of Microsoft Defender, and basic data of the PC (Windows, processor, memory, disk, graphics card).']);
     h+=card('What it changes (only when you press Apply and confirm)',['It removes the devices, Bluetooth pairings and drivers you chose in the tabs.','It installs the drivers you chose from the Microsoft catalog.','If you ask for it, before changing it makes a restore point and a copy of the drivers.','If you turn the option on, it tells Windows not to install again the drivers you removed (a Windows policy that you can undo in Settings).','It adds temporary exceptions to Microsoft Defender, which it removes when you exit.','If you restart Windows from the program, it creates a one-time scheduled task that starts the program at the next sign-in to check the PC, and deletes itself (you can turn it off in Settings).']);
     h+=card('From the command line',['Everything the page does can also be done from a terminal. Start it from an administrator prompt: devvy.bat /cli followed by the action (Check, Inventory, Audit, Clean, Search, Install, Rollback, Report, Update, ...). The questions of the page ([F]/[S]/[M], confirmations, backup) appear in the terminal.','Without -Apply nothing is changed: you only get a preview. For scheduled tasks and scripts there is -Output json and a clear exit code (0 ok, 1 findings, 2 error, 3 restart needed, 4 not allowed, 5 not administrator).','devvy.bat /gui opens this page, devvy.bat -h lists the commands.']);
-    h+='<div class="card"><h3>'+esc(t('Commands from the terminal'))+'</h3><details id="cmdbox"><summary>'+esc(t('Show the list of commands'))+'</summary><div class="term" aria-label="'+esc(t('Commands from the terminal'))+'"><div class="termbar"><i style="background:#ff5f57"></i><i style="background:#febc2e"></i><i style="background:#28c840"></i><span>'+esc(t('Administrator: Command Prompt'))+'</span></div><pre class="termbody" id="cmdtxt"></pre></div></details>'+(A.guideUrl?'<p style="margin:12px 0 0"><a href="'+esc(A.guideUrl)+'" target="_blank" rel="noopener">'+esc(t('Open the full guide of the commands (GitHub)'))+'</a></p>':'')+'</div>';
+    h+='<div class="card"><h3>'+esc(t('Commands from the terminal'))+'</h3><details id="cmdbox"><summary>'+esc(t('Show the list of commands'))+'</summary><div class="term" aria-label="'+esc(t('Commands from the terminal'))+'"><div class="termbar"><div class="ti"><span class="ico">&gt;_</span><b>'+esc(t('Administrator: Command Prompt'))+'</b></div><div class="wc"><span>&#8212;</span><span>&#9744;</span><span class="x">&#10005;</span></div></div><pre class="termbody" id="cmdtxt"></pre></div></details>'+(A.guideUrl?'<p style="margin:12px 0 0"><a href="'+esc(A.guideUrl)+'" target="_blank" rel="noopener">'+esc(t('Open the full guide of the commands (GitHub)'))+'</a></p>':'')+'</div>';
     h+=card('What goes online',['Only when you press Search: the hardware codes of the devices (like VEN_xxxx&DEV_xxxx[&SUBSYS_xxxxxxxx]) go to catalog.update.microsoft.com, never names, serial numbers or PC data.','The drivers you choose are downloaded from Microsoft sites only.','Nothing else: no statistics, no telemetry, no accounts. Reports stay on this PC. If you share a report, you send it yourself.']);
     h+='<div class="card"><h3>'+esc(t('How the downloaded drivers are checked'))+'</h3><ul><li>'+esc(t('The SHA-256 fingerprint of each downloaded package is shown while it is installed and saved in the list below.'))+'</li><li>'+esc(t('The signature of the driver is checked: if it is missing or does not match, the package is refused and nothing is installed.'))+'</li><li>'+esc(t('A driver signed by Microsoft Windows Hardware Compatibility Publisher has passed the Microsoft certification (WHQL). Windows checks the signature again when it installs the driver.'))+'</li></ul>';
     h+='<p class="mut">'+esc(t('The list of the packages installed so far is in the Device management tab.'))+'</p>';
@@ -1186,7 +1190,9 @@ document.addEventListener('click',function(e){
   if(d.run==='def-restore'){ ask({title:t('Remove the Defender exceptions?'),text:t('Without the exceptions Defender may block or slow down Devvy, and some operations may fail or work only in part. You can add them again at any time.'),ok:t('Remove exceptions'),cancel:t('Cancel'),cls:'warn'}).then(function(y){ if(y) launch({action:'def-restore'}); }); return; }
   if(d.kbsend){ S.kbFrom=d.kbsend; launch({action:'anonymize'}); return; }
   if(d.run){ launch({action:d.run}); return; }
-  if(d.copy!==undefined){ var cb=t0.closest?t0.closest('[data-copy]'):null; try{ navigator.clipboard.writeText(d.copy).then(function(){ if(cb){ var o0=cb.textContent; cb.textContent=t('Copied.'); setTimeout(function(){ cb.textContent=o0; },1500); } }).catch(function(){ notice(t('Cannot copy: select the text and copy it.'),true); }); }catch(e){ notice(t('Cannot copy: select the text and copy it.'),true); } return; }
+  if(d.copy!==undefined){ var cv=d.copy, okc=function(){ ask({title:t('Copied to the clipboard'),text:cv,ok:t('OK'),single:true}); }, bad=function(){ notice(t('Cannot copy: select the text and copy it.'),true); },
+      old=function(){ try{ var ta=document.createElement('textarea'); ta.value=cv; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); var r=document.execCommand('copy'); document.body.removeChild(ta); if(r) okc(); else bad(); }catch(x){ bad(); } };
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(cv).then(okc).catch(old); } else old(); return; }
   if(d.pzip){ api('/api/openfolder',{file:d.pzip}).catch(function(x){ notice(x.message,true); }); return; }
   if(d.boardissue){ var B=S.board||{}, P0=S.prob||{}, ttl0=L('Support link: ','Link di supporto: ')+(B.maker||''), body0=L('Please add the support/download page of this motherboard maker.\n\nBoard manufacturer: ','Aggiungete la pagina di supporto/download di questo produttore di schede madri.\n\nProduttore scheda: ')+(B.maker||'')+'\n'+L('Board model: ','Modello scheda: ')+(B.model||'')+'\n'+L('Page (URL):','Pagina (URL):')+' ';
     if(P0.ready){ if(netBlocked()){ return; } window.open(P0.issuesUrl+'?title='+encodeURIComponent(ttl0)+'&body='+encodeURIComponent(body0),'_blank','noopener'); } else { try{ navigator.clipboard.writeText(body0).catch(function(){}); }catch(e){} notice(t('The GitHub page of the project is not set yet: the issue text was copied, paste it in a new issue.')); } return; }

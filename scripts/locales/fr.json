@@ -1352,5 +1352,6 @@
   "Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.": "Connectez le PC au réseau (Wi-Fi ou câble), vérifiez qu'une page web s'ouvre, puis réessayez.",
   "This operation needs an internet connection and the PC does not seem to be connected. Nothing was changed.": "Cette opération nécessite une connexion Internet et le PC ne semble pas connecté. Rien n'a été modifié.",
   "Web pages can only be opened with an internet connection, and the PC does not seem to be connected.": "Les pages web ne peuvent s'ouvrir qu'avec une connexion Internet et le PC ne semble pas connecté.",
-  "Devvy needs an internet connection to look for updates and the PC does not seem to be connected.": "Devvy a besoin d'une connexion Internet pour chercher des mises à jour et le PC ne semble pas connecté."
+  "Devvy needs an internet connection to look for updates and the PC does not seem to be connected.": "Devvy a besoin d'une connexion Internet pour chercher des mises à jour et le PC ne semble pas connecté.",
+  "Copied to the clipboard": "Copié dans le presse-papiers"
 }
