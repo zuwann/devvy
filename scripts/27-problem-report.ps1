@@ -15,7 +15,7 @@ $ver = ''
 try { $m = [regex]::Match((Get-Content -Path (Join-Path $PSScriptRoot 'web\app.html') -Raw -Encoding UTF8), 'Devvy <small class="mut">([^<]+)</small>'); if ($m.Success) { $ver = $m.Groups[1].Value } } catch { }
 $pc = Get-PcInfo
 $info = @(
-    ('Devvy: ' + $ver), ('Windows: ' + $pc.os), ('Manufacturer: ' + $pc.maker), ('Model: ' + $pc.model), ('Laptop: ' + $pc.laptop + '  OEM: ' + $pc.oem),
+    ('Devvy: ' + $ver), ('Windows: ' + $pc.os), ('Manufacturer: ' + $pc.maker), ('Model: ' + $pc.model), ('Laptop: ' + $pc.laptop + '  OEM: ' + $pc.oem + '  Assembled: ' + $pc.assembled + '  Virtual: ' + $pc.virtual),('Title: ' + $pc.title),
     ('CPU: ' + $pc.cpu), ('RAM: ' + $pc.ram), ('GPU: ' + $pc.gpu), ('PowerShell: ' + $PSVersionTable.PSVersion), ('Date: ' + (Get-Date -Format 'yyyy-MM-dd HH:mm'))
 ) -join "`r`n"
 $utf8 = New-Object System.Text.UTF8Encoding($true)

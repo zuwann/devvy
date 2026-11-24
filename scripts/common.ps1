@@ -1229,7 +1229,7 @@ function Get-SetupApiTrail([string]$Needle, [int]$Max = 8) {
 # Basic data of the PC (cached): used by the page and by the report
 function Get-PcInfo {
     if ($script:PcInfo) { return $script:PcInfo }
-    $o = @{ os = ''; cpu = ''; ram = ''; disk = ''; gpu = ''; maker = ''; model = ''; sku = ''; bmaker = ''; bmodel = ''; laptop = $false; oem = $false }
+    $o = @{ os = ''; cpu = ''; ram = ''; disk = ''; gpu = ''; maker = ''; model = ''; sku = ''; bmaker = ''; bmodel = ''; laptop = $false; oem = $false; generic = $false; makerShow = ''; virtual = $false; assembled = $false; title = '' }
     try { $o.os = ("$((Get-CimInstance Win32_OperatingSystem).Caption)" -replace '^Microsoft\s+', '').Trim() } catch { }
     try { $o.cpu = ("$(@(Get-CimInstance Win32_Processor)[0].Name)" -replace '\s+', ' ' -replace '\(R\)|\(TM\)', '').Trim() } catch { }
     try { $m = [double](Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory; if ($m -gt 0) { $o.ram = ('{0} GB' -f [math]::Round($m / 1GB)) } } catch { }
@@ -1261,6 +1261,12 @@ function Get-PcInfo {
         $o.maker = $maker; $o.model = $model; $o.laptop = $laptop
         $sku = ("$($cs.SystemSKUNumber)").Trim(); if ($sku -match 'To Be Filled|Default string|System SKU|^0+$|Not Applicable') { $sku = '' }; $o.sku = $sku
         $o.oem = ($brand -and -not $virtual -and ($laptop -or -not $generic))
+        # placeholder texts that small builders / unbranded boards leave in the BIOS: never shown as if they were a model
+        $phs = 'System manufacturer|System Product Name|To Be Filled|Default string|Standard PC|System Version|O\.E\.M|Not Applicable|^None$|Unknown|^\s*$'
+        $o.generic = (($model -match $phs) -or -not $model)
+        $o.makerShow = $(if ($maker -match $phs) { '' } else { $maker })
+        $o.virtual = [bool]$virtual
+        $o.assembled = ((-not $virtual) -and (-not $laptop) -and $o.generic)
     } catch { }
     # Motherboard (baseboard): on desktop PCs most drivers (chipset, audio, LAN, Wi-Fi) come from the board maker
     try {
@@ -1270,6 +1276,20 @@ function Get-PcInfo {
         if ($bm -match $ph) { $bm = '' }
         if ($bp -match $ph) { $bp = '' }
         $o.bmaker = $bm; $o.bmodel = $bp
+    } catch { }
+    # ONE wording for every PC: <what it is> (<laptop|desktop>)   e.g. "HP Pavilion 15 (laptop)", "Custom-built PC - Motherboard ASUS PRIME B450M-A (desktop)"
+    try {
+        $type = $(if ($o.laptop) { T 'laptop' } else { T 'desktop' })
+        $board = (@($o.bmaker, $o.bmodel) | Where-Object { $_ }) -join ' '
+        if ($o.virtual) {
+            $vn = ("$($o.model)").Trim(); $o.title = (T 'Virtual machine') + $(if ($vn -and -not $o.generic) { " ($vn)" } else { '' })
+        } elseif ($o.assembled) {
+            $o.title = (T 'Custom-built PC') + $(if ($board) { ' - ' + (T 'Motherboard') + ' ' + $board } else { '' }) + " ($type)"
+        } else {
+            $n = $(if ($o.generic) { $o.makerShow } else { $o.model })
+            if (-not $n) { $n = (T 'Computer') }
+            $o.title = "$n ($type)"
+        }
     } catch { }
     $script:PcInfo = $o
     return $o

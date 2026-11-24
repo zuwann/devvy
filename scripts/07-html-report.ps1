@@ -122,7 +122,7 @@ a{color:var(--acc)}details{margin:6px 0}summary{cursor:pointer}
 AddL ('<h1>' + (Enc (T 'Devvy report')) + '</h1>')
 AddL ('<p class="mut">' + (Enc (T 'Created on {0} - {1}, architecture {2}' (Get-Date -Format 'yyyy-MM-dd HH:mm') $osName $archPc)) + '</p>')
 $pcI = Get-PcInfo
-if ($pcI.maker) { $lap = ''; if ($pcI.laptop) { $lap = ' (' + (T 'laptop') + ')' }; AddL ('<p class="mut">' + (Enc ((T 'Computer') + ': ' + (T 'Manufacturer') + ': ' + $pcI.maker + ', ' + (T 'Model') + ': ' + $pcI.model + $lap)) + '</p>') }
+if ($pcI.title) { AddL ('<p class="mut">' + (Enc ((T 'Computer') + ': ' + $pcI.title)) + '</p>') }
 AddL ('<div class="box warn"><strong>' + (Enc (T 'Privacy:')) + '</strong> ' + (Enc (T 'this file contains device names and hardware IDs of your PC. Do not share it as it is: to report a problem use the anonymized reports.')) + '</div>')
 
 # Self-check

@@ -1353,5 +1353,8 @@
   "This operation needs an internet connection and the PC does not seem to be connected. Nothing was changed.": "Dieser Vorgang braucht eine Internetverbindung, und der PC scheint nicht verbunden zu sein. Es wurde nichts verändert.",
   "Web pages can only be opened with an internet connection, and the PC does not seem to be connected.": "Webseiten lassen sich nur mit einer Internetverbindung öffnen, und der PC scheint nicht verbunden zu sein.",
   "Devvy needs an internet connection to look for updates and the PC does not seem to be connected.": "Devvy braucht eine Internetverbindung, um nach Updates zu suchen, und der PC scheint nicht verbunden zu sein.",
-  "Copied to the clipboard": "In die Zwischenablage kopiert"
+  "Copied to the clipboard": "In die Zwischenablage kopiert",
+  "desktop": "Desktop",
+  "Virtual machine": "Virtuelle Maschine",
+  "Custom-built PC": "Selbstgebauter PC"
 }
