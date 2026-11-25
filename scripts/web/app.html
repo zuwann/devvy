@@ -166,7 +166,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.146</small></h1>
+  <h1>Devvy <small class="mut">0.10.147</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -550,6 +550,7 @@ function setBell(gd){
   bell.title=n?t('{0} notifications', n):t('No notifications: everything is fine.');
   var bd=$('#defbadge'); bd.style.display='none';
 }
+function syncUpdBadge(){ var ub=$('#updbadge'); if(!ub) return; if(S.upd||S.kb){ ub.style.display=''; ub.textContent='!'; } else { ub.style.display='none'; } }
 function refreshBell(){ return glanceData().then(function(gd){ S.glance=gd; setBell(gd); if(S.pop==='bell'){ $('#popbody').innerHTML=notifHtml(gd); } }).catch(function(){}); }
 function warnLine(title,text,extra){ return '<p'+(extra||'')+'><span class="st WARN">'+esc(labels().WARN)+'</span> '+(title?'<b>'+esc(title)+'</b> ':'')+esc(text)+'</p>'; }
 function labels(){ return {OK:t('OK'),WARN:t('WARNING'),ERROR:t('ERROR'),INFO:t('Info')}; }
@@ -905,7 +906,7 @@ function loadUpdate(){
   var el=$('#updbox'); if(!el) return;
   el.innerHTML='<div class="card"><h3>'+esc(t('Program update'))+'</h3>'+spin(0,'Searching for a new release on GitHub...')+'</div>';
   netGate(NETUPD).then(function(ok){ return ok?api('/api/update/check'):{ok:false,error:t('No internet connection')}; }).then(function(r){
-    S.upd=(r&&r.ok&&r.needed)?r:null; var el2=$('#updbox'); if(!el2) return; var h='<div class="card"><h3>'+esc(t('Program update'))+'</h3>';
+    S.upd=(r&&r.ok&&r.needed)?r:null; syncUpdBadge(); var el2=$('#updbox'); if(!el2) return; var h='<div class="card"><h3>'+esc(t('Program update'))+'</h3>';
     if(!r.ok){ h+='<p class="mut">'+esc(r.ready===false?t('The GitHub address of the project is not set yet: nothing to download.'):(r.error||t('Cannot check now.')))+'</p><div class="row"><button class="b sec" id="updrecheck">'+esc(t('Check again'))+'</button></div>'; }
     else if(!r.needed){ h+='<p>'+esc(t('Installed version:'))+' <b>'+esc(r.current)+'</b></p><p class="mut">'+esc(t('Devvy is already up to date.'))+'</p><div class="row"><button class="b sec" id="updrecheck">'+esc(t('Check again'))+'</button></div>'; }
     else {
@@ -926,7 +927,7 @@ function askRestartAfterUpdate(){
 }
 function loadKb(){
   var kb0=$('#kbbox'); if(kb0&&!kb0.innerHTML) kb0.innerHTML='<div class="card">'+spin()+'</div>';
-  api('/api/kb').then(function(k){ return netGate(NETUPD).then(function(ok){ return ok?api('/api/kb/check'):null; }).catch(function(){ return null; }).then(function(c){ k.chk=c; S.kb=(c&&c.ok&&c.needed)?c:null; refreshBell(); return k; }); }).then(function(k){ var el=$('#kbbox'); if(!el) return; var cur=Math.max(k.shipped||0,k.downloaded||0), nw=!!S.kb;
+  api('/api/kb').then(function(k){ return netGate(NETUPD).then(function(ok){ return ok?api('/api/kb/check'):null; }).catch(function(){ return null; }).then(function(c){ k.chk=c; S.kb=(c&&c.ok&&c.needed)?c:null; syncUpdBadge(); refreshBell(); return k; }); }).then(function(k){ var el=$('#kbbox'); if(!el) return; var cur=Math.max(k.shipped||0,k.downloaded||0), nw=!!S.kb;
     el.innerHTML='<div class="card"><h3>'+esc(t('Knowledge base'))+'</h3><p class="mut">'+esc(t('The knowledge base is the list that explains what each component is and what to do with it. You can check if a newer one is available on the project page on GitHub: only when you press the button, nothing about your PC is sent, the files are checked with SHA-256 before use.'))+'</p><p>'+esc(t('Version in use: {0}',String(cur)))+(k.downloaded>k.shipped?' ('+esc(t('downloaded'))+(k.installed?' '+esc(k.installed):'')+')':'')+'</p>'+(nw?'<p><span class="st WARN">'+esc(t('Knowledge base update available'))+'</span> '+esc(t('Available:'))+' <b>'+esc(S.kb.latest)+'</b></p>':'')+'<div class="row"><button class="b '+(nw?'ok':'sec')+'" data-run="kbupdate"'+(k.ready?'':' disabled')+'>'+esc(nw?t('Update knowledge base'):t('Check for knowledge updates'))+'</button></div>'+(k.ready?'':'<p class="mut">'+esc(t('The GitHub address of the project is not set yet: nothing to download.'))+'</p>')+'</div>'; }).catch(function(){ var e=$('#kbbox'); if(e&&/spinrow/.test(e.innerHTML)) e.innerHTML=''; });
 }
 function exShow(p){ return /^(?:[^\\.*+?^${}()|[\]]|\\.)*$/.test(p)?p.replace(/\\(.)/g,'$1'):p; }
@@ -1120,7 +1121,7 @@ function afterJob(j){
   if(j.kind==='apply'&&j.status==='done'){ S.prop={from:'report',text:t('Changes completed. Create the report to see the before and after.'),next:(S.tab==='report'?null:'report')}; if(S.tab==='run') S.prop.from='run'; }
   if(j.kind==='kbupdate'){
     // always say how it ended: the person must not have to read the terminal
-    S.kb=null; refreshBell();
+    S.kb=null; syncUpdBadge(); refreshBell();
     if(j.status==='done'){ api('/api/kb').then(function(k){ ask({title:t('Knowledge base updated'),text:t('Version in use: {0}',String(Math.max(k.shipped||0,k.downloaded||0)))+'\n\n'+t('It is used from the next operation.'),ok:t('OK'),single:true}); if(S.pop==='update') loadKb(); }).catch(function(){}); }
     else if(j.status!=='cancelled'){ ask({title:t('Knowledge base not updated'),text:t('Nothing was installed: the current knowledge base is unchanged. The details are in the log of the operation.'),ok:t('OK'),single:true}); if(S.pop==='update') loadKb(); }
   }
@@ -1272,7 +1273,7 @@ function startKbCheck(){
     if(!r||!r.ok||!r.needed) return false;
     S.kb=r; var ub=$('#updbadge'); if(ub){ ub.style.display=''; ub.textContent='!'; } refreshBell();
     return ask({title:t('Knowledge base update available'),text:t('A newer knowledge base is available (version {0}, you have {1}). It only updates the list that explains the components: Devvy itself is not changed and does not restart. Update it now?',r.latest,r.current),ok:t('Update knowledge base'),cancel:t('Not now')}).then(function(y){
-      if(y){ S.kbNow=true; S.kb=null; refreshBell(); }
+      if(y){ S.kbNow=true; S.kb=null; syncUpdBadge(); refreshBell(); }
       return false;
     });
   }).catch(function(){ return false; });

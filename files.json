@@ -1,5 +1,5 @@
 {
- "version": "0.10.146",
+ "version": "0.10.147",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "47d3c9bbb67e651a61688977e581f9d2c4dd5a54927c5e3146bf3340e8e903cf",
+   "sha256": "f427eea45ec5572e476ea52e3d4783660655b4608ed01e51140d3d9ecb29bd53",
    "size": 14100
   },
   {
@@ -181,7 +181,7 @@
   },
   {
    "path": "scripts/kb-version.txt",
-   "sha256": "8fdfeb08f81257dc0275fa9def6657d75663e066d2124f19a3dea14e6d14cfd2",
+   "sha256": "72a7d1f5009cab3e2175aae4b30448209511d1ae209fa51773b11f6eda605c58",
    "size": 11
   },
   {
@@ -236,8 +236,8 @@
   },
   {
    "path": "scripts/support-links.csv",
-   "sha256": "434a40b43d75549edc10a3033b2a19f2284299ba57ccb2ba05741bc702bf61cd",
-   "size": 2313
+   "sha256": "fec6c09058905135496748245f0f525d171f59124874d4c30a339b65ecbb4baf",
+   "size": 2259
   },
   {
    "path": "scripts/support-models.csv",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "8813f86914f6754a62bd1e7862be5961bc362be685fd4d496d0ec27f515df946",
-   "size": 155359
+   "sha256": "064aadef818c438c6cbf9d475762f1bc1920d3c457c42724bcd06896839a229f",
+   "size": 155583
   }
  ]
 }
