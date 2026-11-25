@@ -485,15 +485,16 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         $hay = "$($pc.maker) $($pc.model) $($pc.cpu) $($pc.gpu)"
         $rows = @()
         $f = Get-KbFile 'support-links.csv' $PSScriptRoot
-        if (Test-Path $f) { $rows = @(Import-Csv -Path $f -Delimiter ';' -Encoding UTF8 | Where-Object { $_.Url -match '^https://' -and $hay -match $_.Match } | ForEach-Object { @{ name = "$($_.Name)"; url = "$($_.Url)"; note = "$($_.Note)" } }) }
+        if (Test-Path $f) { $rows = @(Import-Csv -Path $f -Delimiter ';' -Encoding UTF8 | Where-Object { $_.Url -match '^https://' -and $hay -match $_.Match } | ForEach-Object { @{ name = "$($_.Name)"; url = ("$($_.Url)" -replace '\{lang\}', $script:Lang); note = "$($_.Note)" } }) }
         $finder = @()
-        if (Test-Path $f) { $finder = @(Import-Csv -Path $f -Delimiter ';' -Encoding UTF8 | Where-Object { $_.Finder -match '^https://' -and $hay -match $_.Match } | ForEach-Object { @{ name = (T 'Product finder of {0}' "$($pc.maker)"); url = "$($_.Finder)" } }) }
+        if (Test-Path $f) { $finder = @(Import-Csv -Path $f -Delimiter ';' -Encoding UTF8 | Where-Object { $_.Finder -match '^https://' -and $hay -match $_.Match } | ForEach-Object { @{ name = (T 'Product finder of {0}' "$($pc.maker)"); url = ("$($_.Finder)" -replace '\{lang\}', $script:Lang) } }) }
         $deep = @()
         $serial = Get-PcSerial
         # {sku} {model} {serial} are URL-encoded; "#" of the SKU is kept (HP uses it). A row whose placeholders have no value is skipped.
         $fill = {
             param([string]$u)
             if (($u -match '\{sku\}' -and -not $pc.sku) -or ($u -match '\{serial\}' -and -not $serial) -or ($u -match '\{model\}' -and -not $pc.model)) { return '' }
+            $u = $u -replace '\{lang\}', $script:Lang
             $u = $u -replace '\{sku\}', (([uri]::EscapeDataString("$($pc.sku)")) -replace '%23', '#')
             $u = $u -replace '\{serial\}', ([uri]::EscapeDataString("$serial"))
             return ($u -replace '\{model\}', ([uri]::EscapeDataString("$($pc.model)")))

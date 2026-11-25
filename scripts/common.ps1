@@ -1495,8 +1495,8 @@ function Get-BoardSupport($pc) {
     if (-not $pc) { $pc = Get-PcInfo }
     $board = @{ maker = "$($pc.bmaker)"; model = "$($pc.bmodel)"; show = $false; links = @(); matched = $false }
     if ($pc.bmaker -or $pc.bmodel) {
-        $sameAsPc = ($pc.laptop -and ("$($pc.model)" -like "*$($pc.bmodel)*" -or "$($pc.maker)" -like "*$(($pc.bmaker -split '\s+')[0])*"))
-        $board.show = (-not $sameAsPc)
+        # Only for custom-built PCs: laptops and branded desktops (HP, Dell, Lenovo...) have their drivers on the page of the PC maker
+        $board.show = [bool]$pc.assembled
         $bf = Get-KbFile 'board-links.csv' $PSScriptRoot
         if (Test-Path $bf) {
             foreach ($b in @(Import-Csv -Path $bf -Delimiter ';' -Encoding UTF8 | Where-Object { $_.Url -match '^https://' -and $pc.bmaker -match $_.Match })) {
