@@ -133,7 +133,7 @@ $dataSets = @{
     devices   = @{ File = 'devices'; Cols = @('Action', 'KbId', 'Category', 'Present', 'Class', 'FriendlyName', 'InstanceId', 'Manufacturer', 'DriverVersion', 'HardwareIds', 'InfPath', 'InfDescription', 'What', 'Advice', 'Reason', 'GhostKind') }
     drivers   = @{ File = 'drivers'; Cols = @('Action', 'KbId', 'Origin', 'Category', 'Driver', 'InfName', 'Provider', 'Class', 'Version', 'Date', 'UsedByPresent', 'Versions', 'HardwareIds', 'InfPath', 'InfDescription', 'What', 'Risk', 'Advice', 'Reason') }
     bluetooth = @{ File = 'bluetooth'; Cols = @('Action', 'MAC', 'Name', 'Present', 'InRegistry', 'Reason') }
-    catalog   = @{ File = 'catalog'; Cols = @('Device', 'Class', 'ShortId', 'CurrentDriver', 'UpdateId', 'Title', 'Date', 'Version', 'FitsSystem', 'Architecture', 'NewerThanCurrent', 'SearchLink', 'Note') }
+    catalog   = @{ File = 'catalog'; Cols = @('Device', 'Class', 'ShortId', 'CurrentDriver', 'UpdateId', 'Title', 'Date', 'Version', 'Size', 'FitsSystem', 'Architecture', 'NewerThanCurrent', 'SearchLink', 'Note') }
     rollback  = @{ File = 'rollback'; Cols = @('Key', 'Date', 'Device', 'Class', 'OldInf', 'OldVersion', 'OldDate', 'Provider', 'NewVersion', 'BackupPath', 'State') }
     check     = @{ File = 'drivers-to-check'; Cols = @('Severity', 'Reason', 'Device', 'Class', 'DriverProvider', 'DriverVersion', 'DriverDate', 'WindowsUpdate') }
     selftest  = @{ File = 'selftest'; Cols = @('Check', 'Status', 'Detail', 'WhatToDo', 'FixId') }

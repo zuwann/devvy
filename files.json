@@ -1,5 +1,5 @@
 {
- "version": "0.10.149",
+ "version": "0.10.150",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "7348a6815ebc541f03c1e54db5516ed8b5523ef2fcd3af11c48b96c993cf3713",
+   "sha256": "7dff9bd292213eaf4223037f750aae6843a644405c6532a5df706d564df599cf",
    "size": 14100
   },
   {
@@ -51,8 +51,8 @@
   },
   {
    "path": "scripts/00-server.ps1",
-   "sha256": "01b7aced0a4c40b246cd0d05737fa5496f8083478b863756f105895306fe38d8",
-   "size": 55927
+   "sha256": "a103408905062c569f7a69aa96490fcd91fd512e1cdbc484c1e7ba4e8dc59f55",
+   "size": 55935
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
@@ -96,8 +96,8 @@
   },
   {
    "path": "scripts/08-catalog-search.ps1",
-   "sha256": "76da57494c925fc1351cfdb9e8261c9b4462e3541f4dd19d16ac743f39651cfc",
-   "size": 16578
+   "sha256": "25b1d737fa4e322cc9a71d910151c35bc0659074ad12ebdfdf4d819f27e2c7b6",
+   "size": 16881
   },
   {
    "path": "scripts/10-install-from-catalog.ps1",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "8211b323803cb61de81d4a80f917eae86e3c0c72386d346028a8ae066efc0089",
-   "size": 155666
+   "sha256": "0d5086458924c2ce361e15b90b1856a0a6a0d2d575268207e91e848d677bdb2e",
+   "size": 155696
   }
  ]
 }

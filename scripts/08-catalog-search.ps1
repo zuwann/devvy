@@ -116,9 +116,12 @@ function Read-CatalogResults([string]$Html) {
         if ($ver -notmatch '^\d+(\.\d+)+$' -and $cells[0] -match '(\d+(\.\d+){2,3})\s*$') { $ver = $Matches[1] }
         $dateText = ''
         if ($dateOk) { $dateText = $d.ToString('yyyy-MM-dd') }
+        # size of the download (last column, e.g. "9.4 MB"): shown in the Updates tab
+        $sizeText = ''
+        foreach ($c in $cells) { if ($c -match '^(\d[\d.,]*)\s*(KB|MB|GB)') { $sizeText = $Matches[1] + ' ' + $Matches[2] } }
         $out.Add([pscustomobject]@{
             UpdateId = $id; Title = $cells[0]; Products = $cells[1]; Classification = $cells[2]
-            Date = $dateText; DateValid = $dateOk; DateObj = $d; Version = $ver
+            Date = $dateText; DateValid = $dateOk; DateObj = $d; Version = $ver; Size = $sizeText
         })
     }
     return $out
@@ -138,14 +141,14 @@ function Get-Architecture([string]$UpdateId) {
 # Builds one result row (same columns everywhere)
 function New-ResultRow($Dev, [string]$Url, $Pkg, [string]$FitsSystem, [string]$Arch, [string]$Newer, [string]$Note) {
     $link = $Url
-    $id = ''; $title = ''; $date = ''; $ver = ''; $prod = ''
+    $id = ''; $title = ''; $date = ''; $ver = ''; $prod = ''; $size = ''
     if ($Pkg) {
-        $id = $Pkg.UpdateId; $title = $Pkg.Title; $date = $Pkg.Date; $ver = $Pkg.Version; $prod = $Pkg.Products
+        $id = $Pkg.UpdateId; $title = $Pkg.Title; $date = $Pkg.Date; $ver = $Pkg.Version; $prod = $Pkg.Products; $size = "$($Pkg.Size)"
         $link = 'https://www.catalog.update.microsoft.com/ScopedViewInline.aspx?updateid=' + $Pkg.UpdateId
     }
     return [pscustomobject][ordered]@{
         Device = $Dev.Name; Class = $Dev.Class; ShortId = $Dev.ShortId; CurrentDriver = ($Dev.DriverVersion + ' ' + $Dev.DriverDate)
-        UpdateId = $id; Title = $title; Date = $date; Version = $ver; Products = $prod; FitsSystem = $FitsSystem
+        UpdateId = $id; Title = $title; Date = $date; Version = $ver; Size = $size; Products = $prod; FitsSystem = $FitsSystem
         Architecture = $Arch; NewerThanCurrent = $Newer; Link = $link; SearchLink = $Url; Note = $Note
     }
 }
