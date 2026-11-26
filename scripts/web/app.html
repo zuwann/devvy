@@ -166,7 +166,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.148</small></h1>
+  <h1>Devvy <small class="mut">0.10.149</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -1240,7 +1240,7 @@ document.addEventListener('change',function(e){
   if(t0.id==='only'){ S.filter[S.tab].only=t0.checked; go(S.tab); return; }
   if(t0.id==='proffile'){ var fl=t0.files&&t0.files[0]; if(!fl) return; var rd=new FileReader(); rd.onload=function(){ var pr; try{ pr=JSON.parse(String(rd.result).replace(/^\uFEFF/,'')); }catch(x){ notice(t('This is not a Devvy profile file.'),true); return; } ask({title:t('Import profile'),text:t('Import this profile? Its exclusions, knowledge rows and support pages are added to yours; nothing of yours is deleted.'),ok:t('Import profile'),cancel:t('Cancel')}).then(function(y){ if(!y) return; api('/api/profile',{profile:pr}).then(function(r){ return loadState().then(function(){ notice(t('Profile imported: {0} exclusion(s) in total, {1} knowledge row(s) and {2} support page(s) added.',r.exclusions,r.knowledgeAdded,r.supportAdded)+((r.invalid&&r.invalid.length)?' '+t('Skipped as invalid: {0}.',r.invalid.join(', ')):'')); }); }).catch(function(x){ notice(x.message,true); }); }); }; rd.readAsText(fl); t0.value=''; return; }
   if(t0.id==='consent'){ $('#bsearch').disabled=!t0.checked; api('/api/settings',{catalogConsent:t0.checked}).then(function(){ return loadState(); }); return; }
-  if(d.cat!==undefined){ S.cat[d.cat]={updateId:t0.value,risk:false}; vUpdates(); return; }
+  if(d.cat!==undefined){ S.cat[d.cat]={updateId:t0.value,risk:false}; var yc=window.scrollY; Promise.resolve(vUpdates()).then(function(){ window.scrollTo(0,yc); }); return; }
   if(d.risk!==undefined){ var c=S.cat[d.risk]; if(c) c.risk=t0.checked; return; }
   if(d.part){ S.run.parts[d.part]=t0.checked; updateGo(); return; }
   if(t0.name==='mode'){ S.run.apply=(t0.value==='app'); vRun(); return; }
