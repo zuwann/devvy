@@ -1356,5 +1356,6 @@
   "Copied to the clipboard": "Copiado al portapapeles",
   "desktop": "sobremesa",
   "Virtual machine": "Máquina virtual",
-  "Custom-built PC": "PC ensamblado"
+  "Custom-built PC": "PC ensamblado",
+  "Show only the drivers Devvy does not know (what are they?)": "Mostrar solo los controladores que Devvy no conoce (¿qué son?)"
 }
