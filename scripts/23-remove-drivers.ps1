@@ -66,14 +66,23 @@ foreach ($r in $todo) {
 }
 
 if ($toHide.Count -gt 0) {
-    Write-Host (T 'Asking Windows Update to hide the removed extension drivers (it can take a minute)...') -ForegroundColor Green
     $hres = $null
     try { Add-WuHidePending $toHide } catch { }
-    try { $hres = @(Hide-WuDriverUpdates $toHide) } catch { foreach ($pk in $toHide) { Add-Outcome ('{0} | {1} | {2}' -f $pk.Driver, $pk.InfName, $pk.Provider) $pk.Driver ((T 'Could not hide the Windows Update driver:') + ' ' + $_.Exception.Message) 'err' } }
-    foreach ($x in @($hres)) {
-        $lb = '{0} | {1} | {2}' -f $x.Pkg.Driver, $x.Pkg.InfName, $x.Pkg.Provider
-        if ($x.Hidden) { Add-Outcome $lb $x.Title (T 'Windows Update will not offer this driver again (undo it in Device management)') 'ok' }
-        else { Add-Outcome $lb $x.Pkg.Driver (T 'Windows Update is not offering this driver yet: Devvy remembers it and hides it at the next Windows Update check (Updates step)') 'warn' }
+    $wuOnline = Test-Internet
+    if (-not $wuOnline) {
+        # No internet: Windows Update cannot be asked now. Devvy remembers the drivers and hides them at the next Windows Update check
+        Write-Warn (T 'No internet connection')
+        Write-Todo @(T 'Connect the PC to the network (Wi-Fi or cable), check that a web page opens, then try again.')
+        foreach ($pk in $toHide) { Add-Outcome ('{0} | {1} | {2}' -f $pk.Driver, $pk.InfName, $pk.Provider) $pk.Driver (T 'Windows Update is not offering this driver yet: Devvy remembers it and hides it at the next Windows Update check (Updates step)') 'warn' }
+    }
+    else {
+        Write-Host (T 'Asking Windows Update to hide the removed extension drivers (it can take a minute)...') -ForegroundColor Green
+        try { $hres = @(Hide-WuDriverUpdates $toHide) } catch { foreach ($pk in $toHide) { Add-Outcome ('{0} | {1} | {2}' -f $pk.Driver, $pk.InfName, $pk.Provider) $pk.Driver ((T 'Could not hide the Windows Update driver:') + ' ' + $_.Exception.Message) 'err' } }
+        foreach ($x in @($hres)) {
+            $lb = '{0} | {1} | {2}' -f $x.Pkg.Driver, $x.Pkg.InfName, $x.Pkg.Provider
+            if ($x.Hidden) { Add-Outcome $lb $x.Title (T 'Windows Update will not offer this driver again (undo it in Device management)') 'ok' }
+            else { Add-Outcome $lb $x.Pkg.Driver (T 'Windows Update is not offering this driver yet: Devvy remembers it and hides it at the next Windows Update check (Updates step)') 'warn' }
+        }
     }
 }
 Save-Outcomes 'drivers'
