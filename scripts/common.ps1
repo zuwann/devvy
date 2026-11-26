@@ -309,7 +309,7 @@ function Get-DeviceDriverMap {
         } catch { }
     }
     $map = @{}
-    $devs | Get-PnpDeviceProperty -KeyName $keys -ErrorAction SilentlyContinue |
+    @($devs | Where-Object { $_.InstanceId }) | Get-PnpDeviceProperty -KeyName $keys -ErrorAction SilentlyContinue |
         ForEach-Object {
             if (-not $map.ContainsKey($_.InstanceId)) { $map[$_.InstanceId] = @{} }
             $map[$_.InstanceId][$_.KeyName] = $_.Data
@@ -326,7 +326,7 @@ function Get-DevicePropertyMap {
     $map = @{}
     if ($PresentOnly) { $src = Get-PnpDevice -PresentOnly -ErrorAction SilentlyContinue }
     else { $src = Get-PnpDevice -ErrorAction SilentlyContinue }
-    $src | Get-PnpDeviceProperty -KeyName $Keys -ErrorAction SilentlyContinue | ForEach-Object {
+    @($src | Where-Object { $_.InstanceId }) | Get-PnpDeviceProperty -KeyName $Keys -ErrorAction SilentlyContinue | ForEach-Object {
         if (-not $map.ContainsKey($_.InstanceId)) { $map[$_.InstanceId] = @{} }
         $map[$_.InstanceId][$_.KeyName] = $_.Data
     }
@@ -1315,7 +1315,7 @@ function Get-GhostKind([string]$InstanceId, [string]$Class, [string]$Name) {
 # Current driver of the present devices that have this hardware ID (to compare before and after)
 function Get-DriverState([string]$ShortId) {
     $res = @()
-    foreach ($d in @(Get-PnpDevice -PresentOnly -ErrorAction SilentlyContinue)) {
+    foreach ($d in @(Get-PnpDevice -PresentOnly -ErrorAction SilentlyContinue | Where-Object { $_.InstanceId })) {
         $p = @{}
         Get-PnpDeviceProperty -InstanceId $d.InstanceId -KeyName @('DEVPKEY_Device_HardwareIds', 'DEVPKEY_Device_DriverInfPath', 'DEVPKEY_Device_DriverVersion', 'DEVPKEY_Device_DriverDate') -ErrorAction SilentlyContinue |
             ForEach-Object { $p[$_.KeyName] = $_.Data }

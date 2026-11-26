@@ -1,5 +1,5 @@
 {
- "version": "0.10.151",
+ "version": "0.10.152",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "7b2e69507293d59b6b892b3ce43f589723a6b969c2a6a7fc59e52d1d5958c639",
+   "sha256": "27b28e126bdd0f89d84a020f04c6dddb869497377cdd724b23fa3acbafffb79f",
    "size": 14100
   },
   {
@@ -171,8 +171,8 @@
   },
   {
    "path": "scripts/common.ps1",
-   "sha256": "8dddf17965dd1edba4f94649aa0133f976fd7c444d0c8e045f4ee9d503164090",
-   "size": 91240
+   "sha256": "f469a9ca9a58a98148d5f967a0eefb03db6aaaa4c140eb2de0e9a8da0c8dedd9",
+   "size": 91345
   },
   {
    "path": "scripts/devvy-cli.ps1",
@@ -181,13 +181,13 @@
   },
   {
    "path": "scripts/kb-version.txt",
-   "sha256": "c12f209670fbb8de02a3382d231f77dbd79e2e1ef044153c38bfed21926eaaf9",
+   "sha256": "dc403a74a951896c3e1ca9ba0aed37915a4d8ed4461148b7c5d1ca6d5314d0d5",
    "size": 11
   },
   {
    "path": "scripts/knowledge.csv",
-   "sha256": "d8c862fd728d0dc1233f79a1450dedc3944c45330dc96227f1e11007dfe06bb6",
-   "size": 50573
+   "sha256": "df83f623392fc422c8b0e3354d32c5025aa8de63ae1089e3f85bd0acbe67606b",
+   "size": 51551
   },
   {
    "path": "scripts/locales/de.json",
@@ -211,23 +211,23 @@
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
-   "sha256": "c2397b529d2a272ac26a97db4fcc739fc0d924a2bdfa087d2fb9d7aab44830ea",
-   "size": 40929
+   "sha256": "403d8e60fc2cc4e05b5e28f263eea0cef7156e2410b84f08389eadf85c6c715c",
+   "size": 41771
   },
   {
    "path": "scripts/locales/knowledge.es.csv",
-   "sha256": "54d14b70ce26f1b118e83d153c2a8992c1f82d3b955bf9d33dbf2e7c96901be6",
-   "size": 41184
+   "sha256": "b37cbe60156b8505d48c468cb7d585f7d59ff0734e3ad0d463a64bc6f7c2e937",
+   "size": 41994
   },
   {
    "path": "scripts/locales/knowledge.fr.csv",
-   "sha256": "4c07317c0d68ae3b23af387b91e542014559254e13e4d4cd6ffc11998620848b",
-   "size": 43239
+   "sha256": "548b603814c115116f29f9508efa4b5f88c230ba404927f8d0f323bb31922686",
+   "size": 44080
   },
   {
    "path": "scripts/locales/knowledge.it.csv",
-   "sha256": "779c21861098c1466b7ea0976130cb007566f604de9d92e2b51cb32b5ac4cc8f",
-   "size": 37979
+   "sha256": "698ce1b696cb1ecae93dbbb320f3ef9021eefcaf23e92735a54177d7fea2f357",
+   "size": 38786
   },
   {
    "path": "scripts/restart.ps1",
@@ -246,7 +246,7 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "350bce56408ee4e11e520ad246e87c5d303478f46ac4b199bca018af08b77015",
+   "sha256": "a2658b054f361b16797af52a23c3f4c1668980a22d91fe4eb1a92368a88c56ac",
    "size": 155696
   }
  ]
