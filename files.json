@@ -1,5 +1,5 @@
 {
- "version": "0.10.150",
+ "version": "0.10.151",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "7dff9bd292213eaf4223037f750aae6843a644405c6532a5df706d564df599cf",
+   "sha256": "7b2e69507293d59b6b892b3ce43f589723a6b969c2a6a7fc59e52d1d5958c639",
    "size": 14100
   },
   {
@@ -96,8 +96,8 @@
   },
   {
    "path": "scripts/08-catalog-search.ps1",
-   "sha256": "25b1d737fa4e322cc9a71d910151c35bc0659074ad12ebdfdf4d819f27e2c7b6",
-   "size": 16881
+   "sha256": "e017a4d6ecdb833fc687655dddb25049623c9859a4e5ee091e73c38276c29f17",
+   "size": 17226
   },
   {
    "path": "scripts/10-install-from-catalog.ps1",
@@ -246,7 +246,7 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "0d5086458924c2ce361e15b90b1856a0a6a0d2d575268207e91e848d677bdb2e",
+   "sha256": "350bce56408ee4e11e520ad246e87c5d303478f46ac4b199bca018af08b77015",
    "size": 155696
   }
  ]

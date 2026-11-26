@@ -119,6 +119,8 @@ function Read-CatalogResults([string]$Html) {
         # size of the download (last column, e.g. "9.4 MB"): shown in the Updates tab
         $sizeText = ''
         foreach ($c in $cells) { if ($c -match '^(\d[\d.,]*)\s*(KB|MB|GB)') { $sizeText = $Matches[1] + ' ' + $Matches[2] } }
+        # fallback: the size may sit in a cell the filter above dropped or be glued to a hidden value: look in the whole row text
+        if (-not $sizeText) { $ms = [regex]::Matches((Strip-Html $body), '(\d[\d.,]*)\s*(KB|MB|GB)'); if ($ms.Count -gt 0) { $lm = $ms[$ms.Count - 1]; $sizeText = $lm.Groups[1].Value + ' ' + $lm.Groups[2].Value } }
         $out.Add([pscustomobject]@{
             UpdateId = $id; Title = $cells[0]; Products = $cells[1]; Classification = $cells[2]
             Date = $dateText; DateValid = $dateOk; DateObj = $d; Version = $ver; Size = $sizeText
