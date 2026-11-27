@@ -1357,5 +1357,8 @@
   "desktop": "fixe",
   "Virtual machine": "Machine virtuelle",
   "Custom-built PC": "PC assemblé",
-  "Show only the drivers Devvy does not know (what are they?)": "Afficher seulement les pilotes que Devvy ne connaît pas (que sont-ils ?)"
+  "Show only the drivers Devvy does not know (what are they?)": "Afficher seulement les pilotes que Devvy ne connaît pas (que sont-ils ?)",
+  "Knowledge base newer than the inventory": "Base de connaissances plus récente que l'inventaire",
+  "The inventory was made with an older knowledge base: create it again to apply the new advice.": "L'inventaire a été fait avec une base de connaissances plus ancienne : refaites-le pour appliquer les nouveaux conseils.",
+  "Create the inventory now": "Créer l'inventaire maintenant"
 }

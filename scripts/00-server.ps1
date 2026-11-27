@@ -378,6 +378,7 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         $rep['selection'] = (Test-Path (Join-Path $script:ReportDir 'selection.json'))
         $build = 0
         try { $build = [int][Environment]::OSVersion.Version.Build } catch { }
+        $invKb = [int64]0; try { $ikf = Join-Path $script:ReportDir 'inventory-kb.txt'; if (Test-Path -LiteralPath $ikf) { $invKb = [int64]((Get-Content -LiteralPath $ikf -ErrorAction Stop | Select-Object -First 1).Trim()) } } catch { }
         $defActive = $false
         $defFile = Join-Path $script:LogDir 'defender-exceptions.json'
         if ($script:DefenderOk) { $defActive = $true }
@@ -385,7 +386,7 @@ function Handle-Api($ctx, [string]$Path, [string]$Method) {
         if (-not $script:BootIso) { $script:BootIso = ''; try { $script:BootIso = (Get-CimInstance Win32_OperatingSystem -ErrorAction Stop).LastBootUpTime.ToUniversalTime().ToString('yyyy-MM-ddTHH:mm:ssZ') } catch { } }
         $cont = $null
         try { $cf = Get-ContinueFile; if ($script:PostReboot -and (Test-Path $cf)) { $cj = Get-Content -Path $cf -Raw -Encoding UTF8 | ConvertFrom-Json; if (((Get-Date) - [datetime]$cj.Time).TotalDays -lt 3) { $cont = $cj } } } catch { }
-        Send-Json $ctx @{ cont = $cont; report = $rep; times = $times; boot = $script:BootIso; postReboot = [bool]$script:PostReboot; defender = $defActive; folder = $script:Root; arch = $env:PROCESSOR_ARCHITECTURE; build = $build; settings = (Get-SettingsForPage) }
+        Send-Json $ctx @{ cont = $cont; report = $rep; times = $times; invKb = $invKb; kbNow = (Get-KbEffectiveVersion); boot = $script:BootIso; postReboot = [bool]$script:PostReboot; defender = $defActive; folder = $script:Root; arch = $env:PROCESSOR_ARCHITECTURE; build = $build; settings = (Get-SettingsForPage) }
         return
     }
     if ($Path -eq '/api/about') {

@@ -166,7 +166,7 @@ svg .s0{fill:none;stroke:var(--mut);stroke-width:1.4;stroke-linejoin:round}svg .
 <body>
 <div id="topbar">
 <header>
-  <h1>Devvy <small class="mut">0.10.154</small></h1>
+  <h1>Devvy <small class="mut">0.10.155</small></h1>
   <span class="tag y" id="defbadge" style="display:none"></span><span class="mut" id="pcinfo"></span>
   <button class="b gear" id="bell" data-pop="bell" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span id="belln" class="belln" style="display:none"></span></button>
   <button class="b gear" id="dark" type="button" title="Dark mode"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg></button>
@@ -405,6 +405,7 @@ function flowCards(){
   return h+'</div>';
 }
 var HEALTH={ problems:['Devices with a problem','Windows reports an error on these devices: see what it means and what to do in the Devices page.','See','Open the Devices page: each device has a plain explanation.'],  ghosts:['Devices not connected','They are ghosts of hardware you once used: they can be removed.','Review','Review the list and remove the ones you do not need.'], btpairs:['Old Bluetooth pairings','Pairings with devices that are no longer around.','Review','Review the list and remove the old pairings.'], olddrivers:['Drivers you can remove','Older versions or drivers no connected device uses.','Review','Review the list and remove what you do not need.'], unknown:['Drivers without advice','Not in the knowledge base: use Identify in the Drivers page.','Identify','Use Identify in the Drivers page to find out what they are.'], tocheck:['Devices with a generic, old or missing driver','The Microsoft catalog may have a better one.','Search','Search the Microsoft catalog for a better driver.'], updates:['Newer drivers found','Found on the Microsoft catalog: choose which to install.','Choose','Choose which to install.'] };
+function kbNewer(){ var s=S.state; try{ return !!(hasInv()&&s&&s.kbNow&&(s.invKb||0)<s.kbNow); }catch(x){ return false; } }
 function invStale(){ var s=S.state; try{ return !!(s.boot&&s.times&&s.times.devices&&new Date(s.times.devices)<new Date(s.boot)); }catch(x){ return false; } }
 function fmtTime(iso){ try{ var d=new Date(iso); if(isNaN(d)) return ''; return d.toLocaleString(document.documentElement.lang||undefined,{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}); }catch(x){ return ''; } }
 var PNUM={NOT_CONFIGURED:1,DEVLOADER_FAILED:2,OUT_OF_MEMORY:3,ENTRY_IS_WRONG_TYPE:4,LACKED_ARBITRATOR:5,BOOT_CONFIG_CONFLICT:6,FAILED_FILTER:7,DEVLOADER_NOT_FOUND:8,INVALID_DATA:9,FAILED_START:10,LIAR:11,NORMAL_CONFLICT:12,NOT_VERIFIED:13,NEED_RESTART:14,REENUMERATION:15,PARTIAL_LOG_CONF:16,UNKNOWN_RESOURCE:17,REINSTALL:18,REGISTRY:19,VXDLDR:20,WILL_BE_REMOVED:21,DISABLED:22,DEVLOADER_NOT_READY:23,DEVICE_NOT_THERE:24,MOVED:25,TOO_EARLY:26,NO_VALID_LOG_CONF:27,FAILED_INSTALL:28,HARDWARE_DISABLED:29,CANT_SHARE_IRQ:30,FAILED_ADD:31,DISABLED_SERVICE:32,TRANSLATION_FAILED:33,NO_SOFTCONFIG:34,BIOS_TABLE:35,IRQ_TRANSLATION_FAILED:36,FAILED_DRIVER_ENTRY:37,DRIVER_FAILED_PRIOR_UNLOAD:38,DRIVER_FAILED_LOAD:39,DRIVER_SERVICE_KEY_INVALID:40,LEGACY_SERVICE_NO_DEVICES:41,DUPLICATE_DEVICE:42,FAILED_POST_START:43,HALTED:44,PHANTOM:45,SYSTEM_SHUTDOWN:46,HELD_FOR_EJECT:47,DRIVER_BLOCKED:48,REGISTRY_TOO_LARGE:49,SETPROPERTIES_FAILED:50,WAITING_ON_DEPENDENCY:51,UNSIGNED_DRIVER:52,USED_BY_DEBUGGER:53,DEVICE_RESET:54,CONSOLE_LOCKED:55,NEED_CLASS_CONFIG:56,GUEST_ASSIGNMENT_FAILED:57};
@@ -471,6 +472,7 @@ function glanceData(){
       var invs=[['devices','Devices inventory'],['drivers','Drivers inventory'],['bluetooth','Bluetooth inventory']], miss=invs.filter(function(o){ return !R[o[0]]; });
       if(miss.length===invs.length){ add('WARN',t('PC inventory'),t('Not done yet.'),t('Create the inventory to see what can be cleaned or updated.'),btn('Create the full inventory','data-run="inventory"')); }
       else { var first=true; invs.forEach(function(o){ if(R[o[0]]) add('OK',t(o[1]),t('Done.')+(S.state.times&&S.state.times[o[0]]?' '+fmtTime(S.state.times[o[0]]):'')); else { add('WARN',t(o[1]),t('Not done yet.'),t('Create the inventory to see what can be cleaned or updated.'),first?btn('Create the full inventory','data-run="inventory"'):''); first=false; } }); }
+      if(miss.length<invs.length && kbNewer()) add('WARN',t('Knowledge base newer than the inventory'),t('The inventory was made with an older knowledge base: create it again to apply the new advice.'),'',btn('Create the full inventory','data-run="inventory"'));
       if(miss.length<invs.length && invStale()) add('WARN',t('PC inventory'),t('Older than the last restart.'),t('Windows may have changed drivers since then: create the inventory again to see them.'),btn('Create the full inventory','data-run="inventory"'));
       SEC=2; // 3. Defender
       (function(){
@@ -1123,7 +1125,10 @@ function afterJob(j){
   if(j.kind==='kbupdate'){
     // always say how it ended: the person must not have to read the terminal
     S.kb=null; syncUpdBadge(); refreshBell();
-    if(j.status==='done'){ api('/api/kb').then(function(k){ ask({title:t('Knowledge base updated'),text:t('Version in use: {0}',String(Math.max(k.shipped||0,k.downloaded||0)))+'\n\n'+t('It is used from the next operation.'),ok:t('OK'),single:true}); if(S.pop==='update') loadKb(); }).catch(function(){}); }
+    if(j.status==='done'){ Promise.all([api('/api/kb'),loadState()]).then(function(rs){ var k=rs[0], nw=kbNewer(), tx=t('Version in use: {0}',String(Math.max(k.shipped||0,k.downloaded||0)))+'\n\n'+t('It is used from the next operation.');
+      if(nw){ ask({title:t('Knowledge base updated'),text:tx+'\n\n'+t('The inventory was made with an older knowledge base: create it again to apply the new advice.'),ok:t('Create the inventory now'),cancel:t('Later')}).then(function(y){ if(y) launch({action:'inventory'}); }); }
+      else ask({title:t('Knowledge base updated'),text:tx,ok:t('OK'),single:true});
+      if(S.pop==='update') loadKb(); }).catch(function(){}); }
     else if(j.status!=='cancelled'){ ask({title:t('Knowledge base not updated'),text:t('Nothing was installed: the current knowledge base is unchanged. The details are in the log of the operation.'),ok:t('OK'),single:true}); if(S.pop==='update') loadKb(); }
   }
   if(j.kind==='defender'){ loadState(); }

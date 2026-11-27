@@ -1,5 +1,5 @@
 {
- "version": "0.10.154",
+ "version": "0.10.155",
  "deferred": [
   "devvy.bat"
  ],
@@ -21,7 +21,7 @@
   },
   {
    "path": "README.md",
-   "sha256": "248a361b585566fe9ccb9181d862423026225840749c19b08f96817b7db2277d",
+   "sha256": "3a706ab2277fd02c6e8caf8bc1ae0d13f973259910159b1fdad972fbe58786ad",
    "size": 14100
   },
   {
@@ -51,8 +51,8 @@
   },
   {
    "path": "scripts/00-server.ps1",
-   "sha256": "a103408905062c569f7a69aa96490fcd91fd512e1cdbc484c1e7ba4e8dc59f55",
-   "size": 55935
+   "sha256": "6a14d0676166f5c9a1b6e94b34749245374afcf617a87610ae21fa512f5e2e2f",
+   "size": 56222
   },
   {
    "path": "scripts/01-inventory-devices.ps1",
@@ -71,8 +71,8 @@
   },
   {
    "path": "scripts/04-inventory-all.ps1",
-   "sha256": "461cea2c667e144c7b2ebf6969e6289011eb0cf003eaf5d7e4b403163e2ea7e1",
-   "size": 2808
+   "sha256": "3e072ffff939fc0b0f39be52779976b59bb7e38d8952f27ff1487b2630d29632",
+   "size": 3103
   },
   {
    "path": "scripts/04-warm-cache.ps1",
@@ -171,8 +171,8 @@
   },
   {
    "path": "scripts/common.ps1",
-   "sha256": "f469a9ca9a58a98148d5f967a0eefb03db6aaaa4c140eb2de0e9a8da0c8dedd9",
-   "size": 91345
+   "sha256": "3886f9ae7ea222a9c926e9092d44f5ec1299c60977b8588f84def67cff76746f",
+   "size": 91478
   },
   {
    "path": "scripts/devvy-cli.ps1",
@@ -181,53 +181,53 @@
   },
   {
    "path": "scripts/kb-version.txt",
-   "sha256": "dc403a74a951896c3e1ca9ba0aed37915a4d8ed4461148b7c5d1ca6d5314d0d5",
+   "sha256": "79699979da06115c295b9d3aa5ca5d130447a92ede2b6fa583e6097cef651e1e",
    "size": 11
   },
   {
    "path": "scripts/knowledge.csv",
-   "sha256": "df83f623392fc422c8b0e3354d32c5025aa8de63ae1089e3f85bd0acbe67606b",
-   "size": 51551
+   "sha256": "c74c863220d21e679bd748bf6483ed89bae75542c1c80051bf8f7ec35013fb23",
+   "size": 52230
   },
   {
    "path": "scripts/locales/de.json",
-   "sha256": "eed53e7e0fa13823287998276fc02aa068e7bd90ab3ee52f32bc45c872824d92",
-   "size": 157169
+   "sha256": "60ab51c2badae19d019cd19b055dd1fe97bfbebafe2e051d263e376ddf9aa3af",
+   "size": 157533
   },
   {
    "path": "scripts/locales/es.json",
-   "sha256": "2ba088d08ce3b1a686ac8f34db7ce7f64026b3df9366c0f656359ad4e84482e0",
-   "size": 155905
+   "sha256": "c66b04b47f5eacb03ac169e081915793d3ada7512de8954251270a642e4067ec",
+   "size": 156280
   },
   {
    "path": "scripts/locales/fr.json",
-   "sha256": "8311d081695206caae6aab775501fb05ce05c98e57cc113401a37710512fa36d",
-   "size": 159446
+   "sha256": "f902112f9337aa7d14e5580f23bdd92e913192b0da4add877474fa9cebef80cf",
+   "size": 159836
   },
   {
    "path": "scripts/locales/it.json",
-   "sha256": "6ae2fc0843a230f5f9d3c96a49e72b6edac9fa72a354fa78dc845ac8e4bb8d8a",
-   "size": 150730
+   "sha256": "3eb025b305985126a9e772c6120b5295ffc52775cb4f1cd29c894f11cc45b3ae",
+   "size": 151090
   },
   {
    "path": "scripts/locales/knowledge.de.csv",
-   "sha256": "403d8e60fc2cc4e05b5e28f263eea0cef7156e2410b84f08389eadf85c6c715c",
-   "size": 41771
+   "sha256": "f9e5edc94d350d1c036470aaab9fa2234001d1b7dc48454ccef51468e640697f",
+   "size": 42284
   },
   {
    "path": "scripts/locales/knowledge.es.csv",
-   "sha256": "b37cbe60156b8505d48c468cb7d585f7d59ff0734e3ad0d463a64bc6f7c2e937",
-   "size": 41994
+   "sha256": "c2f84eeb13da40f0505a4b53b3ab7971e5c77963ce3315ce44caeedf0b15bc0c",
+   "size": 42484
   },
   {
    "path": "scripts/locales/knowledge.fr.csv",
-   "sha256": "548b603814c115116f29f9508efa4b5f88c230ba404927f8d0f323bb31922686",
-   "size": 44080
+   "sha256": "a918d43c7e87e5b0ab282e4a208f3463b2a5a6da8fffaa75b5330be4b0795748",
+   "size": 44613
   },
   {
    "path": "scripts/locales/knowledge.it.csv",
-   "sha256": "698ce1b696cb1ecae93dbbb320f3ef9021eefcaf23e92735a54177d7fea2f357",
-   "size": 38786
+   "sha256": "58dda1898c18bbbc87042ca699b3dbc0fc1403dbbea34cb4b4d6b669fea833ab",
+   "size": 39250
   },
   {
    "path": "scripts/restart.ps1",
@@ -246,8 +246,8 @@
   },
   {
    "path": "scripts/web/app.html",
-   "sha256": "6bd97551a9ff160d1007cfed801c3a5e318f087236baaa900c6762056d820ca5",
-   "size": 156359
+   "sha256": "bd4ca15fbd9f189d7c3e55c3bb0b2d7e310da68259a8325845ff9c91de43044f",
+   "size": 157105
   }
  ]
 }

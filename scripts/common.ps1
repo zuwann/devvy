@@ -392,6 +392,7 @@ function ConvertTo-Ver([string]$s) {
 $script:KbUpdateBaseUrl = 'https://raw.githubusercontent.com/zuwann/devvy/main/kb/'
 $script:KbDir = Join-Path $script:DataRoot 'kb'
 function Get-KbShippedVersion { $f = Join-Path $script:ScriptsDir 'kb-version.txt'; if (-not (Test-Path -LiteralPath $f)) { return [int64]0 }; try { return [int64]((Get-Content -LiteralPath $f -ErrorAction Stop | Select-Object -First 1).Trim()) } catch { return [int64]0 } }
+function Get-KbEffectiveVersion { $a = Get-KbShippedVersion; $b = Get-KbDownloadedVersion; if ($b -gt $a) { return $b }; return $a }
 function Get-KbDownloadedVersion {
     # no file = no downloaded update (checked first: a missing file made Windows PowerShell print a 'fatal error' line even inside try/catch)
     $f = Join-Path $script:KbDir 'manifest.json'
